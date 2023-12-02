@@ -1,6 +1,10 @@
 # BP - Predikce profilů spotřeby elektrické energie
 Bakalářská práce na téma Predikce profilů spotřeby elektrické energie
 
+* Text práce v [této](./text/) podsložce
+* Zdrojové kódy k této práci v [této](./src/) podsložce
+
+
 ## Abstrakt
 Tato práce se zabývá problematikou krátkodobých a střednědobých predikcí spotřeby elektrické energie pomocí hlubokých neuronových sítí a dalších metod strojového učení. Finální modely jsou natrénovány na datových sadách poskytnuté společností Albistech a na
 veřejných datech společnosti UK Power Networks. Datové sady byly očištěny a byla na nich provedena explorační analýza pro dosažení lepších výsledků. Výsledky ukazují, že finální modely dokáží předpovídat až s 95% přesností v rámci jednoho dne a dokáží tak poskytnout spolehlivé výsledky pro budoucí implementaci v informačním systému NEO a poskytnout tak zákazníkům nástroj pro efektivnější hospodaření.

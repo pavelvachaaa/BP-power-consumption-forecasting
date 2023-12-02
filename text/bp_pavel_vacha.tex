@@ -1,0 +1,112 @@
+\documentclass[FM,BP,fonts]{tulthesis}
+
+\newcommand{\verze}{2.0}
+
+\usepackage{polyglossia}
+\setdefaultlanguage{czech}
+\usepackage{xevlna}
+
+\usepackage{makeidx}
+\makeindex
+
+\usepackage{xunicode}
+\usepackage{xltxtra}
+
+% příkazy specifické pro tento dokument
+\newcommand{\argument}[1]{{\ttfamily\color{\tulcolor}#1}}
+\newcommand{\argumentindex}[1]{\argument{#1}\index{#1}}
+\newcommand{\prostredi}[1]{\argumentindex{#1}}
+\newcommand{\prikazneindex}[1]{\argument{\textbackslash #1}}
+\newcommand{\prikaz}[1]{\prikazneindex{#1}\index{#1@\textbackslash #1}}
+\newenvironment{myquote}{\begin{list}{}{\setlength\leftmargin\parindent}\item[]}{\end{list}}
+\newenvironment{listing}{\begin{myquote}\color{\tulcolor}}{\end{myquote}}
+\sloppy
+
+% deklarace pro titulní stránku
+\TULtitle{Predikce profilů spotřeby elektrické energie}{Prediction of power consumption profiles}
+\TULauthor{Pavel Vácha}
+
+% pro bakalářské, diplomové a disertační práce
+\TULprogramme{B0613A140005}{Informační technologie}{Information Technology}
+\TULbranch{B0613A140005AI-80}{Aplikovaná informatika}{Applied informatics}
+\TULsupervisor{Ing. Jan Kraus, Ph.D.}
+
+\TULyear{2024}
+
+
+
+\begin{document}
+
+\ThesisStart{male}
+%\ThesisStart{zadani-a-prohlaseni.pdf}
+
+\begin{abstractCZ}
+Tato zpráva popisuje třídu \texttt{tulthesis} pro sazbu absolventských prací
+Technické univerzity v~Liberci pomocí typografického systému \LaTeX.
+\end{abstractCZ}
+
+\begin{keywordsCZ}
+spotřeba energie, analýza časových řad, predikce, parametrické modelování, strojové účení
+
+\end{keywordsCZ}
+
+\vspace{2cm}
+
+\begin{abstractEN}
+This report describes the \texttt{tulthesis} package for Technical university of
+Liberec thesis typesetting using the \LaTeX\ typographic system.
+\end{abstractEN}
+
+\begin{keywordsEN}
+energy consumption, time series analysis, forecasting, parametric modeling, machine learning
+\end{keywordsEN}
+
+\clearpage
+
+\begin{acknowledgement}
+Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména společnosti Albistech s.r.o za poskytnutá data a zázemí pro vypracování práce.
+\end{acknowledgement}
+
+\tableofcontents
+
+\clearpage
+
+\begin{abbrList}
+\textbf{LSTM} & Long-short term memory, architektura rekurentní neuronové sítě \\
+\textbf{CNN} & Convolutional Neural Network, konvoluční neuronová síť \\
+\textbf{MSE} & Mean squared error, střední kvadratický chyba \\
+\textbf{MAE} & Mean average error, průměrná absolutní odchylka \\
+\textbf{MAPE} & Mean average error, průměrná procentuální absolutní odchylka \\
+\textbf{RMSE} & Root mean squared error, směrodatný odchylka \\
+\textbf{ReLU} & Rectifed Linear Unit, aktivační funkce \\
+\textbf{GBT} & Gradient boosted trees, gradientní boostované stromy \\
+\textbf{EDA} & Exploratory data analysis, explorační datová analýza
+
+\end{abbrList}
+
+\chapter{Úvod}
+
+Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největ-
+šími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak
+
+se tyto vzorce mění, jsme schopni zajistit udržitelnou budoucnost.
+Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která
+
+nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatic-
+ké). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem
+
+relevantnější informace pro konkrétní region či oblast.
+V tomto projektu si kladu za cíl vyvinout model lokální spotřeby založený na
+historických datech spolu s environmentálními parametry, pokud jsou pro danou
+oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci
+udržitelných opatření v oblasti energetiky a ochrany životního prostředí. Získání
+přesnějšího a místně relevantního pohledu na spotřebu energie nám umožní přijímat
+informovaná rozhodnutí a přizpůsobit naše strategie tak, aby byly co nejefektivnější
+a nejohleduplnější k životnímu prostředí.
+Pro vytvoření spolehlivého a vhodného modelu lokální spotřeby se část tohoto
+projektu bude zabývat rešerší různých technik strojového učení spolu s metodami
+ze statistické analýzy.
+
+
+
+\end{document}
