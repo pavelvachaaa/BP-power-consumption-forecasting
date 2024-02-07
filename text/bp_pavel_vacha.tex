@@ -11,6 +11,7 @@
 
 \usepackage{xunicode}
 \usepackage{xltxtra}
+\usepackage{mathtools}
 
 % příkazy specifické pro tento dokument
 \newcommand{\argument}[1]{{\ttfamily\color{\tulcolor}#1}}
@@ -41,8 +42,9 @@
 %\ThesisStart{zadani-a-prohlaseni.pdf}
 
 \begin{abstractCZ}
-Tato zpráva popisuje třídu \texttt{tulthesis} pro sazbu absolventských prací
-Technické univerzity v~Liberci pomocí typografického systému \LaTeX.
+Tato práce se zabývá problematikou krátkodobých a střednědobých predikcí spotřeby elektrické energie pomocí hlubokých neuronových sítí a dalších metod strojového učení.  
+Finální modely jsou natrénovány na datových sadách poskytnuté společností Albistech a na veřejných datech společnosti UK Power Networks. Datové sady byly očištěny a byla na nich provedena explorační analýza pro dosažení lepších výsledků.
+Výsledky ukazují, že finální modely dokáží předpovídat až s 95\% přesností v rámci jednoho dne a dokáží tak poskytnout spolehlivé výsledky pro budoucí implementaci v informačním systému NEO a poskytnout tak zákazníkům nástroj pro efektivnější hospodaření.
 \end{abstractCZ}
 
 \begin{keywordsCZ}
@@ -53,8 +55,9 @@ spotřeba energie, analýza časových řad, predikce, parametrické modelován�
 \vspace{2cm}
 
 \begin{abstractEN}
-This report describes the \texttt{tulthesis} package for Technical university of
-Liberec thesis typesetting using the \LaTeX\ typographic system.
+This thesis explores the issue of short and medium term forecasting of electricity consumption using deep neural networks and other machine learning methods.
+The final models are trained on datasets provided by Albistech and UK Power Networks public data. The datasets were cleaned and exploratory data analysis was performed to obtain better results.
+The results show that the final models can forecast with up to 95\% accuracy within one day, and can thus provide reliable results for the future implementation in the NEO system and provide customers with a tool for more efficient management.
 \end{abstractEN}
 
 \begin{keywordsEN}
@@ -86,6 +89,7 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 
 \chapter{Úvod}
 
+
 Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největ-
 šími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak
 
@@ -108,5 +112,353 @@ projektu bude zabývat rešerší různých technik strojového učení spolu s 
 ze statistické analýzy.
 
 
+\chapter{Časové řady}
+Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam je v určitém časovému okamžiku. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řád, které se budou v následujících kapitolách vyskytovat.
+
+Časová řada je definována jako množina pozorování $x_t$, kde každé pozorování má záznam v čase $t$. \ref{neoc}. Příkladem typické časové řady může být vývoj ceny akcií na burze v čase nebo výše zmíněna spotřeba energie. Každá časová řada se dá rozložit (dekomponovat) na několik jednotlivých složek (komponent). 
+
+
+\section{Komponenty časové řady}
+Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odhalují určité vlastnosti časové řady. Tyto komponenty a informace, co nesou jsou poté užitečné při samotné analýze a následné predikci časové řady. Nejdůležitější čtyři komponenty jsou:
+
+
+\subsection{Trendová komponenta}
+Tato komponenta zachycuje celkový dlouhodobý směr zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označujeme ji jako $T_t$.
+
+\subsection{Sezónní komponenta}
+Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \ref{aha} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními změnami, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
+
+\subsection{Cyklická komponenta}
+Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání vlivu širších socioekonomických faktorů na dlouhodobou spotřebu energie v domácnostech. Tato složka totiž představuje dlouhodobější vzory, jejichž frekvence přesahuje minimálně jeden rok. \ref{a} Zpravidla vyjadřuje kolísání okolo trendové komponenty.
+
+
+\subsection{Náhodná komponenta}
+ Jedná se o náhodné výkyvy, které nemohou být předpovězeny pomocí předchozích komponent a mohou být způsobeny různými nepředvídatelnými událostmi, jako jsou chyby v měření nebo neočekávané výpadky dodavatele energie. Zpravidla se značí jako  $\epsilon_t$.
+ 
+
+\section {Stacionariata}
+Popíči+ zmínit diferenciování a, že existují testy stacionarity, jeden vybrat a pak ho aplikovat v praktické části
+
+\section{Dekomopozice časové řady}
+Důležité vypíčená sračka. Zmínit jak to slouží k zjištění trendové a cyklické píčoviny. Ukázat vzoreček. ztráta informací je real shit, atd.
+Navázat na sezonní dekopmozici ffs (tu pak provést v implementaci a ukázat asi nějaký kod)
+ 
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eg_01_moving_average.eps}}%
+	\caption{Klouzavý průměr řádu m=30 popisující spotřebu energie v posledních 30 dnech [4]. }
+	\label{fig:my_graph}
+\end{figure}
+% 
+
+
+%No to asi ne%
+\chapter{Průzkum současných trendů v oblasti prediktivních metod}
+V současné době s rostoucím objemem sbíraných dat se stále více organizací zaměřuje na prediktivní modelování. Díky dnešním výkonným výpočetním technologiím je možné zužitkovat nasbíraná data a využít metody strojového učení pro přesné predikce a odhad budoucích trendů.
+
+Tato kapitola si klade za cíl provést rešerši aktuálně používaných metod pro predikce. Výstupem by měl být výběr několika metod a jejich následná aplikace na datech o spotřebě.
+
+\section{Regresní analýza}
+V oblasti předpovědí spotřeby energie lze často najít modely, které byly vytvořeny pomocí modelování spotřeby energie touto technikou (nebo její podmnožinou). Jeden z důvodu, proč se používají je jednoduchost použití a interpretace.
+
+Regresní model popisuje vztah mezi jednou nebo více nezávislými proměnnými a jednou závislou proměnnou. Cílem regresní analýzy je najít funkční vztah mezi závislými a nezávislými proměnnými, který je potom použít k predikci hodnoty závislé proměnné na základě hodnot nezávislých proměnných.
+
+Regresní model s více než jednou proměnnou se zapisuje jako
+
+\begin{equation}
+	y = \beta_0 + \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p +  \epsilon
+\end{equation}
+
+kde $y$ je výstupní proměnná, $\epsilon$ chybový člen a $\beta_i$, i=0, 1, 2 ... p jsou regresní parametry.
+
+Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se odhadují pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší.  \cite{hanousek1992moderni}
+
+Regresní analýza neříká nic o tom, jaký je mechanismus, kterým jsou tyto vztahy vysvětleny. To znamená, že regresní analýza může být velmi užitečným nástrojem pro předpovídání budoucích hodnot, ale nemůže sloužit jako nástroj pro vysvětlování příčin.
+
+% Tohle asi hodím dopíči
+Bude zváženo využití ARIMA modelu, který je kombinací autoregresního (AR) a průměrového (MA) modelu, což z nich dělá podmnožinu regresních modelů.
+
+
+\subsection{ARIMA}
+Tak to je hustý, zvážit jestli to nebude samotná sekce spíše
+
+
+
+\newpage
+
+\section{Rozhodovací stromy}
+Pro strom existuje mnoho analogií a jedna z analogií se dostala i do modelování. Rozhodovací stromy můžou pomoci jak s klasifikačními, tak i s regresními problémy. 
+
+Jak název napovídá, při tvorbě rozhodovacího stromu je snaha rozdělit data na menší a jednodušší skupiny pomocí pravidel (segmentace dat), která se postupně aplikují na různé atributy dat. Cílem je vytvořit sadu pravidel, která umožní co nejpřesněji predikovat hodnotu požadované proměnné pro nově příchozí data.
+
+Při tvorbě stromu se postupuje od shora dolů. V kořeni stromu je nutné zvolit jeden hlavní dělící parametr s nejvyšší schopností rozlišení dat, například "výška < 1.85.m" a dále se již větví na základě největšího poměrného \textit{informačního zisku} (založeno na výpočtu entropie).  \cite{Tomsik2016thesis}
+
+Pro tvorbu těchto stromů existuje mnoho metod. Zpravidla založených na statistických metodách. Nejčastějšími zástupci těchto metod jsou algoritmy \textbf{gradientní boostované stromy}, CHAID, C5.0 či náhodné lesy. \cite{Tomsik2016thesis}
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{reg_tree.jpeg}}%
+	\caption{Ukázka rozhodovacího stromu}
+	\label{fig:my_graph}
+\end{figure}
+\subsection{Gradientní boostované stromy}
+Tato metoda je přesná a použitelná pro oba základní problémy, klasifikaci i regresi napříč různými odvětvími. Jelikož se tato práce zabývá predikcí spotřeby energie, což je spojitá veličina, budou prozkoumány možnosti regresního řešení problémů s pomocí GBT.
+
+Hlavním úkolem boostování je sestavit z mnoha slabších modelů výrazně silnější model, takzvaně \textit{ensemble  model}. \cite{chen2016xgboost}
+
+V každé iteraci se vytváří nový rozhodovací strom, který se zaměřuje na opravu chyb (reziduí) předchozího stromu. Tímto způsobem je postupně zlepšována přesnost predikce a minimalizována chybovost modelu. 
+
+Mezi nejpopulárnější implementace GBT patří například XGBoost, LightGBM a CatBoost. Tyto implementace využívají různé optimalizace a techniky pro minimalizaci přeučení a maximalizaci přesnosti predikce.
+
+Pro tento projekt byla zvolena implementace XGBoost v Pythonu pro svou přehlednou dokumentaci a jednoduchosti použití
+
+
+\section{Neuronové sítě}
+V poslední letech si neuronové sítě vydobyly své postavení na poli analýzy a predikci dat. Neuronové sítě fungují dobře v problematice predikce hodnot, kde nejsou známy matematické vzorce a předchozí znalosti o vztazích mezi vstupy a výstupy. Fungují dobře v této problematice díky svému původu a díky inspiraci v neurofyziologii lidského mozku.
+
+Na první pohled to může vypadat, že neuronové sítě jsou novinka posledního století. Není tomu tak, je to pouze posunutím vývoje výkonného hardwaru kupředu. Neuronové sítě tu jsou již od 50. let, kdy Warren McCulloch a matematik Walter Pitts vydali publikaci, ve kterém modelovali zjednodušený model neuronu s elektrickým obvodem, jehož aktivační funkce byla pouze binární. \cite{mcculloch1943logical}
+
+\begin{equation}
+	y = \begin{dcases}
+		1 & z \geq T \\
+		0 & z < T
+	\end{dcases}
+\end{equation}
+
+Autoři práce také ukázali, jak se dají sestrojit pomocí neuronu jednoduché logické funkce: 
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.3\textwidth]{disjunkce.png}}%
+	\caption{Logický součet pomocí biologických neuronů}
+	\label{fig:logic_or}
+\end{figure}
+
+Neuron označme jako $N$ s indexem $i$, který je uvnitř neuronu, v tom případě na obrázku výše vidíme $N_3(t) = N_1(t-1) \vee N_2(t-1)$, což znamená, že se jedná o logický součet. \cite{mcculloch1943logical} Autoři v práci dále naznačili, jak se dají skládat tyto neurony do sítě. 
+
+Toto položilo první základy na rozvoj neuronových sítí v roce 1957 Frankem Rosenblattem, který začal práci na perceptronu.
+\newpage
+\subsection{Perceptron}
+Perceptron je nejjednodušší model dopředné neuronové sítě, který se skládá z jednoho jediného neuronu.
+
+Perceptron přijímá na vstupu vektory $x_i$, ke kterým je přiřazena váha $w_i$. $b$ je potom práh (bias), jenž ovlivňuje nakolik musí být suma vah větší než 0, aby se perceptron aktivoval. \cite{martinpilatNN}. Aktivace neuronu se pak spočítá následovně:
+\label{eq:activation_percep}
+\begin{equation}
+	z = \sum_{i=1}^{n} w_xx_i + b
+\end{equation}
+
+A samotný výstup perceptronu (neuronu) $Z$, kde oproti jednoduchému neuronu nemusí být pouze binární přenosová funkce, ale libovolná přenosová funkce (zpravidla skoková nebo sigmoidální pro jeden perceptron) \cite{martinpilatNN} se spočítá jako:
+
+\begin{equation}
+	Z = H(z)
+\end{equation}
+kde
+\begin{equation}
+	H(z) = \begin{dcases}
+		1 & f(z) \geq 0 \\
+		0 & f(z) < 0
+	\end{dcases}
+\end{equation}
+
+Učení perceptronu probíhá jednoduše. Na vstup přivádíme $(x,y)$ z trénovací sady (kde $x$ jsou příznaky a $y$ požadované výstupy) a aktualizujeme váhy perceptronu dle rovnice:
+
+\begin{equation}\label{eq:learning_percep}
+	w_{n,i} = w_i + r(y_i-Z_i)x_n
+\end{equation}
+kde $r$ je parametr učení, který nám určuje, jak rychle se mění váha a kde $n$ je n-tý vstup.  
+
+Důležité je poznamenat to, že tento perceptronový algoritmus je jednoduchý a efektivní pro řešení lineárně rozdělitelných problémů, ale není schopný řešit problémy, které nejsou lineárně rozdělitelné. Například funkci XOR, která se chová nelineárně, již tímto způsobem nevyřešíme. To vedlo k rozšíření této oblastí a vznikly tak vícevrstvé perceptrony, kde se pro učení používá algoritmus zpětného šíření.
+
+
+
+
+\subsection{Vícevrstvé perceptrony}
+Vícevrstvé perceptrony mají na rozdíl od perceptronu ještě skryté vrstvy, které se nachází mezi vstupní a výstupní vrstvou. Skrytých vrstev může být více nebo jenom jedna, to už záleží na volbě programátora a na typu problému. Neuronové sítě s jednou vrstvou se nazývají mělké. Sítě s více skrytými vrstvami se nazývají hluboké sítě. V souvislosti s vícevrstvými perceptrony se mluví také o dopředné síti (feedforward). Vstupní vektor dat $I = (x,y)$ jde do skrytých vrstev $H$ a poté na výstup $Y$. Vektor hodnot z výstupní vrstvy označíme jako $Y$. 
+
+\newpage
+Výstup $Y$ poté získáme pomocí rovnice níže 
+
+\begin{equation}
+	H_i = \sigma(w_{ni} \cdot I_n + b_i)
+\end{equation}
+
+
+\begin{equation}
+	Y = \sigma(w_{ij} \cdot H + b_{out})
+\end{equation}
+
+kde $\sigma$ označuje přenosovou funkci a $w_{ni}$ váhu spojení mezi n-tým vstupním a í-tým výstupním neuronem.
+
+Ve více vrstvých sítích se používají jiné přenosové funkce než v samostatném perceptronu. V současnosti vyčnívá jedna velmi používaná funkce ReLU (rectified linear unit), která se definuje jako:
+
+\begin{equation}
+	Relu(z) = max(0, z)
+\end{equation}
+
+a používá se především ve skrytých vrstvách. \cite{brownlee2019gentle} Na výstupní vrstvě je zpravidla funkce softmax, definovaná jako:
+
+\begin{equation}
+	\sigma(z_i) = \frac{e^{z_{i}}}{\sum_{j=1}^n e^{z_{j}}} \ \ \ pro\ i=1,2,\dots,n
+\end{equation}
+
+Pro trénování pak již nelze použít klasický perceptronový algoritmus (viz \ref{eq:learning_percep}). Nejčastěji se používá algoritmus zpětného šíření (back-propagation).
+
+Při použití algoritmu zpětného šíření se výstupní chyba sítě propaguje zpět k vstupní vrstvě, přičemž se upravují váhy všech spojů v síti tak, aby se minimalizovala tato chyba. Tento proces se opakuje v průběhu několika iterací (epoch).
+
+Dále bychom mohli mluvit o optimalizačních metodách, chybových funkcích a o tom jak jednotlivé vrstvy fungují, ale to je nad rámec tohoto projektu. Pro projekt je důležité zmínit \textit{long short-term memory networks}, které vycházejí z rekurentních sítí, na které se zaměříme v další kapitole.
+
+
+\subsection{Rekurentní neuronové sítě}
+Zatím jsme zmínili pouze sítě, kde výstup závisí pouze na aktuálním vstupu. V našem případě časová řada spotřeby energie nezávisí pouze na aktuálním stavu a ke správnému výstupu by bylo vhodné zahrnout data předchozí.
+
+Rekurentní sítě nám toto umožňují tím, že obsahují zpětná spojení, která fungují jako vnitřní stav (paměť). Nejjednodušší příklad rekurentní neuronové sítě může být síť, co má jeden vstup, výstup a jeden neuron ve skryté vrstvě. Když tento neuron bude mít spojení sám do sebe, tak při předložení vstupu neuron dostane kromě vstupu ještě aktivaci $h_{(t-1)}$ z minulého vstupu. Nejnázornější je ukázat jak se změní výpočet výstupu z neuronu, když přidáme zpětná spojení.
+
+
+\begin{equation}
+	h_t = \sigma(w_{hh}h_{t-1} + w_{xh}x_t)
+\end{equation}
+
+kde $h_t$ je aktuální stav neuronu, $x_t$ je vstupní sekvence v čase $t$, $w_{hh}$ váha rekurentního neuronu a $w_{xh}$ váha vstupního neuronu. Zásadní změna oproti aktivaci v jednoduchém perceptronu (viz \ref{eq:activation_percep})  je, že aktivace $h_t$ závisí i na předchozí aktivaci neuronu $h_{t-1}$.
+
+Trénování sítě probíhá opět algoritmem zpětného šíření, avšak lehce modifikovaným. Jmenuje se algoritmus zpětného šíření v čase (backpropagation throguh time). S trénováním rekurentních sítí se můžou vyskytnout dva problémy, díky tomu jak se zpětné šíření počítá. \cite{martinpilatRNN} Gradient se vždy násobí váhou. Pokud je toto rekurentní váha, tak se opakovaně násobí stejnou hodnotou. V případě, že tato hodnota bude větší než 1, dojde k problému explodujících gradientů, kdy hodnoty nekontrolovatelně rostou. V opačném případě, kdy je hodnota menší než 0, tak dochází k problému s mizejícími gradienty.
+
+Jedno z možných řešení je použít další typ sítě. Tento typ sítě se jmenuje long-short term memory network a problém řeší tak, že rekurentní váha se zafixuje na hodnotu 1 a práce se stavem se provádí explicitně.
+
+
+
+\subsection{Long short-term memory networks}\label{nn-lstm}
+LSTM sítě jsou speciální druh rekurentních sítí, které dokáží zpracovat  bez problému jednorozměrné signály a časové řady. Klíčovým prvkem těchto sítí jsou tzv. LSTM buňky, které nahrazují každý neuron. 
+
+Tyto buňky se skládají typicky z pěti prvků. Mezi tyto prvky patří input gate, forget gate, cell gate, output gate a samotná cell, která je jako aktuální stav ovlivňovaná vyjmenovanými prvky.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.55\textwidth]{lstm_cell.png}}%
+	\caption{Jedna buňka LSTM sítě (převzato a přeloženo z \cite{colah})}
+	\label{fig:my_graph}
+\end{figure}
+
+LSTM mají řešit problém klasických RNN a to explodující a mizející gradienty. Problém je řešen tak, že přenos informací mezi časovým krokem probíhá pomocí stavu, s kterým není spojená žádná váha a díky tomu se při propagaci chyby vyhneme násobení, které by mohlo vyvolat tento problém. Díky této vlastnosti si LSTM sítě umí zapamatovat delší posloupnosti vstupů než základní rekurentní neuronové sítě.
+
+Při rešerši jsem narazil také na kombinaci více sítí v jednu. Autoři jedné z prací zabývající se predikcí spotřeby energie v domácnosti \cite{cnn-bi-lstm}	 využívají například Bi-LSTM (obousměrná LSTM síť), CNN-LSTM (konvoluční neuronová síť s LSTM sítí) a kombinaci všeho - CNN-Bi-LSTM síť.
+
+Kromě LSTM sítě existuje ještě její zjednodušená verze, které chybí output gate. Nazývá se gated recurrent unit (GRU) a v některých případech dosahuje vyšších přesností než LSTM, hlavně na menších datových sadách a převážně v oblast zpracování přirozeného jazyka. \cite{kynych2018vyuziti}
+
+\newpage
+\section{Konvoluční neuronové sítě}
+Co to je more? Proč to je tu vole
+
+\subsection{CNN-LSTM}
+Určitě někde bude \ref{nn-lstm}
+
+\chapter{Aplikace vybraných metod}
+V této kapitole bude popsán způsob aplikace metod z předchozích kapitol. Po rešerši bylo rozhodnuto, že budou aplikovány dvě metody. První zvolenou metodou budou rozhodovací stromy, přesněji gradientní boostavené stromy za pomocí knihovny XGBoost.
+Druhá vybraná metoda je postavená na rekurentních neuronových sítích, tedy výše popisovaná LSTM síť. Zde využijeme bohaté knihovny Tensorflow od společnosti Google.
+
+Před samotnou aplikací těchto metod se zaměříme na základní datovou analýzu, která nám pomůže odhalit nejlepší možné parametry pro výsledný model. Tato analýza nám umožní lépe porozumět datům, identifikovat vzorce a trendy v spotřebě elektrické energie a získat představu o nejdůležitějších faktorech ovlivňujících spotřebu.
+
+Výstupem této kapitoly by měly být natrénované modely, které budou sloužit k predikci budoucích hodnot spotřeby elektrické energie. Jako jedno rozšíření této práce bude následovat implementace těchto modelů do informačního systému NEO.  
+
+Nakonec budou tyto modely vyhodnoceny na základě metrik přesnosti, které jsou uvedeny v kapitole \ref{section:error-matrix}. Tím získáme objektivní měřítko úspěšnosti a spolehlivosti našich modelů.
+
+
+
+\section{Zdroj dat}
+V práci byly využity dva zdroje dat. První ze zdrojů je veřejný a jedná se o kolekci 5567 domácností, které se zúčastnili projektu UK Power Networks vedené společností Low Carbon London mezi roky 2011 a 2014. 
+
+Projekt si kladl za cíl inovovat Londýnskou distribuční soustavu a zvýšit pokrytí nízkouhlíkovým vytápěním. V rámci počáteční studie projektu byly domácnosti vybaveny novými chytrými elektroměry a následně byl spolu se studií zveřejněn vzorek dat. \cite{londondata}
+
+Naměřená data jsou v půlhodinových intervalech a obsahují spotřebu v kWh, unikátní identifikační číslo domácnosti a časové razítko. Soubor má zhruba 10 GB dat a obsahuje přes 160 milionů řádků
+
+\begin{table}[!ht]
+	\centering
+	\caption{Struktura datové sady se spotřebou v domácnostech (Londýn)}
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Sloupec} & \textbf{Popis} \\ \hline
+		LCLid & Unikátní identifikátor domácnosti \\ 
+		tstp & Časové razítko ve formátu YYYY-MM-DD hh:mm:ss \\ 
+		energy(kWh/hh) & Spotřebovaná energie v kWh \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřejněn datový soubor s hodinovými informacemi o počasí získaný z \textit{Dark Sky} API. Tato sada má následující strukturu:
+
+
+\begin{table}[!ht]
+	\centering
+	\caption{Struktura datové sady s počasím pro Londýn}
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Sloupec} & \textbf{Popis} \\ \hline
+		visibility & Maximální viditelnost \\ 
+		windBearing & Směr, ze kterého fouká vítr \\ 
+		temperature & Skutečná teplota ve stupních Celsia \\ 
+		time & Časové razítko ve formátu YYYY-MM-DD hh:mm:ss	 \\ 
+		dewPoint & Rosný bod \\ 
+		pressure & Aktuální atmosférický tlak měřený v hektopascálech. \\ 
+		apparentTemperature & Pocitová teplota, která je kombinací vlhkosti a reálné teploty \\ 
+		windSpeed & Rychlost větru měřená v km/h \\ 
+		precipType & Typ srážky (sníh nebo déšť) \\
+		icon & Název ikony signalizující oblačnost, slunečno, atd.  \\ 
+		\hline
+	\end{tabular}
+\end{table}
+
+Pro účely této práce bude nutné transformovat data o počasí na intervaly po půl hodinách. Pokud by se neprovedla transformace, nebylo by možné využít datovou sadu pro Londýn v kombinaci s daty o počasí, aniž by se neztratila informace o měřené spotřebě.
+
+Dále bude potřeba provést analýzu klíčových sloupců pro přesnější výsledky. Předpokládá se totiž, že například sloupec \textit{icon} nebude signifikantní pro určení spotřeby energie.
+\newpage
+\subsection{IRIS Data Platform}
+
+\newpage
+\section{Explorační analýza dat a jejich příprava}
+%Buď udělat zvlášt kapitolu příprava nebo udělat subsection k přípravě%
+\subsection{Denní průměrné profily}
+\subsection{Závislost počasí}
+\subsection{Korelační matice}
+\subsection{LSTM}
+\section{Hyper-parametry}
+
+
+\newpage
+
+\section{Metodika vyhodnocení}\label{section:error-matrix}
+Abychom byli schopni určit, jak jsou modely úspěšné, potřebujeme zavést nějaké metriky. Rozhodl jsem se použít tři veličiny z matematické statistiky. Jedná se o střední kvadratickou chybu (dále již jen MSE). 
+
+\begin{equation}
+	\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(x_i-y_i)^2 
+\end{equation}
+
+a též směrodatná odchylka pro správné jednotky:
+
+\begin{equation}
+	\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(x_i-y_i)^2}
+\end{equation}
+
+Třetí zvolenou veličinou je průměrná absolutní odchylka, která je definována jako:
+
+\begin{equation}
+	\text{MAE} = \frac{1}{n}\sum_{i=1}^{n}|x_i-y_i| 
+\end{equation}
+
+a pro vyjádření MAE v procentech: 
+
+\begin{equation}
+	\text{MAPE} = \frac{1}{n}\sum_{i=1}^{n}|\frac{x_i-y_i}{x_i}| 
+\end{equation}
+
+Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhledem k přesnosti predikce a identifikovat případné nedostatky v modelu. Je důležité vyhodnocovat výsledky predikce pomocí více než jedné veličiny, aby se zajistila celková robustnost výsledného modelu.
+
+
+\chapter{Výsledky}\label{Výsledky}
+
+\chapter{Závěr}
+Tato práce si kladla za cíl ... 
+
+\chapter{ChangeLog}
+22.01. 2024 - Rozvržení kapitol
+08.02. 2024 - Kapitola časové řady
 
 \end{document}
