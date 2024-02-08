@@ -119,11 +119,10 @@ Spotřeba energie v domácnostech může být chápána jako posloupnost měřen
 
 
 \section{Komponenty časové řady}
-Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odhalují určité vlastnosti časové řady. Tyto komponenty a informace, co nesou jsou poté užitečné při samotné analýze a následné predikci časové řady. Nejdůležitější čtyři komponenty jsou:
-
+Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odhalují určité vlastnosti časové řady. Tyto komponenty a informace co nesou, jsou poté užitečné při samotné analýze a následné predikci časové řady.
 
 \subsection{Trendová komponenta}
-Tato komponenta zachycuje celkový dlouhodobý směr zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označujeme ji jako $T_t$.
+Tato komponenta zachycuje celkový dlouhodobý směr zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označuje se jako $T_t$.
 
 \subsection{Sezónní komponenta}
 Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \ref{aha} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními změnami, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
@@ -137,19 +136,53 @@ Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání
  
 
 \section {Stacionariata}
-Popíči+ zmínit diferenciování a, že existují testy stacionarity, jeden vybrat a pak ho aplikovat v praktické části
+Pro analýzu časové řady je vhodné (pro většinu analýz podmínkou), aby řada byla takzvaně stacionární. Za stacionární časové řady se považují takové řady, které nemají trend, mají s měnícím se časem stejný rozptyl a stejný průběh autokorelační funkce. Tyto vlastnosti usnadňují predikci budoucích hodnot a proto je snaha převést řadu na stacionární. 
+
+Nejjednodušší transformace řady na stacionární je pomocí diferencování. Tato transformace přispívá ke snížení trendové složky. Například diferenci prvního řádu se zapisuje jako:  
+\begin{equation}
+ \Delta x_t = x_t - x_{t-1}
+\end{equation}
+kde $x_t$ je hodnota v čase $t$ a $x_{t-1}$ je vzorek předcházející. Při analýze následující řady níže, kde je vidět lineární rostoucí trend, je třeba provést diferenci, aby tento trend zmizel.
+ 
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{pv_eg_02_mira_nezam.eps}}%
+	\caption{Míra registrované nezaměstnanosti v ČR od roku 1993 }
+	\label{fig:nezamestnanost}
+\end{figure}
+
+Po aplikaci diference prvního řádu lze vidět, že řada již nemá zjevný rostoucí trend a bylo by možné pokračovat v další analýze.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{pv_eg_02_mira_nezam_diff.eps}}%
+	\caption{Míra registrované nezaměstnanosti po spočtení první diference }
+	\label{fig:nezamestnanost_diff}
+\end{figure}
+
+Pro otestování zdali je řada stacionární existuje několik testů ze statistické analýzy. V implementační části této práci bude využito Dickey-Fullerova testu pro ověření stacionarity dat, nad kterými bude autor práce tvořit jednotlivé modely. 
+
 
 \section{Dekomopozice časové řady}
+Cílem dekompozice časových řad je z řad odfiltrovali trend, sezónnost, cyklicitu a tím získat stacionární časovou řadu (Přepsat)
+
 Důležité vypíčená sračka. Zmínit jak to slouží k zjištění trendové a cyklické píčoviny. Ukázat vzoreček. ztráta informací je real shit, atd.
 Navázat na sezonní dekopmozici ffs (tu pak provést v implementaci a ukázat asi nějaký kod)
+ 
+\subsection{Jednoduchý klouzavý průměr}
+Pomocí klouzavého průměru se dá
+jednoduše zjistit trend-cyklická složka. A chjo dopíči mě to nebaví
  
 \begin{figure}[htbp]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eg_01_moving_average.eps}}%
-	\caption{Klouzavý průměr řádu m=30 popisující spotřebu energie v posledních 30 dnech [4]. }
+	\caption{Klouzavý průměr řádu m=30 popisující míru nezaměstnanosti v ČR od roku 1993. }
 	\label{fig:my_graph}
 \end{figure}
-% 
+
+\subsection{STL Dekompozice}
+To je hodně špatná dekompozice
+ 
 
 
 %No to asi ne%
@@ -425,7 +458,7 @@ Dále bude potřeba provést analýzu klíčových sloupců pro přesnější v�
 \newpage
 
 \section{Metodika vyhodnocení}\label{section:error-matrix}
-Abychom byli schopni určit, jak jsou modely úspěšné, potřebujeme zavést nějaké metriky. Rozhodl jsem se použít tři veličiny z matematické statistiky. Jedná se o střední kvadratickou chybu (dále již jen MSE). 
+Pro kvalitní určení, jak jsou modely úspěšné, je potřeba zavést nějaké metriky. Rozhodnutí bylo ve prospěch tří standardních veličin z matematické statistiky. Jedná se o střední kvadratickou chybu (dále již jen MSE). 
 
 \begin{equation}
 	\text{MSE} = \frac{1}{n}\sum_{i=1}^{n}(x_i-y_i)^2 
@@ -459,6 +492,9 @@ Tato práce si kladla za cíl ...
 
 \chapter{ChangeLog}
 22.01. 2024 - Rozvržení kapitol
+
 08.02. 2024 - Kapitola časové řady
+
+09.02. 2024 - Podkapitola o stacionaritě a ukázkový skript
 
 \end{document}
