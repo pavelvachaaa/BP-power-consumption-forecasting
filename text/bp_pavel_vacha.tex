@@ -163,16 +163,40 @@ Po aplikaci diference prvního řádu lze vidět, že řada již nemá zjevný r
 Pro otestování zdali je řada stacionární existuje několik testů ze statistické analýzy. V implementační části této práci bude využito Dickey-Fullerova testu pro ověření stacionarity dat, nad kterými bude autor práce tvořit jednotlivé modely. 
 
 
-\section{Dekomopozice časové řady}
-Cílem dekompozice časových řad je z řad odfiltrovali trend, sezónnost, cyklicitu a tím získat stacionární časovou řadu (Přepsat)
+\section{Dekompozice časové řady}
+Jak bylo zmíněno výše, dekompozice umožňuje rozložit časovou řadu na jednotlivé komponenty. Z těch poté lze lépe pochopit, jakým způsobem se v časové řadě projevuje trend a sezónní variabilita. To je užitečné pro interpretaci dat a odhalení skrytých trendů nebo sezónních vzorů, což může být klíčové pro predikci a optimalizaci energetické efektivity v domácnosti.
 
-Důležité vypíčená sračka. Zmínit jak to slouží k zjištění trendové a cyklické píčoviny. Ukázat vzoreček. ztráta informací je real shit, atd.
-Navázat na sezonní dekopmozici ffs (tu pak provést v implementaci a ukázat asi nějaký kod)
+Někdy se samotné komponenty po dekompozice využívají k predikci, obzvlášť pokud je trend jednoduchý. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \ref{}
+
+Pro dekompozici se zpravidla používají dva základní modely, a to aditivní a multiplikativní. Volba modelu závisí na charakteru sezónnosti a trendu v časové řadě.
+
+\subsection{Aditivní model}
+Pro tento model se předpokládá, že řadu lze rozložit jako součet jednotlivých komponent.
+
+\begin{equation}
+	x_t = T_t + S_t + C_t + \epsilon_t
+\end{equation}
+kde $x_t$ je samotná hodnota časová řady v čase $t$.
+
+
+\subsection{Multiplikativní model}
+Analogicky tento model naopak předpokládá, že řadu lze rozložit jako součin jednotlivých komponent.
+\begin{equation}
+	x_t = T_t * S_t * C_t * \epsilon_t
+\end{equation}
+
+Tento model se využívá, pokud se výkyvy sezonní složky vůči trendu mění v čase.
+
  
-\subsection{Jednoduchý klouzavý průměr}
-Pomocí klouzavého průměru se dá
-jednoduše zjistit trend-cyklická složka. A chjo dopíči mě to nebaví
+\subsection{Klouzavý průměr}
+Tento jednoduchý výpočet, který je schopen zvýraznit trend-cyklickou složkou, je jednou z nejjednodušších metod dekompozice. Mimo jiné dokáže vyhladit časovou řadu od krátkodobých výkyvů. Spočívá v jednoduchém průměrování různých pozorování a nebo celé řady.  Klouzavý průměr řádu $m$ lze zapsat jako:
  
+\begin{equation}
+SMA_m = \frac{1}{m} \sum_{i=-k}^{k}x_{t+i}
+\end{equation}
+ 
+kde $k$ se používá k určení, kolik hodnot před a po aktuálním čase $t$ se zahrne do výpočtu klouzavého průměru. Platí, že $m = 2k+1$
+
 \begin{figure}[htbp]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eg_01_moving_average.eps}}%
@@ -180,10 +204,25 @@ jednoduše zjistit trend-cyklická složka. A chjo dopíči mě to nebaví
 	\label{fig:my_graph}
 \end{figure}
 
-\subsection{STL Dekompozice}
-To je hodně špatná dekompozice
- 
+Na grafu výše lze vidět, že klouzavý průměr (červená čára) s řádem $m=30$ vyhladil průběh časové řady od výkyvů a zvýraznil trend-cyklickou komponentu.
 
+\subsection{Klasická dekompozice}
+O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.).
+
+V implementační části pak jde o čtyři základní kroky. Výpočet trend-cyklické komponenty, o detrendizaci časové řády, aproximace sezónní složky a výpočet náhodné složky. Jednotlivé kroky se liší pro aditivní a multiplikativní model. 
+ 
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eg_03_classical_decomposition.eps}}%
+	\caption{Klasická dekompozice s aditivním modelem pro data s měsíčními záznamy o míře nezaměstnanosti v ČR od roku 1993 }
+	\label{fig:my_graph}
+\end{figure}
+
+V náhodné komponentě nám zbyla časová řada po odstranění trend-cyklické a sezónní komponenty. Někdy se jí místo náhodná říká detrendizovaná komponenta. V tomto případě model byl aditivní, tedy odstranění proběhlo jako $\epsilon_t = x_t - T_t - S_t$, pro multiplikativní model by vztah vypadal jako $\epsilon_t = \frac{x_t}{T_tS_t}$
+
+Z pohledu na graf výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
+
+ Další je vidět v roce 2019, kde Česká Republika měla silnou rostoucí ekonomiku. Hned po roce 2019 je vidět další výkyv, tentokrát negativní, způsobený pandemií.
 
 %No to asi ne%
 \chapter{Průzkum současných trendů v oblasti prediktivních metod}
@@ -212,13 +251,16 @@ Regresní analýza neříká nic o tom, jaký je mechanismus, kterým jsou tyto 
 Bude zváženo využití ARIMA modelu, který je kombinací autoregresního (AR) a průměrového (MA) modelu, což z nich dělá podmnožinu regresních modelů.
 
 
-\subsection{ARIMA}
-Tak to je hustý, zvážit jestli to nebude samotná sekce spíše
-
+\subsection{Asi AR ještě uvést??}
+Tak to je hustý
 
 
 \newpage
+\section{ARIMA}
+Popsat podrobněji. MA, je již popsáno, AR bude v kapitole předtím. popsat parametry a jejich vliv... Popsat za co stojí to Ičko
 
+ 
+\newpage
 \section{Rozhodovací stromy}
 Pro strom existuje mnoho analogií a jedna z analogií se dostala i do modelování. Rozhodovací stromy můžou pomoci jak s klasifikačními, tak i s regresními problémy. 
 
@@ -447,15 +489,21 @@ Dále bude potřeba provést analýzu klíčových sloupců pro přesnější v�
 
 \newpage
 \section{Explorační analýza dat a jejich příprava}
-%Buď udělat zvlášt kapitolu příprava nebo udělat subsection k přípravě%
+
+\subsection{Předzpracování dat}
 \subsection{Denní průměrné profily}
+Projekt + udělat denní průměr na kompletně celým datasetu.
 \subsection{Závislost počasí}
 \subsection{Korelační matice}
-\subsection{LSTM}
-\section{Hyper-parametry}
 
 
 \newpage
+
+\section{Implementace jednotlivých modelů}
+Nakonec se vybrali následující modely. ARIMA, LSTM, LSTM-CNN, XGBOOST
+
+\subsection{Hyper-parametry}
+
 
 \section{Metodika vyhodnocení}\label{section:error-matrix}
 Pro kvalitní určení, jak jsou modely úspěšné, je potřeba zavést nějaké metriky. Rozhodnutí bylo ve prospěch tří standardních veličin z matematické statistiky. Jedná se o střední kvadratickou chybu (dále již jen MSE). 
@@ -491,10 +539,17 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 Tato práce si kladla za cíl ... 
 
 \chapter{ChangeLog}
+
 22.01. 2024 - Rozvržení kapitol
 
 08.02. 2024 - Kapitola časové řady
 
 09.02. 2024 - Podkapitola o stacionaritě a ukázkový skript
+
+10.02. 2024 - Dokončena kapitola o časových řadách
+
+11.02. 2024 - ARIMA 
+
+12.02. 2024 - CNN a CNN-LSTM SNAD?
 
 \end{document}
