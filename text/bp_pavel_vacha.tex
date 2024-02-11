@@ -243,21 +243,45 @@ Regresní model s více než jednou proměnnou se zapisuje jako
 
 kde $y$ je výstupní proměnná, $\epsilon$ chybový člen a $\beta_i$, i=0, 1, 2 ... p jsou regresní parametry.
 
-Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se odhadují pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší.  \cite{hanousek1992moderni}
+Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se dají odhadovat pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší.  \cite{hanousek1992moderni}
 
 Regresní analýza neříká nic o tom, jaký je mechanismus, kterým jsou tyto vztahy vysvětleny. To znamená, že regresní analýza může být velmi užitečným nástrojem pro předpovídání budoucích hodnot, ale nemůže sloužit jako nástroj pro vysvětlování příčin.
 
 % Tohle asi hodím dopíči
-Bude zváženo využití ARIMA modelu, který je kombinací autoregresního (AR) a průměrového (MA) modelu, což z nich dělá podmnožinu regresních modelů.
+\subsection{Regresní modely}
+Existuje několik druhů regresních modelů, jenž se používají v různých případech v závislosti na povaze dat a cíle analýzy. Jedním z nejprimitivnějších modelů je lineární regrese, zpravidla se používá jako validační model při práci s velkými a komplexními datovými sadami, jelikož nedosáhne stejných výsledků jako pokročilejší metody. Její princip spočívá v prokládání dat přímkou a hledáním parametrů dané přímky, aby co nejlépe modelovaly vztah mezi proměnnými.
 
+Často se stává, že datové sady mají mnoho různých parametrů. Například v práci bude využita datová sada, která obsahuje informace o počasí v určitých časových intervalech. Ukáže se, že některé parametry mezi sebou vysoce korelují a to může mít vliv na stabilitu regresního modelu. V praxi proto lze pro predikci spotřeby najít ještě jeden užitečný regresní model s názvem ridge (hřebenový). Tento model přistupuje k problému vysoké korelace tím, že zahrnuje další regularizační parametr do regresního modelu, který penalizuje vysoké koeficienty (ty co spolu korelují).
 
-\subsection{Asi AR ještě uvést??}
-Tak to je hustý
-
-
-\newpage
 \section{ARIMA}
-Popsat podrobněji. MA, je již popsáno, AR bude v kapitole předtím. popsat parametry a jejich vliv... Popsat za co stojí to Ičko
+ARIMA model je pravděpodobně mezi nejznámějšími modely pro predikci časových řad. Klíčové prvky modelu spojují autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \ref{neco}. Samotná rovnice ARIMA je tedy kombinací stacionarizovaného autoregresivního modelu a k tomu přidaný model s klouzavým průměrem.
+\subsection{Autoregresivní model}
+Autoregresivní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-n}$. Těmto hodnotám se říká zpožděné (lag) proměnné a slouží ke zvýšení přesnosti autoregresivního modelu. 
+
+Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresivní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \ref{amazon} Obecně bychom mohli model zapsat jako funkci: 
+
+\begin{equation}
+	x_t = f(x_{t-1}, x_{t-2}, ..., x_{t-n}, \epsilon_t)
+\end{equation}
+kde $\epsilon_t$ je bílý šum, který platí pro data co mají průměr a variaci dat nulovou. 
+
+Někdy se nehodí, aby veškeré zpožděné proměnné měly stejnou váhu. Model je připraven na použití vážených parametrů a díky tomu lépe reagovat na výkyvy v časové řadě. Výsledná rovnice pro autoregresivní model s váženými parametry $\alpha$ bude vypadat následovně: 
+
+\begin{equation}
+	x_t =    \sum_{i=1}^{n}\alpha_ix_{t-i} + \alpha_0 + \epsilon_t
+\end{equation}
+
+kde $\alpha_0$  je výchozí konstantní bod pro predikce (může být nulový a tedy být zanedbán). 
+
+
+
+
+
+
+Model nelze aplikovat na plně náhodná data bez vzoru
+Před použitím tohoto modelu je nutné zajistit stacionaritu časové řady, což lze dosáhnout diferencováním řady zmíněném v kapitole \ref{agdsa}.
+
+
 
  
 \newpage
