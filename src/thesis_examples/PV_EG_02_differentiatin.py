@@ -45,4 +45,4 @@ def do_diff(file_name: str) -> None:
     plt.show()
 
 if __name__ == "__main__":
-    do_diff("./data/nezamestnanost_cr_stat_urad.csv")
+    do_diff("../data/nezamestnanost_cr_stat_urad.csv")

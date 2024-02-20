@@ -254,32 +254,45 @@ Existuje několik druhů regresních modelů, jenž se používají v různých 
 Často se stává, že datové sady mají mnoho různých parametrů. Například v práci bude využita datová sada, která obsahuje informace o počasí v určitých časových intervalech. Ukáže se, že některé parametry mezi sebou vysoce korelují a to může mít vliv na stabilitu regresního modelu. V praxi proto lze pro predikci spotřeby najít ještě jeden užitečný regresní model s názvem ridge (hřebenový). Tento model přistupuje k problému vysoké korelace tím, že zahrnuje další regularizační parametr do regresního modelu, který penalizuje vysoké koeficienty (ty co spolu korelují).
 
 \section{ARIMA}
-ARIMA model je pravděpodobně mezi nejznámějšími modely pro predikci časových řad. Klíčové prvky modelu spojují autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \ref{neco}. Samotná rovnice ARIMA je tedy kombinací stacionarizovaného autoregresivního modelu a k tomu přidaný model s klouzavým průměrem.
+ARIMA model je pravděpodobně mezi nejznámějšími a nejpoužívanějšími modely pro predikci časových řad. \ref{tohlenekdedohledat} Klíčové prvky modelu spojují;	 autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \ref{neco}. Samotná rovnice ARIMA modelu je tedy kombinací stacionarizovaného autoregresního modelu a k tomu přidaný model s klouzavým průměrem.
 \subsection{Autoregresivní model}
-Autoregresivní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-n}$. Těmto hodnotám se říká zpožděné (lag) proměnné a slouží ke zvýšení přesnosti autoregresivního modelu. 
+Autoregresní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-p}$. Těmto hodnotám se říká zpožděné (lag) proměnné a slouží ke zvýšení přesnosti autoregresního modelu. 
 
-Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresivní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \ref{amazon} Obecně bychom mohli model zapsat jako funkci: 
+Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \ref{amazon} Obecně bychom mohli model zapsat jako funkci: 
 
 \begin{equation}
-	x_t = f(x_{t-1}, x_{t-2}, ..., x_{t-n}, \epsilon_t)
+	x_t = f(x_{t-1}, x_{t-2}, ..., x_{t-p}, \epsilon_t)
 \end{equation}
-kde $\epsilon_t$ je bílý šum, který platí pro data co mají průměr a variaci dat nulovou. 
+kde $\epsilon_t$ je bílý šum, který platí pro data co mají průměr a variaci dat nulovou. Počet zpožděných proměnných určuje parametr $p$ v AR($p$).
 
-Někdy se nehodí, aby veškeré zpožděné proměnné měly stejnou váhu. Model je připraven na použití vážených parametrů a díky tomu lépe reagovat na výkyvy v časové řadě. Výsledná rovnice pro autoregresivní model s váženými parametry $\alpha$ bude vypadat následovně: 
+Někdy se nehodí, aby veškeré zpožděné proměnné měly stejnou váhu. Model je připraven na použití vážených parametrů a díky tomu lépe reagovat na výkyvy v časové řadě. Výsledná rovnice pro autoregresní model s váženými parametry $\alpha$ bude vypadat následovně: 
 
 \begin{equation}
-	x_t =    \sum_{i=1}^{n}\alpha_ix_{t-i} + \alpha_0 + \epsilon_t
+	x_t =    \sum_{i=1}^{p}\alpha_ix_{t-i} + \alpha_0 + \epsilon_t
 \end{equation}
 
 kde $\alpha_0$  je výchozí konstantní bod pro predikce (může být nulový a tedy být zanedbán). 
 
+\subsection{Model klouzavého průměru}
+Ačkoliv model nese stejný název jako kapitola v dekompozici časových řad, nesmí se tyto dva pojmy zaměnit. V prvním případě se jedná o výpočet pro vyhlazení a získání trend-cyklické komponenty. 
+
+V tomto případě se jedná o model, který používá pro předpovězení nové hodnoty $x_t$ předchozí hodnoty z náhodné komponenty $\epsilon_t, \epsilon_{t-1}, ..., \epsilon_{t-q}$. Počet těchto zpožděných hodnot ovlivňuje parametr $q$ v MA($q$). Stejně jako u autoregresního modelu i zde se počítá s váhami. Finální rovnice modelu se zapíše jako: 
+
+\begin{equation}
+	x_t =  \sum_{i=1}^{q}\alpha_i\epsilon_{t-i}
+\end{equation}
 
 
+\subsection{ARIMA model}
+Pro analýzu časových řad se zpravidla vyžaduje stacionarita řady, ARIMA není výjimkou. Tato podmínka vyžaduje tedy stacionarizovat výše zmíněný autoregresní model pomocí diference. 
 
+Pokud se spojí tedy AR model po diferenci s modelem klouzavého průměru obdržíme rovnici ARIMA modelu: 
 
+\begin{equation}
+ x_t =    \sum_{i=1}^{n}(\alpha_i \Delta x_{t-i}) + \sum_{i=1}^{n}(\alpha_i\epsilon_{t-i}) + \alpha_0 + \epsilon_t
+\end{equation}
 
-Model nelze aplikovat na plně náhodná data bez vzoru
-Před použitím tohoto modelu je nutné zajistit stacionaritu časové řady, což lze dosáhnout diferencováním řady zmíněném v kapitole \ref{agdsa}.
+kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \ref{nejaky-ref-na-box-jenkina} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
 
 
 
@@ -443,12 +456,66 @@ Při rešerši jsem narazil také na kombinaci více sítí v jednu. Autoři jed
 
 Kromě LSTM sítě existuje ještě její zjednodušená verze, které chybí output gate. Nazývá se gated recurrent unit (GRU) a v některých případech dosahuje vyšších přesností než LSTM, hlavně na menších datových sadách a převážně v oblast zpracování přirozeného jazyka. \cite{kynych2018vyuziti}
 
-\newpage
 \section{Konvoluční neuronové sítě}
-Co to je more? Proč to je tu vole
+Již z názvu vyplývá, že konvoluční neuronové sítě (CNN) jsou podmnožinou neuronových sítí. Zpravidla se vyznačují využitím konvolučních a poolingových vrstev. Tyto vrstvy umožňují efektivnější zpracování velkých vstupů s menším počtem potřebných parametrů nežli klasická neuronová síť. 
+
+Toto je jeden z důvodu, proč je tento typ sítí široce využíván v oblasti počítačového vidění. \ref{springer}
+
+V porovnání s klasickými metodami, jako jsou autoregresivní modely nebo regresní metody, mohou konvoluční neuronové sítě poskytovat lepší výsledky při zachycování nelineárních a lokálních vzorů v datech. Tyto vlastnosti mohou být klíčovými faktory pro úspěšnou predikci profilů spotřeby energie.
+
+Typická konvoluční neuronová síť se tedy skládá z několika klíčových prvků. Hlavním stavebním kamenem je operace zvaná konvoluce, ta se využívá v ostatních vrstvách jako jsou konvoluční a poolingové vrstvy, které se starají o extrakci příznaků.
+
+\subsection{Konvoluční vrstva}
+V této vrstvě se děje matematická operace zvaná konvoluce. Základem je takzvané konvoluční jádro, což je obyčejná matice o rozměrech $m$ a $n$. V oblasti počítačového vidění se toto konvoluční jádro postupně přikládá na vstupní obrazovou matici, poté se pronásobí na sobě ležící prvky a jejich suma se zapíše do výstupní matice. Následuje posunutí jádra o definovaný krok a tento proces se opakuje. Konvoluce s jednotkovým krokem se dá tedy zapsat jako:
+
+\begin{equation}
+    y_{i,j} = \sum_{a = 1}^{m} \sum_{b = 1}^{n} f_{a,b}x_{i+a,j+b}
+\end{equation}
+
+kde $f_{i,j}$ jsou prvky konvolučního jádra, $x_{i,j}$ prvky vstupní matice a $y_{i,j}$ prvky výstupní matice. zjednodušeně se konvoluce zapisuje jako:
+\begin{equation}
+    Y = X \otimes F
+\end{equation}
+kde $F$ je konvoluční jádro, $X$ vstupní matice a $Y$ výstupní matice.
+
+Tato vrstva dokáže extrahovat lokální charakteristiky vstupní matice (obrazu) při schopnosti zachovat informaci o jejich pozici. Mezi tyto extrahované charakteristiky můžou patřit rohy či barvy obrazu.\ref{cvut}
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{convolution.png}}%
+	\caption{Ukázka extrakce charakteristiky z obrazu pomocí konvoluce. \ref{nekde} }
+	\label{fig:nezamestnanost}
+\end{figure}
+
+Opakem konvoluční vrstvy je dekonvoluční vrstva, která provádí inverzní operaci ke konvoluci. 
+
+\subsection{Poolingová vrstva}
+Tato vrstva je vždy přímo za konvoluční vrstvou a slouží k snížení velikosti vstupů z předchozí vrstvy, což má za následek snížení výpočetní náročnosti (snížením počtu parametrů) a zlepšení distribuce informace.
+
+Nejčastěji lze potkat maxpool vrstvu, která má tři základní parametry. Velikost jádra $m$ a $n$, krok na ose x $h$ a krok $v$ po ose y. Vrstva vždy vybere maximální hodnotu v daném překrytí obrazu jádrem a vloží její výstup do výstupní matice a posune se dále.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{maxpool.png}}%
+	\caption{Ukázka maxpool vrstvy. Převzato z \ref{nekde} }
+	\label{fig:nezamestnanost}
+\end{figure}
 
 \subsection{CNN-LSTM}
-Určitě někde bude \ref{nn-lstm}
+Pro analýzu časových řad se využívá hybridního modelu, který je spojením konvoluční neuronové sítě a LSTM sítě. Tato metoda se snaží využít silných stránek obou modelů. 
+
+Konvoluční vrstvy v síti jsou schopné extrahovat lokální vzorce chování spotřeby energie. V praxi to znamená, že konvoluční vrstvy mohou identifikovat specifické charakteristiky, jako jsou špičky či útlumy, což je klíčové pro porozumění dynamiky spotřeby energie v čase. 
+
+Přidáním LSTM sítě lze zachytit na druhou stranu dlouhodobé vzorce chování v časové řadě, díky své rekurentní architektuře.
+ Například mohou úspěšně identifikovat sezónní trendy, které se opakují v pravidelných intervalech, a analyzovat dlouhodobé změny v chování spotřeby, což může být zásadní zejména v oblasti plánování a optimalizace energie. 
+
+V předchozích kapitolách bylo uvedeno, že CNN se většinou používá pro 2D obrazová data. Časové řady jsou  jednodimenzionální, takže klasická 2D konvoluční vrstva nemůže být využita.
+
+Tomuto problému se dá vyhnout pomocí 1D konvoluční vrstvy, kde se dělá konvoluce pro jednu dimenzi. \ref{neco}
+
+Druhý způsob je provést časově frekvenční transformaci signálu. \ref{ieee} Výsledkem této transformace je rozmístění frekvencí signálu v čase. Zpravidla se jedná o spektogram pomocí Fourierovy transformace a nebo se může jednat o vlnkovou transformaci, kterou zobrazuje scalogram.
+
 
 \chapter{Aplikace vybraných metod}
 V této kapitole bude popsán způsob aplikace metod z předchozích kapitol. Po rešerši bylo rozhodnuto, že budou aplikovány dvě metody. První zvolenou metodou budou rozhodovací stromy, přesněji gradientní boostavené stromy za pomocí knihovny XGBoost.

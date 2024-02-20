@@ -50,7 +50,7 @@ def do_moving_average_decomposition(file_name: str) -> None:
 
     plt.show()
 if __name__ == "__main__":
-    do_moving_average_decomposition("./data/nezamestnanost_cr_stat_urad.csv")
+    do_moving_average_decomposition("../data/nezamestnanost_cr_stat_urad.csv")
 
 
 
