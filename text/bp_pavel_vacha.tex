@@ -8,11 +8,12 @@
 
 \usepackage{makeidx}
 \makeindex
+\usepackage{hyperref}
 
 \usepackage{xunicode}
 \usepackage{xltxtra}
 \usepackage{mathtools}
-
+\usepackage{graphicx}
 % příkazy specifické pro tento dokument
 \newcommand{\argument}[1]{{\ttfamily\color{\tulcolor}#1}}
 \newcommand{\argumentindex}[1]{\argument{#1}\index{#1}}
@@ -33,6 +34,67 @@
 \TULsupervisor{Ing. Jan Kraus, Ph.D.}
 
 \TULyear{2024}
+
+\usepackage[backend=biber,urldate=short,style=iso-numeric]{biblatex}
+\bibliography{refs}
+\usepackage[none]{hyphenat}
+
+%\usepackage[ 
+%backend=biber
+%% ,style=iso-authoryear % styl vyžaduje FZS TUL , místo příkazu \cite{} je potřeba využít \parencite{} (sazba kulatých závorek) / style required by FZS TUL use \parencite{} instead of \cite{}
+%,style=iso-numeric
+%%,style=numeric
+%%,sortlocale=cs_CZ
+%,autolang=other
+%,bibencoding=UTF8
+%%,urldate=edtf
+%,maxcitenames=2 %maximum v textu citovaných jmen
+%,maxbibnames=3 %maximum v seznamu vyjmenovaných autorů
+%]{biblatex}
+%\addbibresource{refs.bib}% vložení seznamu literárních zdrojů v bib formátu / input of references in bib format
+%% Úprava iso-numeric.bbx v souladu s požadavky TUL hranaté závorky v číslovaném seznamu / Modification of iso-numeric.bbx in accordance with TUL requirements of square brackets in a numbered list
+%\DeclareFieldFormat{labelnumberwidth}{\mkbibbrackets{#1}}
+
+
+
+%\DeclareDelimFormat{finalnamedelim}{%
+%	\ifnumgreater{\value{liststop}}{2}{\finalandcomma}{}%
+%	\addspace\bibstring{and}\space}
+
+
+
+
+
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\renewcommand{\lstlistingname}{Zdrojový kód}
+
+\lstset{frame=tb,
+	language=Python,
+	aboveskip=3mm,
+	belowskip=3mm,
+	showstringspaces=false,
+	columns=flexible,
+	basicstyle={\small\ttfamily},
+	numbers=none,
+	numberstyle=\tiny\color{gray},
+	keywordstyle=\color{blue},
+	commentstyle=\color{dkgreen},
+	stringstyle=\color{mauve},
+	breaklines=true,
+	breakatwhitespace=true,
+	tabsize=3,
+	captionpos=b
+	%,
+	% caption={My Code Listing},
+}
+
 
 
 
@@ -73,6 +135,13 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \tableofcontents
 
 \clearpage
+
+\listoffigures
+
+\listoftables
+
+\clearpage
+
 
 \begin{abbrList}
 \textbf{LSTM} & Long-short term memory, architektura rekurentní neuronové sítě \\
@@ -322,7 +391,7 @@ V každé iteraci se vytváří nový rozhodovací strom, který se zaměřuje n
 
 Mezi nejpopulárnější implementace GBT patří například XGBoost, LightGBM a CatBoost. Tyto implementace využívají různé optimalizace a techniky pro minimalizaci přeučení a maximalizaci přesnosti predikce.
 
-Pro tento projekt byla zvolena implementace XGBoost v Pythonu pro svou přehlednou dokumentaci a jednoduchosti použití
+Pro tuto práci byla zvolena implementace XGBoost v Pythonu pro svou přehlednou dokumentaci a jednoduchosti použití
 
 
 \section{Neuronové sítě}
@@ -484,7 +553,7 @@ Tato vrstva dokáže extrahovat lokální charakteristiky vstupní matice (obraz
 \begin{figure}[htbp]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{convolution.png}}%
-	\caption{Ukázka extrakce charakteristiky z obrazu pomocí konvoluce. \ref{nekde} }
+	\caption{Ukázka extrakce charakteristiky z obrazu pomocí konvoluce }
 	\label{fig:nezamestnanost}
 \end{figure}
 
@@ -497,8 +566,8 @@ Nejčastěji lze potkat maxpool vrstvu, která má tři základní parametry. Ve
 
 \begin{figure}[htbp]
 	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{maxpool.png}}%
-	\caption{Ukázka maxpool vrstvy. Převzato z \ref{nekde} }
+	\makebox[\textwidth][c]{\includegraphics[width=0.4\textwidth]{maxpool.png}}%
+	\caption{Ukázka maxpool operace s krokem $h=2$ a $v=2$ }
 	\label{fig:nezamestnanost}
 \end{figure}
 
@@ -518,44 +587,48 @@ Druhý způsob je provést časově frekvenční transformaci signálu. \ref{iee
 
 
 \chapter{Aplikace vybraných metod}
-V této kapitole bude popsán způsob aplikace metod z předchozích kapitol. Po rešerši bylo rozhodnuto, že budou aplikovány dvě metody. První zvolenou metodou budou rozhodovací stromy, přesněji gradientní boostavené stromy za pomocí knihovny XGBoost.
-Druhá vybraná metoda je postavená na rekurentních neuronových sítích, tedy výše popisovaná LSTM síť. Zde využijeme bohaté knihovny Tensorflow od společnosti Google.
+V této kapitole bude popsán způsob aplikace metod z rešeršní části této práce. Jednotlivé metody byly vybrány na základě dostupnosti knihoven a očekávaných výsledků.
 
-Před samotnou aplikací těchto metod se zaměříme na základní datovou analýzu, která nám pomůže odhalit nejlepší možné parametry pro výsledný model. Tato analýza nám umožní lépe porozumět datům, identifikovat vzorce a trendy v spotřebě elektrické energie a získat představu o nejdůležitějších faktorech ovlivňujících spotřebu.
+První zvolená metoda jsou rozhodovací stromy, pro konkrétní implementaci byly zvoleny gradientní boostované stromy, pro které je dostupná knihovna XGBoost. Jako druhou metodou byl zvolen klasický statistický přístup, konkrétně statistický model ARIMA, jež se standardně používá pro predikci časových řad. Další metody jsou postavené na rekurentních neuronových sítích, tedy výše popisovaná LSTM síť a kombinace konvoluční neuronově sítě s LSTM sítí. Zde bude využito bohaté knihovny Tensorflow od společnosti Google
 
-Výstupem této kapitoly by měly být natrénované modely, které budou sloužit k predikci budoucích hodnot spotřeby elektrické energie. Jako jedno rozšíření této práce bude následovat implementace těchto modelů do informačního systému NEO.  
+Před samotnou aplikací těchto metod bude kladen důraz na základní datovou analýzu, která má klíčový význam při identifikaci optimálních parametrů pro finální modely. Tato analýza umožní lépe porozumět datům, identifikovat vzorce a trendy ve spotřebě elektrické energie a získat ucelenou představu o nejdůležitějších faktorech ovlivňujících spotřebu.
 
-Nakonec budou tyto modely vyhodnoceny na základě metrik přesnosti, které jsou uvedeny v kapitole \ref{section:error-matrix}. Tím získáme objektivní měřítko úspěšnosti a spolehlivosti našich modelů.
+Výsledkem této kapitoly budou natrénované modely, jež budou využívány k predikci budoucích hodnot spotřeby elektrické energie pomocí vybraných metod. Jako jedno z rozšíření této práce v budoucnu je integrace těchto modelů do informačního systému NEO.  
 
+Nakonec budou tyto modely podrobeny důkladnému hodnocení založenému na metrikách přesnosti, které jsou uvedeny v kapitole \ref{section:error-matrix}. Vyhodnocení na základě těchto metrik bude klíčovým krokem při posuzování celkové úspěšnosti modelů a pomůže identifikovat případné oblasti, které vyžadují zdokonalení. Vyhodnocení povede také k informovanému rozhodování o jejich budoucí integraci v informačním systému NEO.
 
+V rámci implementace byl využit programovací jazyk Python a základní statistické knihovny, jako jsou numpy, pandas a statsmodels, spolu s knihovnami specializovanými pro strojové učení, jako jsou Keras, Scikit-learn a další. Tato kombinace nástrojů poskytla robustní prostředí pro vývoj a testování predikčních modelů.
 
+\newpage
 \section{Zdroj dat}
-V práci byly využity dva zdroje dat. První ze zdrojů je veřejný a jedná se o kolekci 5567 domácností, které se zúčastnili projektu UK Power Networks vedené společností Low Carbon London mezi roky 2011 a 2014. 
+V práci byly využity dva klíčové zdroje dat. První ze zdrojů je veřejný a jedná se o kolekci 5567 domácností, které se zúčastnili projektu UK Power Networks vedené společností Low Carbon London mezi roky 2011 a 2014. 
 
-Projekt si kladl za cíl inovovat Londýnskou distribuční soustavu a zvýšit pokrytí nízkouhlíkovým vytápěním. V rámci počáteční studie projektu byly domácnosti vybaveny novými chytrými elektroměry a následně byl spolu se studií zveřejněn vzorek dat. \cite{londondata}
+Cílem tohoto projektu byla inovace distribuční soustavy v Londýně a zvýšení využívání nízkouhlíkových technologií pro vytápění. V průběhu počáteční fáze projektu byly domácnosti vybaveny chytrými elektroměry, a následně byl spolu s příslušnou studií zveřejněn vzorek dat \cite{londondata}
 
-Naměřená data jsou v půlhodinových intervalech a obsahují spotřebu v kWh, unikátní identifikační číslo domácnosti a časové razítko. Soubor má zhruba 10 GB dat a obsahuje přes 160 milionů řádků
+Naměřená data jsou dostupná v půlhodinových intervalech a obsahují informace o spotřebě v kWh, unikátní identifikátor domácnosti (LCLid) a časové razítko. Celá datová sada má rozsah přes 10 GB a obsahuje více než 160 milionů záznamů.
 
+Struktura datové sady s energetickou spotřebou v domácnostech v Londýně je detailně popsána následovně:
+ \renewcommand{\arraystretch}{1.1}
 \begin{table}[!ht]
 	\centering
 	\caption{Struktura datové sady se spotřebou v domácnostech (Londýn)}
-	\begin{tabular}{ll}
+	\begin{tabularx}{\linewidth}{ll}
 		\hline
 		\textbf{Sloupec} & \textbf{Popis} \\ \hline
 		LCLid & Unikátní identifikátor domácnosti \\ 
 		tstp & Časové razítko ve formátu YYYY-MM-DD hh:mm:ss \\ 
 		energy(kWh/hh) & Spotřebovaná energie v kWh \\ 
 		\hline
-	\end{tabular}
+	\end{tabularx}
 \end{table}
 
-Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřejněn datový soubor s hodinovými informacemi o počasí získaný z \textit{Dark Sky} API. Tato sada má následující strukturu:
+Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřejněn datový soubor s hodinovými rozlišením o počasí získaný z \textit{Dark Sky} API. Tato sada má následující strukturu:
 
 
 \begin{table}[!ht]
 	\centering
 	\caption{Struktura datové sady s počasím pro Londýn}
-	\begin{tabular}{ll}
+	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\textbf{Sloupec} & \textbf{Popis} \\ \hline
 		visibility & Maximální viditelnost \\ 
@@ -569,14 +642,77 @@ Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřej
 		precipType & Typ srážky (sníh nebo déšť) \\
 		icon & Název ikony signalizující oblačnost, slunečno, atd.  \\ 
 		\hline
-	\end{tabular}
+	\end{tabularx}
 \end{table}
 
-Pro účely této práce bude nutné transformovat data o počasí na intervaly po půl hodinách. Pokud by se neprovedla transformace, nebylo by možné využít datovou sadu pro Londýn v kombinaci s daty o počasí, aniž by se neztratila informace o měřené spotřebě.
 
-Dále bude potřeba provést analýzu klíčových sloupců pro přesnější výsledky. Předpokládá se totiž, že například sloupec \textit{icon} nebude signifikantní pro určení spotřeby energie.
+Pro účely této práce je nezbytné provést transformaci dat o počasí, aby byla dosažena konzistence a kompatibilita s datovou sadou pro Londýn. Tato transformace spočívá v rozdělení časových údajů o počasí do intervalů po půl hodinách. Bez této transformace by nebylo možné využít datovou sadu pro Londýn v kombinaci s daty o počasí, aniž by se neztratila informace o měřené spotřebě.
+
+V dalším kroku je nezbytné provést analýzu klíčových sloupců datové sady o počasí, aby bylo dosaženo přesnějších výsledků. Předpokládá se, že některé sloupce, například sloupec \textit{icon}, nemají signifikantní vliv na určení spotřeby energie. Tato analýza umožní identifikovat klíčové proměnné, které mají významný dopad na spotřebu energie, a tím zlepšit přesnost modelu.
+
+Druhý zdroj dat, který je využíván, již není veřejně dostupný. Jedná se o komerční data, která jsou získávána společností Albistech s.r.o. Autor práce se jako zaměstnanec podílí na vývoji informačního systému NEO, který umožňuje komplexní sbírání dat získaných při měření v uzlových bodech distribuční soustavy. Systém NEO následně tato data zpracovává a poskytuje užitečné informace a přehledy.
+
+Pro tuto práci byla zvolena lokální distribuční soustava, kterou provozuje zákazník LDEnergy. Náhodně bylo zvoleno několik odběrných míst v Brně a byly dohledány identifikátory příslušných elektroměrů. Všechna získaná data byla anonymizována a obsahují pouze časová razítka a naměřenou spotřebu v kWh s čtvrthodinovým rozlišením.
+
+
+\begin{table}[!ht]
+	\centering
+	\caption{Struktura datové sady se spotřebou v domácnosti (Brno)}
+	\label{structure-brno}
+	\begin{tabularx}{\linewidth}{ll}
+		\hline
+		\textbf{Sloupec} & \textbf{Popis} \\ \hline
+		wstime & Časové razítko ve formátu ddddd,sssss \\ 
+		value & Spotřebovaná energie v kWh \\ 
+		\hline
+	\end{tabularx}
+\end{table}
+
+Struktura datové sady se spotřebou v domácnosti v Brně je popsána v tabulce \ref{structure-brno}, kde sloupec "wstime" reprezentuje takzvaný horolog. Sloupec "value" udává spotřebovanou energii v kWh.
+
+Pro získání tohoto zdroje dat bylo nutné se seznámit s proprietární databázovou platformou IRIS od společnosti Intersystems, což zahrnuje pokročilejší orientaci v specifických prostředcích této platformy. Tato znalost byla nezbytná pro úspěšné zpracování a interpretaci dat v této práci.
+
+
 \newpage
 \subsection{IRIS Data Platform}
+IRIS je vysoce výkonná multimodelová databáze, která se vyvinula z databáze jménem Caché, vytvořené společností Intersystems. Tato databáze, díky svým unikátním vlastnostem a širokým možnostem integrace, nachází své uplatnění zejména ve zdravotnickém a finančním sektoru, kde je potřeba pracovat s velkými a zároveň různorodými daty.
+
+Klíčovou součástí celého ekosystému IRIS je modul, který se stará o ukládání dat, co mají být persistentně uložena (storage engine). Data jsou uspořádána v multidimenzionálních polích nazývaných "globály", které si lze představit jako hierarchickou strukturu ve formě stromu. Globály jsou řídká pole a databáze zde udržuje pouze tolik položek, kolik je prvků. To má za následek výrazně nižší hardwarové nároky oproti systému s relačními databázemi. 
+
+Díky skvělé implementaci se dají s globály tvořit komplexní struktury, které mohou čítat několik stovek gigabajtů, a i přesto mít minimální odezvu na čtení a zápis dat. \cite{irisPlatform} Globály, také podporují transakce, mechanismy pro žurnálování a replikaci dat. Data jsou nepřetržitě k dispozici  objektovým přístupem, pomocí SQL či pomocí přímého přístupu do globálu. Její hlavní výhodou na rozdíl od jiných platforem, je ta, že data uložíme jednou a můžeme k nim přistoupit libovolným přístupem, aniž bychom museli provádět duplikaci dat nebo například object-to-relational-mapping. \cite{irisPlatform} Tato flexibilita dává vývojářům a datovým modelářům možnost zvolit optimální přístup nebo kombinaci přístupů, aby byla zajištěna maximální efektivita bez zbytečné komplexity.
+
+K datům uloženým v IRIS je možné přistoupit několika způsoby. Prvním způsobem je použití jazyka Objectscript, který pohání celou datovou platformu IRIS. Tento jazyk umožňuje psát aplikační logiku, kterou následně platforma vystaví prostřednictvím REST API pro komunikaci.
+
+Druhým možným přístupem je využití nativního rozhraní, které IRIS nabízí. V současné době poskytuje společnost InterSystems rozhraní pro Javu, .NET, Node.js a Python.\cite{irisPlatform} Pro tuto práci hraje klíčovou roli Python rozhraní, které umožňuje vytvářet aplikační logiku přímo v Pythonu nebo volat již existující logiku napsanou v Objectscriptu na straně IRIS.
+
+Pro samotné získání dat k analýze byla v Objectscriptu vytvořena metoda \textit{GetData}, která přijímá identifikátor elektroměru jako parametr a vrací seznam časových razítek a hodnot elektroměrů od počátku zapojení, dle struktury zmíněné v tabulce \ref{structure-brno}. Při implementaci této metody bylo nutné pochopit komplexní strukturu několika globálů, provést iteraci přes globály a vhodným způsobem tato data vrátit. 
+
+V Pythonu poté pomocí rozhraní tuto metodu volám a ukládám data do JSON souboru.  TODO: Rozšířit a upravit tento odstavec 
+ 
+TODO: Popsat získání SDK a problémy s tím spojené
+
+\lstset{caption={Získání dat z IRIS}} 
+\begin{lstlisting}[frame=single]
+import iris
+
+args = {"hostname": "172.16.42.251", "port": 51774, 
+		"user":"censored", 
+		"password":"censored", 
+		"namespace":"censored"}
+		
+conn = iris.connect(**args)
+irispy = iris.createIRIS(conn) # Instance IRIS objektu
+
+# Zavolání metody na dálku
+data = irispy.classMethodString("PVTest.Test", "GetData", 2549)
+
+# Ulozeni dat
+with open(f"data_{data.id}.json", "w") as out:
+	json.dump(data, out, indent=4)
+\end{lstlisting}
+
+TODO: Ukázat práci s globály na straně serveru
+
 
 \newpage
 \section{Explorační analýza dat a jejich příprava}
@@ -595,7 +731,7 @@ Nakonec se vybrali následující modely. ARIMA, LSTM, LSTM-CNN, XGBOOST
 
 \subsection{Hyper-parametry}
 
-
+\newpage
 \section{Metodika vyhodnocení}\label{section:error-matrix}
 Pro kvalitní určení, jak jsou modely úspěšné, je potřeba zavést nějaké metriky. Rozhodnutí bylo ve prospěch tří standardních veličin z matematické statistiky. Jedná se o střední kvadratickou chybu (dále již jen MSE). 
 
@@ -641,6 +777,16 @@ Tato práce si kladla za cíl ...
 
 11.02. 2024 - ARIMA 
 
-12.02. 2024 - CNN a CNN-LSTM SNAD?
+12.02. 2024 - CNN a CNN-LSTM 
+
+23. 02. 2024 - Konvoluce a max-pool
+
+25.02. 2024 - Seznamy tabulek, obrázků, bibliografie + kapitola zdroj dat
+
+
+\printbibliography[title={Použitá literatura}] % sazba seznamu citací 
+
+\addcontentsline{toc}{chapter}{Použitá literatura} % vložení nadpisu do 
+
 
 \end{document}
