@@ -378,7 +378,7 @@ Pro tvorbu těchto stromů existuje mnoho metod. Zpravidla založených na stati
 
 \begin{figure}[htbp]
 	\centering
-	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{reg_tree.jpeg}}%
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{trees.png}}%
 	\caption{Ukázka rozhodovacího stromu}
 	\label{fig:my_graph}
 \end{figure}
@@ -679,7 +679,7 @@ IRIS je vysoce výkonná multimodelová databáze, která se vyvinula z databáz
 
 Klíčovou součástí celého ekosystému IRIS je modul, který se stará o ukládání dat, co mají být persistentně uložena (storage engine). Data jsou uspořádána v multidimenzionálních polích nazývaných "globály", které si lze představit jako hierarchickou strukturu ve formě stromu. Globály jsou řídká pole a databáze zde udržuje pouze tolik položek, kolik je prvků. To má za následek výrazně nižší hardwarové nároky oproti systému s relačními databázemi. 
 
-Díky skvělé implementaci se dají s globály tvořit komplexní struktury, které mohou čítat několik stovek gigabajtů, a i přesto mít minimální odezvu na čtení a zápis dat. \cite{irisPlatform} Globály, také podporují transakce, mechanismy pro žurnálování a replikaci dat. Data jsou nepřetržitě k dispozici  objektovým přístupem, pomocí SQL či pomocí přímého přístupu do globálu. Její hlavní výhodou na rozdíl od jiných platforem, je ta, že data uložíme jednou a můžeme k nim přistoupit libovolným přístupem, aniž bychom museli provádět duplikaci dat nebo například object-to-relational-mapping. \cite{irisPlatform} Tato flexibilita dává vývojářům a datovým modelářům možnost zvolit optimální přístup nebo kombinaci přístupů, aby byla zajištěna maximální efektivita bez zbytečné komplexity.
+Díky skvělé implementaci se dají s globály tvořit komplexní struktury, které mohou čítat několik stovek gigabajtů, a i přesto mít minimální odezvu na čtení a zápis dat. \cite{irisPlatform} Globály, také podporují transakce, mechanismy pro žurnálování a replikaci dat. Data jsou nepřetržitě k dispozici  objektovým přístupem, pomocí SQL či pomocí přímého přístupu do globálu. Její hlavní výhodou na rozdíl od jiných platforem, je ta, že data se uloží jednou a dále se k nim může přistoupit libovolným způsobem, aniž by bylo nutné provádět duplikaci dat nebo například object-to-relational-mapping. \cite{irisPlatform} Tato flexibilita dává vývojářům a datovým modelářům možnost zvolit optimální přístup nebo kombinaci přístupů, aby byla zajištěna maximální efektivita bez zbytečné komplexity.
 
 K datům uloženým v IRIS je možné přistoupit několika způsoby. Prvním způsobem je použití jazyka Objectscript, který pohání celou datovou platformu IRIS. Tento jazyk umožňuje psát aplikační logiku, kterou následně platforma vystaví prostřednictvím REST API pro komunikaci.
 
@@ -687,37 +687,48 @@ Druhým možným přístupem je využití nativního rozhraní, které IRIS nab�
 
 Pro samotné získání dat k analýze byla v Objectscriptu vytvořena metoda \textit{GetData}, která přijímá identifikátor elektroměru jako parametr a vrací seznam časových razítek a hodnot elektroměrů od počátku zapojení, dle struktury zmíněné v tabulce \ref{structure-brno}. Při implementaci této metody bylo nutné pochopit komplexní strukturu několika globálů, provést iteraci přes globály a vhodným způsobem tato data vrátit. 
 
-V Pythonu poté pomocí rozhraní tuto metodu volám a ukládám data do JSON souboru.  TODO: Rozšířit a upravit tento odstavec 
- 
-TODO: Popsat získání SDK a problémy s tím spojené
-
-\lstset{caption={Získání dat z IRIS}} 
-\begin{lstlisting}[frame=single]
-import iris
-
-args = {"hostname": "172.16.42.251", "port": 51774, 
-		"user":"censored", 
-		"password":"censored", 
-		"namespace":"censored"}
-		
-conn = iris.connect(**args)
-irispy = iris.createIRIS(conn) # Instance IRIS objektu
-
-# Zavolání metody na dálku
-data = irispy.classMethodString("PVTest.Test", "GetData", 2549)
-
-# Ulozeni dat
-with open(f"data_{data.id}.json", "w") as out:
-	json.dump(data, out, indent=4)
-\end{lstlisting}
-
-TODO: Ukázat práci s globály na straně serveru
+V Pythonu je poté pomocí nativního rozhraní metoda pro získání dat spuštěna a následně jsou data uložena do JSON souboru s příslušným identifikátorem a časovým razítkem pro další zpracování.  
 
 
-\newpage
+
 \section{Explorační analýza dat a jejich příprava}
+Jeden z mnoha klíčových bodů úspěšného projektu, jenž využívá metody strojového učení, je provést explorační analýzu dat (dále již jen EDA z Exploratory Data Analysis). Při provádění této analýzy se zkoumají předběžně vlastnosti dané datového sady. Před použitím metod strojového učení je vhodné znát vlastnosti, charakteristiku a jednotlivé závislosti mezi atributy, které budou zkoumány. Porozumění datům dokáže odhalit skryté vzorce, které nejsou na první pohled vidět.
+
+Zpravidla se k analýze používá statistických nástrojů, které analytikům pomáhají vizualizovat závislosti a chování dat. Nejčastěji se k vizualizaci využívají krabicové grafy (box plot), histogramy nebo třeba teplotní mapy (heat mapy). 
+
+Při analýze je kladen důraz na snížení dimenze dat či na odhalování atributů, co nesou signifikantnější informaci než ostatní atributy. K tomu bude v následující kapitole sloužit analýza hlavních komponent (Principal Component Analysis, PCA). 
+
+Je též důležité věnovat pozornost identifikaci odlehlých hodnot (outlierů) v datech. Odlehlé hodnoty mohou výrazně ovlivnit výsledky analýzy či modelování, a tím měnit celkový obraz datové sady. Proto bude provedena analýza odlehlých hodnot.
+
 
 \subsection{Předzpracování dat}
+Pro další analýzu či zpracování je nutné mít data očištěna o možné anomálie a výpadky v měření. Pro datovou sadu z Londýna je potřeba vybrat reprezentativní vzorek pro analýzu, jelikož ne všechny domácnosti se zapojily ve stejný čas a proto je vhodné vybrat společný časový úsek pro všechny domácnosti, to pomůže také při analýze jednotlivých komponent časové řady. Datová sada od Albistechu bude použitá v celém jejím objemu. 
+
+Pro následující graf tedy byly zvoleny denní průběhy s platnými daty o měření. Data byla seskupena podle dnů v roce a jednotlivé unikátní identifikátory sečteny pro získání počtu domácností v čase. To umožnilo najít nejvhodnější časový úsek společný pro všechny domácnosti.
+
+Následně je nutné vybrat pouze ty domácnosti, které obsahují nejvíce záznamu v průběhu nalezeného časového úseku. Pro tento úkol byl vytvořen distribuční graf na základě seskupení dnů v roce a zároveň identifikátoru domácnosti $LCLid$. 
+
+Na prvním grafu \ref{fig:domacnosti-v-case} níže je vidět rychlý nárůst zapojených domácností až do roku 2013, kde je maximální počet připojených domácností do projektu. Na základě této informace byl vybrán časový úsek od začátku roku 2013 počínaje lednem až do konce projektu v březnu roku 2014.
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{pv_eda_01_households_over_time.eps}}%
+	\caption{Graf s počtem zapojených domácností v čase }
+	\label{fig:domacnosti-v-case}
+\end{figure}
+
+Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto rozdělení na krabicovém grafu vypadají výsledky následovně:
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.7\textwidth]{number_of_records_distribution.eps}}%
+	\caption{Graf rozdělení zaznamenaných dní pro domácnosti }
+	\label{fig:domacnosti-v-case-pocet-dni}
+\end{figure}
+
+Z grafu výše lze vyčíst, že rozdělení počtu zaznamenaných dní se statisticky nejvýznamněji pohybuje od 357 do 365. Proto z datové sady byly odstraněny domácnosti, které mají méně než 357 záznamů. To ve výsledku znamená odstranění 38 záznamů, které tvoří 0.68 \% z celé datové sady.
+
 \subsection{Denní průměrné profily}
 Projekt + udělat denní průměr na kompletně celým datasetu.
 \subsection{Závislost počasí}
