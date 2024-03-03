@@ -706,7 +706,7 @@ Pro další analýzu či zpracování je nutné mít data očištěna o možné 
 
 Pro následující graf tedy byly zvoleny denní průběhy s platnými daty o měření. Data byla seskupena podle dnů v roce a jednotlivé unikátní identifikátory sečteny pro získání počtu domácností v čase. To umožnilo najít nejvhodnější časový úsek společný pro všechny domácnosti.
 
-Následně je nutné vybrat pouze ty domácnosti, které obsahují nejvíce záznamu v průběhu nalezeného časového úseku. Pro tento úkol byl vytvořen distribuční graf na základě seskupení dnů v roce a zároveň identifikátoru domácnosti $LCLid$. 
+Následně je nutné vybrat pouze ty domácnosti, které obsahují nejvíce záznamu v průběhu nalezeného časového úseku. Pro tento úkol byl vytvořen distribuční graf na základě seskupení dnů v roce a zároveň identifikátoru domácnosti \textit{LCLid}.
 
 Na prvním grafu \ref{fig:domacnosti-v-case} níže je vidět rychlý nárůst zapojených domácností až do roku 2013, kde je maximální počet připojených domácností do projektu. Na základě této informace byl vybrán časový úsek od začátku roku 2013 počínaje lednem až do konce projektu v březnu roku 2014.
 
@@ -727,10 +727,67 @@ Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto roz
 	\label{fig:domacnosti-v-case-pocet-dni}
 \end{figure}
 
-Z grafu výše lze vyčíst, že rozdělení počtu zaznamenaných dní se statisticky nejvýznamněji pohybuje od 357 do 365. Proto z datové sady byly odstraněny domácnosti, které mají méně než 357 záznamů. To ve výsledku znamená odstranění 38 záznamů, které tvoří 0.68 \% z celé datové sady.
 
-\subsection{Denní průměrné profily}
-Projekt + udělat denní průměr na kompletně celým datasetu.
+Z analýzy grafu výše vyplývá, že v rozsahu od 357 do 365 zaznamenaných dní dochází statisticky nejvýznamněji. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
+
+\newpage
+
+\subsection{Průměrné profily}
+Jako první byly analyzovány hodinové průměry čtyř domácností. Byly vybrány tři domácnosti z datové sady z Londýna a jedna domácnost z Brna. Výsledky ukázaly, že průměrná spotřeba energie během dne výrazně kolísá mezi jednotlivými domácnostmi. To je způsobeno rozdílným chováním a užíváním spotřebičů obyvateli domácností.
+
+Z grafu \ref{fig:hodina_pracovni} níže lze vidět, že u rezidence s identifikátorem 246 členové domácnosti začínají vstávat mezi 5-6. hodinou do práce. Tato aktivita se odráží v nárůstu spotřeby energie v těchto časných hodinách. Domu se vracejí kolem šesté, kde se pravděpodobně zapíná více spotřebičů (televize, mikrovlnná trouba, atd.). Podobný vzor lze nalézt i u rezidence 4431.
+
+U zbytků rezidencí lze dle křivky předpokládat, že obyvatelé se vracejí domu kolem 15. hodiny a vstávají mezi 7-9. hodinou.
+ 
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eda_01_week_avg_hour_group_weekend_0.eps}}%
+	\caption{Hodinová spotřeba vybraných budov v pracovním týdnu}
+	\label{fig:hodina_pracovni}
+\end{figure}
+
+Samotná informace o tom, jak vypadá hodinová spotřeba může být zajímavá v případě nějaké predikce chování uživatele, ovšem pro predikci spotřeby energie to příliš nepomůže. Proto ještě byl analyzován rozdíl mezi hodinovým průběhem pracovního týdne a víkendu.
+
+Na grafu \ref{fig:hodina_vikend} níže lze zaznamenat signifikantní zvýšení spotřeby v průběhu dne o proti pracovním týdnu (hlavně na rezidenci 246). To se dá vysvětlit tím, že obyvatelé objektu pravděpodobně o víkendu nepracují a tráví raději čas doma.
+
+
+Tento zjištěný rozdíl v hodinové spotřebě mezi pracovním týdnem a víkendem představuje jeden z klíčových příznaků \textit{is\_weekend} pro dále trénované modely. Kombinace  více příznaků totiž umožňuje vytvořit sofistikovanější model, který lépe predikuje a přizpůsobuje se dynamice spotřeby energie podle konkrétních situací, což může mít pozitivní dopad na efektivitu energetického řízení dané domácnosti.
+
+\newpage
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eda_01_week_avg_hour_group_weekend_1.eps}}%
+	\caption{Hodinová spotřeba vybraných budov o víkendu}
+	\label{fig:hodina_vikend}
+\end{figure}
+
+Pro úplnost byla provedena analýza hodinového profilů pro celou 10GB datovou sadu. Z grafu \ref{fig:hodina_all} je patrné, ve kterých hodinách obyvatelé domácnosti tráví čas doma. Tato analýza potvrzuje výsledky z hodinových průměrů vybraných čtyř domácností, které se od průměru příliš neliší.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eda_01_week_avg_hourly_consumption_all.eps}}%
+	\caption{Hodinová spotřeba všech domácností z datové sady}
+	\label{fig:hodina_all}
+\end{figure}
+
+V rámci analýzy hodinových profilů bylo rovněž zkoumáno, zda roční období ovlivňuje spotřebu energie během jednotlivých dní. Výsledky odhalily souvislosti mezi sezónními změnami a spotřebou energie. Během zimních měsíců je zaznamenáván větší nárůst denní spotřeby energie, což může být způsobeno intenzivnějším využíváním vytápění v domácnostech.
+
+Naopak během letních měsíců je zaznamenáván větší nárůst denní spotřeby energie, což může být způsobeno intenzivnějším využíváním klimatizačních systémů a dalších chladicích zařízení v domácnostech. \newpage
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{hourly_energy_consumption_per_quarter.eps}}%
+	\caption{Hodinová spotřeba vybraných domácností dle období}
+	\label{fig:hodina_quarters}
+\end{figure}
+
+Na základě této analýzy lze zařadit parametr \textit{quarter} jakožto indikátor ročního období mezi další příznaky, jenž bude model pro predikce využívat.
+
+TODO: Teď zmínit nějaký týdenní průměr -> tady bude asi vidět nějaká cyklická složka  a následně ukázat ještě celoroční průměr -> asi tam bude vidět nějaká sezonost
+
+
+
 \subsection{Závislost počasí}
 \subsection{Korelační matice}
 
@@ -738,7 +795,7 @@ Projekt + udělat denní průměr na kompletně celým datasetu.
 \newpage
 
 \section{Implementace jednotlivých modelů}
-Nakonec se vybrali následující modely. ARIMA, LSTM, LSTM-CNN, XGBOOST
+Nakonec se vybrali následující modely. ARIMA, LSTM+LSTM-CNN, XGBOOST
 
 \subsection{Hyper-parametry}
 
@@ -793,6 +850,8 @@ Tato práce si kladla za cíl ...
 23. 02. 2024 - Konvoluce a max-pool
 
 25.02. 2024 - Seznamy tabulek, obrázků, bibliografie + kapitola zdroj dat
+
+a dál už mě to nebaví, je to na githubu ten changelog
 
 
 \printbibliography[title={Použitá literatura}] % sazba seznamu citací 
