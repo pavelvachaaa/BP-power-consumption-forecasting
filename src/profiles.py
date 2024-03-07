@@ -136,6 +136,8 @@ my_xticks = ha["week_day"].replace("Saturday", "Sobota").replace("Friday", "Pát
 ax.plot(x,ha["energy(kWh/hh)"], label=ha["house"][0])
 ax.plot(x, hb["energy(kWh/hh)"], label=hb["house"][0])
 ax.plot(x, hc["energy(kWh/hh)"], label=hc["house"][0])
+ax.plot(x, hd["energy(kWh/hh)"], label=hd["house"][0])
+
 
 plt.xticks(x, my_xticks)
 plt.xlabel('Den')

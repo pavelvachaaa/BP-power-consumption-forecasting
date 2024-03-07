@@ -628,6 +628,7 @@ Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřej
 \begin{table}[!ht]
 	\centering
 	\caption{Struktura datové sady s počasím pro Londýn}
+	\label{weather_dataset}
 	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\textbf{Sloupec} & \textbf{Popis} \\ \hline
@@ -730,6 +731,8 @@ Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto roz
 
 Z analýzy grafu výše vyplývá, že v rozsahu od 357 do 365 zaznamenaných dní dochází statisticky nejvýznamněji. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
 
+TODO: POPŘEMÝŠLET O OUTLIERECH
+
 \newpage
 
 \subsection{Průměrné profily}
@@ -752,6 +755,8 @@ Na grafu \ref{fig:hodina_vikend} níže lze zaznamenat signifikantní zvýšení
 
 
 Tento zjištěný rozdíl v hodinové spotřebě mezi pracovním týdnem a víkendem představuje jeden z klíčových příznaků \textit{is\_weekend} pro dále trénované modely. Kombinace  více příznaků totiž umožňuje vytvořit sofistikovanější model, který lépe predikuje a přizpůsobuje se dynamice spotřeby energie podle konkrétních situací, což může mít pozitivní dopad na efektivitu energetického řízení dané domácnosti.
+
+
 
 \newpage
 
@@ -782,13 +787,41 @@ Naopak během letních měsíců je zaznamenáván větší nárůst denní spot
 	\label{fig:hodina_quarters}
 \end{figure}
 
-Na základě této analýzy lze zařadit parametr \textit{quarter} jakožto indikátor ročního období mezi další příznaky, jenž bude model pro predikce využívat.
+Na základě této provedené analýzy lze zařadit parametr \textit{quarter} jakožto indikátor ročního období mezi další příznaky, jenž bude model pro predikce využívat.
 
-TODO: Teď zmínit nějaký týdenní průměr -> tady bude asi vidět nějaká cyklická složka  a následně ukázat ještě celoroční průměr -> asi tam bude vidět nějaká sezonost
+Další ze zkoumaných parametrů je závislost na dni v týdnu. Byl tedy vytvořen průměrný týdenní profil vybraných domácností. Tento profil by mohl obsahovat důležité informace pro lepší pochopení dynamiky spotřeby energie v průběhu týdne. 
 
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eda_01_week_avg_daily_consumption_group.eps}}%
+	\caption{Denní průměrný profil vybraných domácností v týdnu}
+	\label{fig:tyden_avg_group}
+\end{figure}
 
+Z grafu \ref{fig:tyden_avg_group} je na první pohled vidět, že někteří obyvatelé rádi tráví čas o víkendech doma (obyvatelé domácnosti 246) a jiní raději tráví čas mimo domov (obyvatelé domácnosti 4431), což vysvětluje snížení či zvýšení spotřeby o víkendu. To znamená, že je to jeden z relevantních indikátoru pro odhadování spotřeby energie. Z tohoto důvodu bude i příznak \textit{week\_day} použit v následujících modelech pro predikci.
+
+Poslední příznak z časově závislých parametrů, jenž byl zkoumán je závislost spotřeby na dni v roce. Zde se předpokládá sezonní trend, obdobný jako příznak \textit{quarter}, který vykazoval v zimních a letních měsících variaci oproti zbytku. 
+
+Pro každou domácnost v analýze byl tedy proveden denní průměr spotřebované energie přes celý rok 2013. 
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eda_01_daily_consumption_all.eps}}%
+	\caption{Denní průměrný profil vybraných domácností v roce}
+	\label{fig:year_avg_all}
+\end{figure}
+
+Z grafu \ref{fig:year_avg_all} se potvrzuje, že zde existuje závislost mezi spotřebovanou energií a dnem v roce. Sezonní efekt lze vidět v měsících, kde je zpravidla větší zima, což by indikovalo, že mnoho lidí využívá elektrický zdroj pro vytápění své domácnosti. Parametr \textit{day} bude zařazen do seznamu příznaků v modelech.
 
 \subsection{Závislost počasí}
+V předchozí kapitole byla odkryta závislost na ročním období, proto je vhodné prozkoumat závislosti spotřeby na parametrech z datové sady o počasí popsanou v tabulce \ref{weather_dataset}.
+
+K tomu, aby bylo možné provést takovou analýzu, je nutné spojit obě datové sady do jedné. Taktéž musí být vzato v úvahu, že údaje o spotřebě jsou měřeny v půlhodinových intervalech, zatímco meteorologická data jsou dostupná v hodinových intervalech. S cílem zabránit ztrátě informací, bude i počasí interpolováno na půlhodinové intervaly.
+
+Pro tento účel byla využita lineární interpolace, přičemž pokud hodnota bude v datové sadě chybět, doplní poslední změřenou hodnotu teploty.
+
+
+
 \subsection{Korelační matice}
 
 
