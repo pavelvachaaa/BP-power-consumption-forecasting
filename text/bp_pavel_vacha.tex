@@ -364,9 +364,6 @@ Pokud se spojí tedy AR model po diferenci s modelem klouzavého průměru obdr�
 kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \ref{nejaky-ref-na-box-jenkina} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
 
 
-
- 
-\newpage
 \section{Rozhodovací stromy}
 Pro strom existuje mnoho analogií a jedna z analogií se dostala i do modelování. Rozhodovací stromy můžou pomoci jak s klasifikačními, tak i s regresními problémy. 
 
@@ -415,7 +412,7 @@ Autoři práce také ukázali, jak se dají sestrojit pomocí neuronu jednoduch�
 	\label{fig:logic_or}
 \end{figure}
 
-Neuron označme jako $N$ s indexem $i$, který je uvnitř neuronu, v tom případě na obrázku výše vidíme $N_3(t) = N_1(t-1) \vee N_2(t-1)$, což znamená, že se jedná o logický součet. \cite{mcculloch1943logical} Autoři v práci dále naznačili, jak se dají skládat tyto neurony do sítě. 
+Neuron označují jako $N$ s indexem $i$, který je uvnitř neuronu. V tom případě na obrázku výše lze vidět $N_3(t) = N_1(t-1) \vee N_2(t-1)$, což znamená, že se jedná o logický součet. \cite{mcculloch1943logical} Autoři v práci dále naznačili, jak se dají skládat tyto neurony do sítě. 
 
 Toto položilo první základy na rozvoj neuronových sítí v roce 1957 Frankem Rosenblattem, který začal práci na perceptronu.
 \newpage
@@ -441,14 +438,14 @@ kde
 	\end{dcases}
 \end{equation}
 
-Učení perceptronu probíhá jednoduše. Na vstup přivádíme $(x,y)$ z trénovací sady (kde $x$ jsou příznaky a $y$ požadované výstupy) a aktualizujeme váhy perceptronu dle rovnice:
+Učení perceptronu probíhá jednoduše. Na vstup se přivede $(x,y)$ z trénovací sady (kde $x$ jsou příznaky a $y$ požadované výstupy) a aktualizují se váhy perceptronu dle rovnice:
 
 \begin{equation}\label{eq:learning_percep}
 	w_{n,i} = w_i + r(y_i-Z_i)x_n
 \end{equation}
-kde $r$ je parametr učení, který nám určuje, jak rychle se mění váha a kde $n$ je n-tý vstup.  
+kde $r$ je parametr učení, který určuje, jak rychle se mění váha a kde $n$ je n-tý vstup.  
 
-Důležité je poznamenat to, že tento perceptronový algoritmus je jednoduchý a efektivní pro řešení lineárně rozdělitelných problémů, ale není schopný řešit problémy, které nejsou lineárně rozdělitelné. Například funkci XOR, která se chová nelineárně, již tímto způsobem nevyřešíme. To vedlo k rozšíření této oblastí a vznikly tak vícevrstvé perceptrony, kde se pro učení používá algoritmus zpětného šíření.
+Důležitým poznatkem je to, že tento perceptronový algoritmus je jednoduchý a efektivní pro řešení lineárně rozdělitelných problémů, ale není schopný řešit problémy, které nejsou lineárně rozdělitelné. Například funkci XOR, která se chová nelineárně, již tímto způsobem nelze vyřešit. To vedlo k rozšíření této oblastí a vznikly tak vícevrstvé perceptrony, kde se pro učení používá algoritmus zpětného šíření.
 
 
 
@@ -486,13 +483,13 @@ Pro trénování pak již nelze použít klasický perceptronový algoritmus (vi
 
 Při použití algoritmu zpětného šíření se výstupní chyba sítě propaguje zpět k vstupní vrstvě, přičemž se upravují váhy všech spojů v síti tak, aby se minimalizovala tato chyba. Tento proces se opakuje v průběhu několika iterací (epoch).
 
-Dále bychom mohli mluvit o optimalizačních metodách, chybových funkcích a o tom jak jednotlivé vrstvy fungují, ale to je nad rámec tohoto projektu. Pro projekt je důležité zmínit \textit{long short-term memory networks}, které vycházejí z rekurentních sítí, na které se zaměříme v další kapitole.
+V kontextu práce by se dalo psát o optimalizačních metodách, chybových funkcích a o tom jak jednotlivé vrstvy fungují, ale to je nad rámec této rešerše. Pro tuto práci je důležité zmínit \textit{long short-term memory networks}, které vycházejí z rekurentních sítí, které budou popsány v další kapitole.
 
 
 \subsection{Rekurentní neuronové sítě}
-Zatím jsme zmínili pouze sítě, kde výstup závisí pouze na aktuálním vstupu. V našem případě časová řada spotřeby energie nezávisí pouze na aktuálním stavu a ke správnému výstupu by bylo vhodné zahrnout data předchozí.
+Zatím byly zmíněny pouze sítě, kde výstup závisí pouze na aktuálním vstupu. V této práci je vstupem časová řada popisující spotřebu energie, která nezávisí pouze na aktuálním stavu a ke správnému výstupu by bylo vhodné zahrnout data předchozí.
 
-Rekurentní sítě nám toto umožňují tím, že obsahují zpětná spojení, která fungují jako vnitřní stav (paměť). Nejjednodušší příklad rekurentní neuronové sítě může být síť, co má jeden vstup, výstup a jeden neuron ve skryté vrstvě. Když tento neuron bude mít spojení sám do sebe, tak při předložení vstupu neuron dostane kromě vstupu ještě aktivaci $h_{(t-1)}$ z minulého vstupu. Nejnázornější je ukázat jak se změní výpočet výstupu z neuronu, když přidáme zpětná spojení.
+Rekurentní sítě toto umožňují tím, že obsahují zpětná spojení, která fungují jako vnitřní stav (paměť). Nejjednodušší příklad rekurentní neuronové sítě může být síť, co má jeden vstup, výstup a jeden neuron ve skryté vrstvě. Když tento neuron bude mít spojení sám do sebe, tak při předložení vstupu neuron dostane kromě vstupu ještě aktivaci $h_{(t-1)}$ z minulého vstupu. Nejnázornější je ukázat jak se změní výpočet výstupu z neuronu, když se přidají zpětná spojení.
 
 
 \begin{equation}
@@ -519,9 +516,9 @@ Tyto buňky se skládají typicky z pěti prvků. Mezi tyto prvky patří input 
 	\label{fig:my_graph}
 \end{figure}
 
-LSTM mají řešit problém klasických RNN a to explodující a mizející gradienty. Problém je řešen tak, že přenos informací mezi časovým krokem probíhá pomocí stavu, s kterým není spojená žádná váha a díky tomu se při propagaci chyby vyhneme násobení, které by mohlo vyvolat tento problém. Díky této vlastnosti si LSTM sítě umí zapamatovat delší posloupnosti vstupů než základní rekurentní neuronové sítě.
+LSTM mají řešit problém klasických RNN a to explodující a mizející gradienty. Problém je řešen tak, že přenos informací mezi časovým krokem probíhá pomocí stavu, s kterým není spojená žádná váha a díky tomu se při propagaci chyby dá vyhnout násobení, které by mohlo vyvolat tento problém. Díky této vlastnosti si LSTM sítě umí zapamatovat delší posloupnosti vstupů než základní rekurentní neuronové sítě.
 
-Při rešerši jsem narazil také na kombinaci více sítí v jednu. Autoři jedné z prací zabývající se predikcí spotřeby energie v domácnosti \cite{cnn-bi-lstm}	 využívají například Bi-LSTM (obousměrná LSTM síť), CNN-LSTM (konvoluční neuronová síť s LSTM sítí) a kombinaci všeho - CNN-Bi-LSTM síť.
+Při rešerši autor práce narazil také na kombinaci více sítí v jednu. Autoři jedné z prací zabývající se predikcí spotřeby energie v domácnosti \cite{cnn-bi-lstm}	 využívají například Bi-LSTM (obousměrná LSTM síť), CNN-LSTM (konvoluční neuronová síť s LSTM sítí) a kombinaci všeho - CNN-Bi-LSTM síť.
 
 Kromě LSTM sítě existuje ještě její zjednodušená verze, které chybí output gate. Nazývá se gated recurrent unit (GRU) a v některých případech dosahuje vyšších přesností než LSTM, hlavně na menších datových sadách a převážně v oblast zpracování přirozeného jazyka. \cite{kynych2018vyuziti}
 
@@ -820,9 +817,12 @@ K tomu, aby bylo možné provést takovou analýzu, je nutné spojit obě datov�
 
 Pro tento účel byla využita lineární interpolace, přičemž pokud hodnota bude v datové sadě chybět, doplní poslední změřenou hodnotu teploty.
 
+TODO: Zbytek a grafy na celé datové sadě
 
 
 \subsection{Korelační matice}
+
+TODO: Udělat heat mapu pořádně
 
 
 \newpage
@@ -831,6 +831,69 @@ Pro tento účel byla využita lineární interpolace, přičemž pokud hodnota 
 Nakonec se vybrali následující modely. ARIMA, LSTM+LSTM-CNN, XGBOOST
 
 \subsection{Hyper-parametry}
+říct neco co to vůbec je a proč se to optimalizuje ffs vypínám :(
+
+
+\subsection{ARIMA}
+Ukázat jak byla udělána autokorelace a výběr jednotlivých parametrů....
+\subsection{XGBOOST}
+TODO: Začátek
+\begin{table}[!ht]
+	\centering
+	\caption{Zpožděné proměnné pro XGBoost model}
+	
+	\begin{tabular}{ll}
+		\hline
+		\textbf{Parametr} & \textbf{Popis} \\ \hline
+		
+		energyMean6 & průměrná hodnota spotřeby energie v posledních šesti hodinách \\
+		
+		energyMean12 & průměrná hodnota spotřeby energie v posledních dvanácti hodinách \\
+		energyMean24 & průměrná hodnota spotřeby energie za poslední den \\
+		energyMax6 & maximální hodnota spotřeba energie za posledních 6 hodin\\
+		energyMin6 & minimální hodnota spotřeby energie za posledních 6 hodin\\
+		
+	\end{tabular}
+\end{table}
+
+Trénovací a testovací data byla rozdělena na 80 \% trénovacích a zbylých 20 \% na testování. Kromě toho existuje měsíc dat, který je kompletně mimo datovou sadu (out-of-sample data). 
+
+Volba hyperparametrů pro výsledný model probíhala experimentální metodou. Nakonec došlo k volbě následujících parametrů:
+\begin{itemize}
+	\item booster - \textit{gbtree}
+	\item evalmetric - \textit{mse}
+	\item objective - \textit{reg:linear}
+\end{itemize} 
+
+TODO: ZBYTEK
+
+\subsection{LSTM}
+TODO: Začátek a opravit tu debilní tabulku ať se neroztahuje.
+\begin{table}[!ht]
+	\centering
+	\caption{Výsledná architektura LSTM sítě}
+	
+	\begin{tabular}{lllll}
+		\hline
+		\textbf{Vrstva} & \textbf{Neurony} & \textbf{Výstupní rozměr} & \textbf{Počet parametrů} & \textbf{Ostatní nastavení} \\ \hline
+		
+		LSTM & 50 & (None, 1, 50) & 19 800 & returnSequences=False \\
+		Dropout & - & (None, 1, 50) & 0 & - \\
+		LSTM  & 75 & (None, 1, 75) & 37 800 & returnSequences=False \\
+		Dropout & - & (None, 1, 75) & 0 & - \\
+		LSTM   & 50 & (None, 50) & 25 200 & returnSequences=False \\
+		Dropout & - & (None, 50) & 0 & - \\
+		Dense & - & (None, 1) & 51 & Dense(1) \\
+		
+		
+	\end{tabular}
+\end{table}
+
+TODO: zbytek
+
+\subsection{CNN-LSTM}
+
+TODO: Sepsat architekturu sítě
 
 \newpage
 \section{Metodika vyhodnocení}\label{section:error-matrix}
@@ -862,6 +925,8 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 
 
 \chapter{Výsledky}\label{Výsledky}
+
+
 
 \chapter{Závěr}
 Tato práce si kladla za cíl ... 
