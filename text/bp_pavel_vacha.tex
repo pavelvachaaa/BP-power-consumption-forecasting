@@ -754,7 +754,6 @@ Na grafu \ref{fig:hodina_vikend} níže lze zaznamenat signifikantní zvýšení
 Tento zjištěný rozdíl v hodinové spotřebě mezi pracovním týdnem a víkendem představuje jeden z klíčových příznaků \textit{is\_weekend} pro dále trénované modely. Kombinace  více příznaků totiž umožňuje vytvořit sofistikovanější model, který lépe predikuje a přizpůsobuje se dynamice spotřeby energie podle konkrétních situací, což může mít pozitivní dopad na efektivitu energetického řízení dané domácnosti.
 
 
-
 \newpage
 
 \begin{figure}[htbp]
@@ -817,12 +816,47 @@ K tomu, aby bylo možné provést takovou analýzu, je nutné spojit obě datov�
 
 Pro tento účel byla využita lineární interpolace, přičemž pokud hodnota bude v datové sadě chybět, doplní poslední změřenou hodnotu teploty.
 
-TODO: Zbytek a grafy na celé datové sadě
+Analýza byla provedena na celé datové sadě. Byla spočítána průměrná denní teplota a průměrná denní spotřeba energie. Graf zobrazující tento vztah vypadá následovně:
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eda_02_weather_over_consumption.eps}}%
+	\caption{Vztah mezi průměrnou denní spotřebou a průměrnou denní teplotou}
+	\label{fig:year_avg_all}
+\end{figure}
+
+Z grafu lze na první pohled vidět, že zde je trend a to klesající, jinými slovy, se zvyšující se teplotou klesá spotřebovaná energie. To může být způsobeno tím, že objekty v datové sadě využívají elektrického tepelného vytápění. Jelikož z grafu je patrný trend, byl příznak teploty zařazen pro použití ve finálních modelech.
+
+Datová sada s počasím má ovšem mnohem více parametrů, které by mohly být důležité pro predikci. Pro identifikování parametrů, které by měly být zařazeny do finálního modelu, bylo využito výpočtu pro změření velikosti lineární závislosti mezi jednotlivými parametry. Bylo využito Pearsonova korelačního koeficientu. Korelační koeficient se počítá dle následujícího vzorce: 
+
+\begin{equation}
+	r =
+	\frac{ \sum_{i=1}^{n}(x_i-\bar{x})(y_i-\bar{y}) }{%
+		\sqrt{\sum_{i=1}^{n}(x_i-\bar{x})^2}\sqrt{\sum_{i=1}^{n}(y_i-\bar{y})^2}}
+\end{equation}
+
+kde ve jmenovateli jsou násobeny směrodatné odchylky obou proměnných a v čitateli se počítá kovariance. Jelikož se zde dělí směrodatnou odchylkou, výsledný koeficient $r$ vyjde jako normované bezrozměrné číslo v rozsahu -1 až 1.
+
+Interpretace hodnoty $r$ spočívá v tom, že čím blíže je hodnota korelačního koeficientu k 1 nebo -1, tím silnější je lineární vztah mezi dvěma proměnnými. Hodnota $r$ blízká 0 naznačuje, že mezi proměnnými není lineární vztah.
+
+Kromě toho, že tento koeficient umožňuje náhled na proměnné, které by mohly být užitečné, tak umožňuje i redukci dimenze vstupních dat pro predikční model. Pomocí korelační matice je totiž možné zobrazit všechny korelační koeficienty pohromadě a rozhodnout, které proměnné v datové sadě jsou redundantní na základě znalosti hodnoty $r$.
+
+V této práci bylo využito implementace korelačního koeficientu v knihovně \textit{pandas}. Sloupce, které jsou textovém tvaru (např. $precipType$), byli převedeny na číselné hodnoty 0 až $n$, kde $n$ je počet unikátních položek. Korelační matice zobrazující vztah mezi spotřebou energie a počasím vypadá takto:
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{pv_eda_02_heat_weather.eps}}%
+	\caption{Ilustrační korelační matice zobrazující vztah mezi spotřebou a počasím}
+	\label{fig:year_avg_all}
+\end{figure}
+
+Z matice vyplývá, že \textit{vlhkost} a \textit{rychlost větru} nemají téměř žádnou závislost na spotřebě energie. Naopak proměnná \textit{dewPoint}, neboli rosný bod, vykazovala výraznější vztah ke spotřebě energie, avšak její korelace s teplotou byla příliš vysoká. Proto byla tato proměnná vynechaná z finálního seznamu proměnných, aby se předešlo redundanci a zjednodušila se interpretace výsledků.
+
+Na základě této analýzy byly zvoleny parametry \textit{temperature}, \textit{pressure}, \textit{windBearing}, \textit{precipType} a \textit{visibility}.
+
+Dále byl proveden výpočet korelační matice i pro proměnné, které byly zkoumány v předchozích fázích analýzy (TODO: Graf do přílohy). Ná základě hodnot koeficientu $r$ vyšlo, že parametr \textit{quarter} je nadbytečný, jelikož silně koreluje s parametrem \textit{month} ($r=0.98$) a silně také koreluje s parametrem \textit{day} ($r=0.97$). Proto byl tento parametr ze vstupních dat pro predikční modely odstraněn.
 
 
-\subsection{Korelační matice}
-
-TODO: Udělat heat mapu pořádně
 
 
 \newpage
