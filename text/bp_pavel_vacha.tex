@@ -379,7 +379,7 @@ Pro tvorbu těchto stromů existuje mnoho metod. Zpravidla založených na stati
 	\caption{Ukázka rozhodovacího stromu}
 	\label{fig:my_graph}
 \end{figure}
-\subsection{Gradientní boostované stromy}
+\subsection{Gradientní boostované stromy}\label{xgboost_research}
 Tato metoda je přesná a použitelná pro oba základní problémy, klasifikaci i regresi napříč různými odvětvími. Jelikož se tato práce zabývá predikcí spotřeby energie, což je spojitá veličina, budou prozkoumány možnosti regresního řešení problémů s pomocí GBT.
 
 Hlavním úkolem boostování je sestavit z mnoha slabších modelů výrazně silnější model, takzvaně \textit{ensemble  model}. \cite{chen2016xgboost}
@@ -854,40 +854,62 @@ Z matice vyplývá, že \textit{vlhkost} a \textit{rychlost větru} nemají tém
 
 Na základě této analýzy byly zvoleny parametry \textit{temperature}, \textit{pressure}, \textit{windBearing}, \textit{precipType} a \textit{visibility}.
 
-Dále byl proveden výpočet korelační matice i pro proměnné, které byly zkoumány v předchozích fázích analýzy (TODO: Graf do přílohy). Ná základě hodnot koeficientu $r$ vyšlo, že parametr \textit{quarter} je nadbytečný, jelikož silně koreluje s parametrem \textit{month} ($r=0.98$) a silně také koreluje s parametrem \textit{day} ($r=0.97$). Proto byl tento parametr ze vstupních dat pro predikční modely odstraněn.
-
-
+Dále byl proveden výpočet korelační matice i pro proměnné, které byly zkoumány v předchozích fázích analýzy (TODO: velká matice do přílohy). Ná základě hodnot koeficientu $r$ vyšlo, že parametr \textit{quarter} je nadbytečný, jelikož silně koreluje s parametrem \textit{month} ($r=0.98$) a silně také koreluje s parametrem \textit{day} ($r=0.97$). Proto byl tento parametr ze vstupních dat pro predikční modely odstraněn. Další analýza dat, jako je například autokorelace, bude provedena v následujících kapitolách zabývajících se samotnou implementací modelů.
 
 
 \newpage
 
 \section{Implementace jednotlivých modelů}
-Nakonec se vybrali následující modely. ARIMA, LSTM+LSTM-CNN, XGBOOST
 
-\subsection{Hyper-parametry}
-říct neco co to vůbec je a proč se to optimalizuje ffs vypínám :(
+Na základě předchozí explorační analýzy byly zvoleny následující společné proměnné pro všechny modely. 
 
+\begin{table}[!ht]
+	\centering
+	\caption{Společné parametry pro všechny predikční modely}
+	\label{weather_dataset}
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\textbf{Sloupec} & \textbf{Popis} \\ \hline
+		visibility & Maximální viditelnost \\ 
+		windBearing & Směr, ze kterého fouká vítr \\ 
+		temperature & Skutečná teplota ve stupních Celsia \\ 
+		pressure & Aktuální atmosférický tlak měřený v hektopascálech. \\ 
+		precipType & Typ srážky (sníh nebo déšť) \\
+		hour & Hodina, kdy byl vytvořen záznam \\
+		minute & Minuta, kdy byl vytvořen záznam \\
+		month & Měsíc, kdy byl vytvořen záznam \\
+		year & Rok, kdy byl vytvořen záznam \\
+		energy(kWh/hh) & Spotřebovaná energie v kWh \\
+		\hline
+	\end{tabularx}
+\end{table}
 
-\subsection{ARIMA}
-Ukázat jak byla udělána autokorelace a výběr jednotlivých parametrů....
-\subsection{XGBOOST}
-TODO: Začátek
+Tyto proměnné slouží pouze jako základ pro veškeré modely. Některé z modelů využívají navíc ještě uměle vytvořené proměnné (např. zpožděné proměnné u xgboost modelu), pro zpřesnění predikcí.
+
+Výsledné modely jsou serializované v souboru s příponami \textit{.h5} pro LSTM a \textit{.pkl} pro XGBoost. Tato serializace umožňuje uchování modelů pro opakované a přenosné použití bez nutnosti opakovaného trénování.
+
+\subsection{XGBoost}
+V kapitole \ref{xgboost_research} v rešeršní části práce bylo zmíněno, že xgboost využívá \textit{ensemble} metody, které kombinují slabší modely, jenž jsou na sobě trénovány nezávisle. Z toho plyne, že se zde nevychází z časového uspořádání, což je pro přesnou predikci časové řady klíčové.
+
+Proto bylo nejdříve nezbytné najít řešení pro včlenění časového uspořádání do modelu XGBoost, který standardně nezohledňuje informace o času. Jednou z metod, jak toho dosáhnout, je vytvoření umělých zpožděných proměnných (lag features). Tyto proměnné obsahují informaci o minulých hodnotách cílové proměnné nebo jiných relevantních faktorech v daných časových oknech.
+
+Pro tento účel byl proveden experiment, ve kterém byly postupně vybírány vhodné zpožděné proměnné. Tyto proměnné byly vytvořeny na základě explorační analýzy datové sady. Do modelu byly zahrnuty proměnné, které obsahují informaci o minulých hodnotách vybraných proměnných v různých časových oknech, což umožňuje modelu lépe zachytit trendy časové řady a vzory v datech. 
+
+Výsledná tabulka se zpožděnými proměnnými vypadá následovně: 
+
 \begin{table}[!ht]
 	\centering
 	\caption{Zpožděné proměnné pro XGBoost model}
 	
-	\begin{tabular}{ll}
+	\begin{tabularx}{\linewidth}{lX}
 		\hline
 		\textbf{Parametr} & \textbf{Popis} \\ \hline
-		
 		energyMean6 & průměrná hodnota spotřeby energie v posledních šesti hodinách \\
-		
 		energyMean12 & průměrná hodnota spotřeby energie v posledních dvanácti hodinách \\
 		energyMean24 & průměrná hodnota spotřeby energie za poslední den \\
 		energyMax6 & maximální hodnota spotřeba energie za posledních 6 hodin\\
 		energyMin6 & minimální hodnota spotřeby energie za posledních 6 hodin\\
-		
-	\end{tabular}
+	\end{tabularx}
 \end{table}
 
 Trénovací a testovací data byla rozdělena na 80 \% trénovacích a zbylých 20 \% na testování. Kromě toho existuje měsíc dat, který je kompletně mimo datovou sadu (out-of-sample data). 
@@ -900,6 +922,15 @@ Volba hyperparametrů pro výsledný model probíhala experimentální metodou. 
 \end{itemize} 
 
 TODO: ZBYTEK
+
+
+\subsection{Hyper-parametry}
+říct neco co to vůbec je a proč se to optimalizuje ffs vypínám :(
+
+
+\subsection{ARIMA}
+Ukázat jak byla udělána autokorelace a výběr jednotlivých parametrů....
+
 
 \subsection{LSTM}
 TODO: Začátek a opravit tu debilní tabulku ať se neroztahuje.
