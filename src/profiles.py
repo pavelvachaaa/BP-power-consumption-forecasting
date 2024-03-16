@@ -78,7 +78,7 @@ house_d= extract_features(house_d)
 print(house_a.head())
 print(house_d.head())
 
-is_weekend = 1
+is_weekend = 0
 a_group = house_a[['hour',"energy(kWh/hh)", "is_weekend","quarter"]].loc[lambda x: x.is_weekend == is_weekend].groupby('hour').mean().reset_index()
 b_group = house_b[['hour',"energy(kWh/hh)", "is_weekend","quarter"]].loc[lambda x: x.is_weekend == is_weekend].groupby('hour').mean().reset_index()
 c_group = house_c[['hour',"energy(kWh/hh)", "is_weekend","quarter"]].loc[lambda x: x.is_weekend == is_weekend].groupby('hour').mean().reset_index()
@@ -101,7 +101,7 @@ ax.plot(hd["hour"], hd["energy(kWh/hh)"], label=hd["house"][0])
 
 plt.xlabel('Hodina')
 plt.ylabel('Spotřeba (kWh)')
-plt.title(f'Hodinová spotřeba čtyř vybraných budov {"o víkendu" if is_weekend else  "v pracovním týdnu"}')
+# plt.title(f'Hodinová spotřeba čtyř vybraných budov {"o víkendu" if is_weekend else  "v pracovním týdnu"}')
 plt.xticks(range(24))
 
 plt.xlim(left=0,right=23)
@@ -142,7 +142,7 @@ ax.plot(x, hd["energy(kWh/hh)"], label=hd["house"][0])
 plt.xticks(x, my_xticks)
 plt.xlabel('Den')
 plt.ylabel('Spotřeba (kWh)')
-plt.title('Průměrná týdenní spotřeba čtyř vybraných budov')
+# plt.title('Průměrná týdenní spotřeba čtyř vybraných budov')
 
 plt.xticks(range(7))
 
@@ -200,7 +200,7 @@ axes[1, 1].set_xlabel('Hodina')
 axes[1, 1].set_ylabel('Spotřeba (kWh)')
 
 
-fig.suptitle('Hodinová spotřeba čtyř vybraných budov podle ročního období')
+# fig.suptitle('Hodinová spotřeba čtyř vybraných budov podle ročního období')
 
 plt.savefig('./out/hourly_energy_consumption_per_quarter.eps', format='eps', bbox_inches='tight', transparent=True)
 plt.show()

@@ -25,7 +25,7 @@ def do_diff(file_name: str) -> None:
     # Plot the original data
     plt.figure(figsize=(12, 6))
     plt.plot(df.index, df['Value'], label='Míra nezaměstnanosti', linewidth=2)
-    plt.title('Registrovaná míra nezaměstnanosti')
+    # plt.title('Registrovaná míra nezaměstnanosti')
     plt.xlabel('Čas')
     plt.ylabel('Míra nezaměstnanosti [%]')
     plt.legend()
@@ -37,7 +37,7 @@ def do_diff(file_name: str) -> None:
 
     plt.figure(figsize=(12, 6))
     plt.plot(df.index, df['First_Diff'], label='Míra nezaměstnanosti', color='orange', linewidth=2)
-    plt.title('1. Diference')
+    # plt.title('1. Diference')
     plt.xlabel('Čas')
     plt.ylabel('Míra nezaměstnanosti')
     plt.legend()

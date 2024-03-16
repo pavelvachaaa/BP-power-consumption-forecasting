@@ -42,7 +42,6 @@ def do_moving_average_decomposition(file_name: str) -> None:
     ax4.set_xlabel('Rok')
 
 
-    plt.suptitle('Dekompozice míry nezaměstnanosti v ČR')  
     plt.savefig('pv_eg_03_classical_decomposition.eps', format='eps', bbox_inches='tight', transparent=True)
 
     plt.show()
