@@ -1,6 +1,9 @@
 import pandas as pd
+import numpy as np
 import pickle
 from sklearn.preprocessing import LabelEncoder
+from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error,\
+    mean_squared_error
 import time
 
 Y_VALUE_NAME="energy(kWh/hh)"
@@ -16,11 +19,25 @@ def serialize_model(model: any, type: str ="lstm", code_name="") -> None:
     if type=="lstm":
         pass
     elif type=="xgboost":
-        filename = f'./ml_models/output/xgboost_model_{code_name}.pkl'
+        filename = f'./out/models/xgboost_model_{code_name}.pkl'
     else:
         pass
     
     pickle.dump(model, open(filename, 'wb'))
+
+
+def deserialize_model(type: str = "lstm", code_name=""):
+    """
+    Funkce deserializuje jakýkoliv model využívány v BP
+    """  
+    if type=="lstm":
+        pass
+    elif type=="xgboost":
+        filename = f'./out/models/xgboost_model_{code_name}.pkl'
+    else:
+        pass
+
+    return pickle.load(open(filename, "rb"))
 
 def parse_iris_data_frame(df: pd.DataFrame) -> pd.DataFrame:
     """
@@ -96,6 +113,13 @@ def load_iris_dataset(file_path: str, extract_time=True) -> pd.DataFrame:
 
     return df
 
+
+def get_time_features_name() -> list[str]:
+    """
+    Vrací seznam názvů sloupců, které se extrahují pomocí extract_time_features
+    """
+    return ["hour", "minute", "dayofweek", "quarter","is_weekend", "month", "year", "dayofyear"]
+
 def extract_time_features(df: pd.DataFrame) -> pd.DataFrame:
     """
     Funkce extrahuje časové parametry a vloží je separatně do datového rámce
@@ -113,3 +137,32 @@ def extract_time_features(df: pd.DataFrame) -> pd.DataFrame:
     df["dayofyear"] = df.index.dayofyear
     
     return df
+
+def add_lags(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Funkce vyvtoří zpožděné proměnné pro XGBoost model
+    """
+    df = df.copy()
+
+    target_map = df[Y_VALUE_NAME].to_dict()
+    # df['energyMean1y'] = (df.index - pd.Timedelta('364 days')).map(target_map)
+    df['energyMean1d'] = (df.index - pd.Timedelta('1 days')).map(target_map)
+    df['energyMean7d'] = (df.index - pd.Timedelta('7 days')).map(target_map)
+    df['energyMean12h'] = (df.index - pd.Timedelta('12 hours')).map(target_map)
+    df['energyMean24h'] = (df.index - pd.Timedelta('24 hours')).map(target_map)
+    df['energyMean6h'] = (df.index - pd.Timedelta('6 hours')).map(target_map)
+    df['energyMean1h'] = (df.index - pd.Timedelta('1 hours')).map(target_map)
+    df["energyMax6h"] = df[Y_VALUE_NAME].rolling(window = 6).max()
+
+    return df
+
+def evaluate_model(A: list[float], F: list[float]) -> None:
+    """
+    Výpis statistik
+    A = actual
+    F = forecast
+    """
+    print('MAE: {:.5f}'.format(mean_absolute_error(A, F)))
+    print('MAPE: {:.5f}%'.format(mean_absolute_percentage_error(A, F)*100))
+    print('MSE: {:.5f}'.format(mean_squared_error(A, F)))
+    print('RMSE: {:.5f}'.format(np.sqrt(mean_squared_error(A, F))))

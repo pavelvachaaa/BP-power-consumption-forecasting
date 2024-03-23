@@ -912,16 +912,66 @@ Výsledná tabulka se zpožděnými proměnnými vypadá následovně:
 	\end{tabularx}
 \end{table}
 
-Trénovací a testovací data byla rozdělena na 80 \% trénovacích a zbylých 20 \% na testování. Kromě toho existuje měsíc dat, který je kompletně mimo datovou sadu (out-of-sample data). 
 
-Volba hyperparametrů pro výsledný model probíhala experimentální metodou. Nakonec došlo k volbě následujících parametrů:
-\begin{itemize}
-	\item booster - \textit{gbtree}
-	\item evalmetric - \textit{mse}
-	\item objective - \textit{reg:linear}
-\end{itemize} 
+Jako další umělá proměnná byla zvolena první a druhá diference. Tyto diference byly zahrnuty z důvodu jejich schopnosti zachytit změny a trendy v datech o spotřebě energie, což je klíčové pro přesnou predikci budoucích hodnot spotřeby. První diference reprezentuje okamžité změny v hodnotách dat, které si dokážou poradit s náhlými výkyvy spotřeby energie. 
 
-TODO: ZBYTEK
+Trénovací a testovací data byla rozdělena na 70 \% trénovacích a zbylých 30 \% na testování. Kromě toho existuje měsíc dat, jenž je kompletně mimo datovou sadu, na které probíhala validace (out-of-sample data). 
+
+
+Volba hyper-parametrů pro výsledný model probíhala experimentální metodou. Nakonec došlo k volbě následujících parametrů:
+
+\begin{table}[!ht]
+	\centering
+	\caption{Parametry finálního modelu}
+	
+	\begin{tabularx}{\linewidth}{lX}
+		\hline
+		\textbf{Parametr} & \textbf{Hodnota} \\ \hline
+		booster & gbtree \\
+	    objective & reg:squarederror \\
+		eval\_metric & logloss \\
+		eta & 0.01 \\
+		learning\_rate & 0.02 \\
+		max\_depth & 6\\
+		base\_score  & 0.5\\
+		n\_estimators  & 1000\\
+	\end{tabularx}
+\end{table}
+
+Gradientní boostované rozhodovací stromy lze snadno analyzovat a interpretovat díky jejich \textit{ensemble} architektuře. Proto je možné jednoduše zjistit jak moc důležité jsou jednotlivé parametry pro rozhodování natrénovaného modelu. Pro výpočet skóre důležitosti příznaků byla využita diagnostická funkce \textit{plot\_importance}, kterou poskytuje knihovna XGBoost v Pythonu. Toto skóre udává, jak moc každá proměnná přispívá k rozhodování modelu a napomáhá k vyřazení nepotřebných příznaků za účelem optimalizace a zvýšení přesnosti. 
+ 
+ \begin{figure}[htbp]
+ 	\centering
+ 	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{xgboost_f_score.eps}}%
+ 	\caption{Skóre důležitosti pro 10 nejlepších příznaků}
+ 	\label{fig:xgboost_f_score}
+ \end{figure}
+ 
+Graf \ref{fig:xgboost_f_score} zobrazuje 10 příznaků s nejvyšším dosaženým skóre. Touto analýzo bylo zjištěno, že proměnné obsahující diferenci, teplotu a hodinu (či její průměry) jsou nejdůležitějšími příznaky při rozhodování modelu. Na základě tohoto grafu byly vyřazeny příznaky jako \textit{is\_weeeknd} či \textit{pressure}.
+
+Pro objektivní zhodnocení, jak moc dobře se model přizpůsobuje validačním datům a zdali nedochází k přeučení a tím k nedostatečné generelizaci modelu, byl použit ukazatel ztráty. Tento ukazatel měří, jak úspěšně model minimalizuje rozdíl mezi předpovídanými a skutečnými hodnotami na trénovacích a validačních datech.
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{xgboost_learning_curve.eps}}%
+	\caption{Křivka učení finálního XGBoost modelu}
+	\label{fig:xgboost_learning_curve}
+\end{figure}
+
+Na grafu \ref{fig:xgboost_learning_curve} výše lze vidět, že validační ztráta se pořád snaží konvergovat k nule. Zároveň je trénovací a  validační ztráta blízko k sobě. To naznačuje, že se model dobře přizpůsobuje datové sadě a nemělo by zde dojit k přeučení.
+
+Finální natrénovaný model na validační množině dosahuje hodnot průměrné absolutní odchylky \textbf{5.36 \%}. Na grafu \ref{fig:xgboost_predictions} níže je vidět ukázka predikce pro jeden a půl dne dopředu.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{xgboost_predictions.eps}}%
+	\caption{Výřez predikce na validační datové sadě}
+	\label{fig:xgboost_predictions}
+\end{figure}
+
+
+
 
 
 \subsection{Hyper-parametry}
