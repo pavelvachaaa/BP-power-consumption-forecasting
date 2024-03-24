@@ -39,7 +39,7 @@ class NNModels:
             X.append(a_temp)
             Y.append(data[i + look_back, 0])
             
-        return np.array(X), np.array(Y)
+        return np.array(X), np.array(Y) 
     
     def transform_for_lstm(self, data: np.ndarray[any]) -> np.ndarray:
         """
@@ -92,13 +92,14 @@ class NNModels:
         """
         model = keras.Sequential(
             [
+            # RepeatVector(50),
             LSTM(50, activation="tanh", return_sequences=True, input_shape=(train_input_shape[1], train_input_shape[2])),
             Dropout(0.15),
             LSTM(75, activation="tanh", return_sequences=True),
             Dropout(0.15),
             LSTM(50, activation="tanh", return_sequences=False),
             Dropout(0.15),
-            Dense(1)
+            Dense(1),
             ]
         )
         
@@ -111,8 +112,9 @@ class NNModels:
     def model_cnn_lstm(self, train_input_shape:tuple) -> Sequential:
         model = keras.Sequential(
             [
-            Conv1D(64, kernel_size=3, activation="relu", input_shape=(23942,24)),
-            MaxPooling1D(),
+                
+            Conv1D(filters=64, kernel_size=3, activation='relu', input_shape=(64,64)),
+            Conv1D(filters=64, kernel_size=3, activation='relu'),
             LSTM(50, activation="tanh", return_sequences=True),
             Dropout(0.15),
             LSTM(75, activation="tanh", return_sequences=True),
@@ -128,6 +130,7 @@ class NNModels:
 
         
         return model
+    
     def model_save(self, model: Sequential, code_name: str) -> str:
         """
         Vrací název uloženého souboru

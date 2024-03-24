@@ -29,11 +29,10 @@ DAYS_OF_PREDICTION =  ONE_DAY*5
 # Extrahujeme časové features
 df = wrapper.add_lags(df, Y_VALUE_NAME)
 
-
 df= df.iloc[-DAYS_OF_PREDICTION:].copy()
 df_back = df
 
-# Ujistéme se, že naše Y_VAL je flaot32
+# Ujistéme se, že naše Y_VAL je float64
 df = df[Y_VALUE_NAME].values.astype('float64')
 
 # Provedeme transformaci hodnot dataframu
@@ -41,9 +40,6 @@ dataset = wrapper.transform_for_lstm(df)
 
 test_data, test_y = wrapper.to_sequence_for_lstm(dataset,24)
 test_data = np.reshape(test_data, (test_data.shape[0], 1, test_data.shape[1]))
-
-# model = wrapper.get_model("beast")
-code_name = "beast"
 
 model = deserialize_model("lstm", "beast")
 
@@ -59,6 +55,9 @@ evaluate_model(A,F)
 
 size_of_samples = len(F)
 aa = [x for x in range(size_of_samples)]
+
+
+
 # Creating a figure object with desired figure size
 plt.figure(figsize=(20, 6))
 

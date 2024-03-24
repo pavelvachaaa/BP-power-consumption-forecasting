@@ -133,7 +133,7 @@ def extract_time_features(df: pd.DataFrame) -> pd.DataFrame:
     df["dayofweek"]=df.index.dayofweek # sunday = 6
     df["quarter"] = df.index.quarter
     df["is_weekend"] = df["dayofweek"].isin([5,6]).astype(int)
-    df["week_day"] = df.index.day_name()
+    # df["week_day"] = df.index.day_name()
 
     df["month"] = df.index.month
     df["year"] = df.index.year
