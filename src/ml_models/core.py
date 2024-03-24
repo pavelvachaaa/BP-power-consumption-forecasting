@@ -5,7 +5,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import mean_absolute_error, mean_absolute_percentage_error,\
     mean_squared_error
 import time
-
+from keras.models import load_model
+import keras
 Y_VALUE_NAME="energy(kWh/hh)"
 WEATHER_DEFAULT_COLUMNS = ["temperature","windBearing","dewPoint","windSpeed","pressure","visibility","humidity","time"]
 
@@ -17,13 +18,14 @@ def serialize_model(model: any, type: str ="lstm", code_name="") -> None:
         code_name = int(time.time())
         
     if type=="lstm":
-        pass
+        filename = f'./out/models/lstm_model_{code_name}.keras'
+        return model.save(filename)
     elif type=="xgboost":
         filename = f'./out/models/xgboost_model_{code_name}.pkl'
+        return pickle.dump(model, open(filename, 'wb'))
     else:
         pass
     
-    pickle.dump(model, open(filename, 'wb'))
 
 
 def deserialize_model(type: str = "lstm", code_name=""):
@@ -31,6 +33,8 @@ def deserialize_model(type: str = "lstm", code_name=""):
     Funkce deserializuje jakýkoliv model využívány v BP
     """  
     if type=="lstm":
+        filename = f'./out/models/lstm_model_{code_name}.keras'
+        return  keras.saving.load_model(filename)
         pass
     elif type=="xgboost":
         filename = f'./out/models/xgboost_model_{code_name}.pkl'
@@ -78,7 +82,6 @@ def load_london_dataset_household(file_path: str, household_id: str, weather_fil
     df.drop(['LCLid'],axis=1,inplace=True)
 
     df.set_index('DateTime', inplace=True)
-    df.reset_index('DateTime', inplace=True)
 
     if weather_file_path != "":
         df_weather = pd.read_csv(weather_file_path)
