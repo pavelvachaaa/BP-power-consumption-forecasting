@@ -17,18 +17,18 @@ if __name__ == "__main__":
     wrapper = NNModels(scaler=MinMaxScaler(feature_range=(0, 1)))
 
     df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_0.csv", "MAC004387", )
-
     df = wrapper.add_lags(df, Y_VALUE_NAME)
+    df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
  
     df_back = df
     df = df[Y_VALUE_NAME].values.astype('float64')
 
     nn_dataset = wrapper.transform_for_lstm(df)
-    train, test = wrapper.split_dataset(nn_dataset, train_size=0.7)
+    train, test = wrapper.split_dataset(nn_dataset, train_size=0.75)
 
     # Rozdělíme si data na x a y
-    X_train, Y_train = wrapper.to_sequence_for_lstm(train,24)
-    X_test, Y_test = wrapper.to_sequence_for_lstm(test, 24)
+    X_train, Y_train = wrapper.to_sequence_for_lstm(train,48)
+    X_test, Y_test = wrapper.to_sequence_for_lstm(test, 48)
 
     print("Shape (x-train): ",X_train.shape)
         # Shape (x-train):  (23942, 24)
@@ -44,11 +44,11 @@ if __name__ == "__main__":
     model = wrapper.model_lstm_one(X_train.shape)
     # model = wrapper.model_cnn_lstm(X_train.shape)
 
-    history = model.fit(X_train, Y_train, epochs=25, batch_size=50, validation_data=(X_test, Y_test),
+    history = model.fit(X_train, Y_train, epochs=25, batch_size=64, validation_data=(X_test, Y_test),
             callbacks=[EarlyStopping(monitor='val_loss', patience=4)], verbose=1, shuffle=False)
 
-    serialize_model(model, "lstm","beast")
-    loaded_model = deserialize_model("lstm", "beast")
+    serialize_model(model, "lstm","beast2")
+    loaded_model = deserialize_model("lstm", "beast2")
 
     train_predict = model.predict(X_train)
     test_predict = model.predict(X_test)

@@ -568,7 +568,7 @@ Nejčastěji lze potkat maxpool vrstvu, která má tři základní parametry. Ve
 	\label{fig:nezamestnanost}
 \end{figure}
 
-\subsection{CNN-LSTM}
+\subsection{CNN-LSTM}\label{cnn-lstm-teorie}
 Pro analýzu časových řad se využívá hybridního modelu, který je spojením konvoluční neuronové sítě a LSTM sítě. Tato metoda se snaží využít silných stránek obou modelů. 
 
 Konvoluční vrstvy v síti jsou schopné extrahovat lokální vzorce chování spotřeby energie. V praxi to znamená, že konvoluční vrstvy mohou identifikovat specifické charakteristiky, jako jsou špičky či útlumy, což je klíčové pro porozumění dynamiky spotřeby energie v čase. 
@@ -728,7 +728,6 @@ Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto roz
 
 Z analýzy grafu výše vyplývá, že v rozsahu od 357 do 365 zaznamenaných dní dochází statisticky nejvýznamněji. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
 
-TODO: POPŘEMÝŠLET O OUTLIERECH
 
 \newpage
 
@@ -959,7 +958,7 @@ Pro objektivní zhodnocení, jak moc dobře se model přizpůsobuje validačním
 	\label{fig:xgboost_learning_curve}
 \end{figure}
 
-Na grafu \ref{fig:xgboost_learning_curve} výše lze vidět, že validační ztráta se pořád snaží konvergovat k nule. Zároveň je trénovací a  validační ztráta blízko k sobě. To naznačuje, že se model dobře přizpůsobuje datové sadě a nemělo by zde dojit k přeučení.
+Na grafu \ref{fig:xgboost_learning_curve} výše lze vidět, že validační ztráta se ustálila na jedné úrovni a dále nemá tendenci vzrůstat. Zároveň je trénovací a  validační ztráta blízko k sobě. To naznačuje, že se model dobře přizpůsobuje datové sadě a nemělo by zde dojit k přeučení.
 
 Finální natrénovaný model na validační množině dosahuje hodnot průměrné absolutní odchylky \textbf{5.36 \%}. Na grafu \ref{fig:xgboost_predictions} níže je vidět ukázka predikce pro jeden a půl dne dopředu.
 
@@ -971,44 +970,95 @@ Finální natrénovaný model na validační množině dosahuje hodnot průměrn
 \end{figure}
 
 
-
-
-
-\subsection{Hyper-parametry}
-říct neco co to vůbec je a proč se to optimalizuje ffs vypínám :(
-
-
 \subsection{ARIMA}
 Ukázat jak byla udělána autokorelace a výběr jednotlivých parametrů....
 
 
+\newpage
 \subsection{LSTM}
-TODO: Začátek a opravit tu debilní tabulku ať se neroztahuje.
+Pro finální verzi LSTM modelu byly zvoleny následující parametry. Pro rychlejší a stabilnější konvergenci modelu během trénování byl zvolen optimalizační algoritmus jménem Adam. Jako chybová funkce (loss function) $L(x,y|w)$ byla použita MSE. 
+Optimální velikost dávky (batch size) byla nastavena na hodnotu 128. 
+
 \begin{table}[!ht]
 	\centering
 	\caption{Výsledná architektura LSTM sítě}
 	
-	\begin{tabular}{lllll}
+	\begin{tabularx}{\linewidth}{llXXX}
 		\hline
 		\textbf{Vrstva} & \textbf{Neurony} & \textbf{Výstupní rozměr} & \textbf{Počet parametrů} & \textbf{Ostatní nastavení} \\ \hline
-		
-		LSTM & 50 & (None, 1, 50) & 19 800 & returnSequences=False \\
+		LSTM & 50 & (None, 1, 50) & 19 800 & returnSequences=True \\
 		Dropout & - & (None, 1, 50) & 0 & - \\
-		LSTM  & 75 & (None, 1, 75) & 37 800 & returnSequences=False \\
+		LSTM  & 75 & (None, 1, 75) & 37 800 & returnSequences=True \\
 		Dropout & - & (None, 1, 75) & 0 & - \\
 		LSTM   & 50 & (None, 50) & 25 200 & returnSequences=False \\
 		Dropout & - & (None, 50) & 0 & - \\
-		Dense & - & (None, 1) & 51 & Dense(1) \\
+		Dense & - & (None, 1) & 51 & units=1 \\
 		
 		
-	\end{tabular}
+	\end{tabularx}
 \end{table}
 
-TODO: zbytek
+Vrstvy LSTM mají postupně 50, 75 a 50 neuronů. Tato konfigurace umožňuje modelu naučit se složitější závislosti mezi sekvencemi, aniž by byl příliš komplexní a náchylný k přetrénování. Pro snížení náchylnosti k přetrénování modelu, byla zvolena dropout vrstva s hodnotou 0.15. Tato vrstva náhodně odebírá propojení mezi částmi neuronů během trénování, což pomáhá zabránit přetrénování a zlepšit obecnou schopnost generalizace modelu. Pro ověření zdali nedochází k přetrénování modelu byla zaznamenána křivka učení zobrazena níže.
 
+Aktivační funkce hyperbolický tangens (\textit{tanh}) byla zvolena pro všechny LSTM vrstvy. Tato funkce je často používána v rekurentních sítích, jelikož lépe zvládá zpracování prudkých změn a výkyvů ve vstupních datech. \cite{SHEN2022117181}
+
+Robustní model vyžaduje normalizaci dat kvůli eliminaci velkých rozdílů v měřítku jednotlivých proměnných, které by mohly ovlivnit chování modelu a jeho schopnost naučit se přesně predikovat výstupy. Proto veškerá data byla normalizována do rozsahu -1 až 1 pomocí následujícího vzorce: 
+
+\begin{equation}	
+	X_{skalovano} = \frac{X - X_{min}}{X_{max} - X_{min}} * (max - min) + min
+\end{equation}
+
+kde $X$ je původní hodnota proměnné a $X_{min}$, $X_{max}$ jsou minimální a maximální hodnoty v celé datové sadě. Pro normalizaci hodnot do požadovaného rozsahu se za proměnné \textit{min} a \textit{max} dosadí -1 a 1.
+
+Důležitou součástí při tvorbě tohoto modelu bylo vytvořit funkci pro transformaci vstupních dat na sekvence, které jsou následně zpracovávány LSTM sítí. Každá tato sekvence obsahuje určitý počet předchozích hodnot, což umožňuje modelu zachytit a využít historické informace při predikci budoucích hodnot.
+
+Trénovací a testovací data byla rozdělena na 80 \% trénovacích a zbylých 20 \% na testování. Validace dat probíhala vždy na jiné domácnosti, než byl model natrénován. 
+ 
 \subsection{CNN-LSTM}
 
-TODO: Sepsat architekturu sítě
+Pro vylepšení přesnosti LSTM sítě bylo rozhodnuto o využití hybridního modelu. Tento model má jako vstupní vrstvu konvoluční, která dokáže na základě svých vlastností, jenž byly popsány v kapitole \ref{cnn-lstm-teorie}, extrahovat lépe špičky či útlumy ve spotřebované energii. Za konvoluční vrstvou následuje poolingová vrstva, která snižuje dimenzi dat o polovinu (pool\_size=2), a tím snižuje výpočetní náročnost a zlepšuje distribuci informací napříč celou sítí.
+
+Pro samotné LSTM vrstvy byla navýšena kapacita sítě z 50 na 75 a ze 75 na 100 s cílem lepšího zachytávání dlouhodobých závislostí v datech. Výsledný model prošel 25 epochami s parametrem \textit{batch\_size} roven 128.
+
+\begin{table}[!ht]
+	\centering
+	\caption{Výsledná architektura CNN-LSTM sítě}
+	
+	\begin{tabularx}{\linewidth}{llXXX}
+		\hline
+		\textbf{Vrstva} & \textbf{Neurony} & \textbf{Výstupní rozměr} & \textbf{Počet parametrů} & \textbf{Ostatní nastavení} \\ \hline
+			Conv1D & 75 &  (None, 46, 64)   & 2 176 & filters=64, kernel\_size=3 \\
+			MaxPooling1D & - &  (None, 23, 64)   & 0 & pool\_size=2 \\
+			LSTM & 75 & (None, 23, 75) &  42 000 & returnSequences=True \\
+			Dropout & - & (None, 23, 75) & 0 & - \\
+			LSTM  & 100 & (None, 23, 100) & 70 400 & returnSequences=True \\
+			Dropout & - & (None, 23, 100) & 0 & - \\
+			LSTM   & 75 & (None, 75) & 52 800 & returnSequences=False \\
+			Dropout & - & (None, 75) & 0 & - \\
+			Dense & - & (None, 1) & 76 & units = 1 \\
+	\end{tabularx}
+\end{table}
+
+Normalizace a rozdělení dat proběhlo obdobně jako u předchozího LSTM modelu. Pro zlepšení konvergence modelu byl opět použit optimalizační algoritmus Adam. Navíc byl přidán \textit{learning rate scheduler} (lrscheduler), který si reguluje jak rychle se bude při trénování blížit k optimálním váhám. Pro tento \textit{lrscheduler} bylo zvoleno několik parametrů. 
+
+První parametr byl \textit{patience=3}, který určuje kolik po sobě jdoucích epoch může proběhnout bez zlepšení ztráty na validační sadě. 
+
+Druhý parametr \textit{factor=0.5} určuje jakým koeficientem se bude dělit learning rate při překročení parametru \textit{patience}. 
+
+Posledním parametrem byl \textit{min\_lr}, jenž udává jaké minimální hodnoty může learning rate nabývat. Eliminuje to možnost nekonečného zmenšování learning ratu.
+
+Po zavedení těchto opatření proti přeučení modelu křivka učení pro CNN-LSTM síť vypadá následovně:
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.6\textwidth]{cnn_lstm_learning_curve.eps}}%
+	\caption{Křivka učení finálního CNN-LSTM modelu}
+	\label{fig:cnn_lstm_learning_curve}
+\end{figure}
+
+Z grafu \ref{fig:cnn_lstm_learning_curve} výše lze vidět, že validační ztráta se ustálila na nízké hodnotě a má tendenci dále klesat k nule. Zároveň je splněna podmínka, že  trénovací a validační ztráty jsou blízko sebe. Tato kombinace naznačuje, že v modelu nedošlo k přeučení a zároveň se model dobře přizpůsobil trénovacím datům.
+
+TODO: Ukázat výřez hodnot
 
 \newpage
 \section{Metodika vyhodnocení}\label{section:error-matrix}
@@ -1040,31 +1090,52 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 
 
 \chapter{Výsledky}\label{Výsledky}
+V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných modelů. Pro porovnání výsledků byla zvolená krátkodobá predikci (max. 30 dnů). Veškeré modely dostavují na vstupu stejné časové úseky. Pro londýnskou datovou sadu to znamená úsek od 28.1. 2014 do 28.2. 2014. A pro datovou sadu zprostředkovanou Albistechem to je úsek od 28. 1. 2023 do 28. 2. 2023.
+
+
+\begin{table}[!ht]
+	\centering
+	\caption{Souhrnné výsledky predikce jednoho dne}
+	\def\arraystretch{1.2}
+	\begin{tabular}{lllllll}
+		\hline
+		\textbf{Metoda} & \textbf{Rezidence} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} \\      \hline
+		LSTM            & MAC004431          & TBA               & TBA               & TBA           & TBA              \\ 
+		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004387          & TBA            & TBA             & TBA           & TBA            \\ 
+		~               & Poštovská 3 - byt 5.02              & TBA            & TBA             & TBA           & TBA \\         
+		
+		\hline
+		
+		CNN-LSTM        & MAC004431          & TBA               & TBA               & TBA           & TBA              \\ 
+		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004387          & TBA            & TBA             & TBA           & TBA            \\ 
+		~               & Poštovská 3 - byt 5.02              & TBA            & TBA             & TBA           & TBA \\         
+		
+		\hline
+		
+		
+		XGBoost         & MAC004431          & TBA            & TBA             & TBA        &  TBA            \\ 
+		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004387          & TBA            & TBA             & TBA           & TBA             \\ 
+		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
+		
+				\hline
+		
+		ARIMA           & MAC004431          & TBA            & TBA             & TBA        &  TBA            \\ 
+		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004387          & TBA            & TBA             & TBA           & TBA             \\ 
+		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
+		
+
+	\end{tabular}
+\end{table}
 
 
 
 \chapter{Závěr}
 Tato práce si kladla za cíl ... 
 
-\chapter{ChangeLog}
-
-22.01. 2024 - Rozvržení kapitol
-
-08.02. 2024 - Kapitola časové řady
-
-09.02. 2024 - Podkapitola o stacionaritě a ukázkový skript
-
-10.02. 2024 - Dokončena kapitola o časových řadách
-
-11.02. 2024 - ARIMA 
-
-12.02. 2024 - CNN a CNN-LSTM 
-
-23. 02. 2024 - Konvoluce a max-pool
-
-25.02. 2024 - Seznamy tabulek, obrázků, bibliografie + kapitola zdroj dat
-
-a dál už mě to nebaví, je to na githubu ten changelog
 
 
 \printbibliography[title={Použitá literatura}] % sazba seznamu citací 

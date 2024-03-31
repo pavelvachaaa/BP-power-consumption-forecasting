@@ -22,9 +22,8 @@ is_albistech = False
 wrapper = NNModels(scaler=MinMaxScaler(feature_range=(0, 1)))
 df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", "MAC000291")
 
-
 ONE_DAY = 96 if is_albistech else 48
-DAYS_OF_PREDICTION =  ONE_DAY*5
+DAYS_OF_PREDICTION =  ONE_DAY*1
 
 # Extrahujeme časové features
 df = wrapper.add_lags(df, Y_VALUE_NAME)
@@ -34,14 +33,15 @@ df_back = df
 
 # Ujistéme se, že naše Y_VAL je float64
 df = df[Y_VALUE_NAME].values.astype('float64')
+df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
 
 # Provedeme transformaci hodnot dataframu
 dataset = wrapper.transform_for_lstm(df)
 
-test_data, test_y = wrapper.to_sequence_for_lstm(dataset,24)
+test_data, test_y = wrapper.to_sequence_for_lstm(dataset,1)
 test_data = np.reshape(test_data, (test_data.shape[0], 1, test_data.shape[1]))
 
-model = deserialize_model("lstm", "beast")
+model = deserialize_model("lstm", "beast2")
 
 test_predict = model.predict(test_data)
 
@@ -58,31 +58,15 @@ aa = [x for x in range(size_of_samples)]
 
 
 
-# Creating a figure object with desired figure size
 plt.figure(figsize=(20, 6))
 
-# Plotting the actual values in blue with a dot marker
 plt.plot(df_back.index[0:size_of_samples],A
-        [-size_of_samples:], marker='.', label="Naměřená", color='purple')
-
-# Plotting the predicted values in green with a solid line
+        [-size_of_samples:], marker='.', label="Naměřená", color='purple', linewidth=2)
 plt.plot(df_back.index[0:size_of_samples],
-        F[-size_of_samples:], '-', label="Predikce", color='red')
-
-# Removing the top spines
+        F[-size_of_samples:], '-', label="Predikce", color='red', linewidth=2)
 sns.despine(top=True)
-
-# Adjusting the subplot location
 plt.subplots_adjust(left=0.2)
-
-# Labeling the y-axis
 plt.ylabel('kW', size=14)
-
-# Labeling the x-axis
 plt.xlabel('Krok', size=14)
-
-# Adding a legend with font size of 15
 plt.legend(fontsize=16)
-
-# Display the plot
 plt.show()

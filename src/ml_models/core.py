@@ -20,6 +20,9 @@ def serialize_model(model: any, type: str ="lstm", code_name="") -> None:
     if type=="lstm":
         filename = f'./out/models/lstm_model_{code_name}.keras'
         return model.save(filename)
+    elif type=="cnn_lstm":
+        filename = f'./out/models/cnn_lstm_model_{code_name}.keras'
+        return model.save(filename)
     elif type=="xgboost":
         filename = f'./out/models/xgboost_model_{code_name}.pkl'
         return pickle.dump(model, open(filename, 'wb'))
@@ -38,6 +41,10 @@ def deserialize_model(type: str = "lstm", code_name=""):
         pass
     elif type=="xgboost":
         filename = f'./out/models/xgboost_model_{code_name}.pkl'
+    elif type=="cnn_lstm":
+        filename = f'./out/models/cnn_lstm_model_{code_name}.keras'
+        return  keras.saving.load_model(filename)
+        pass
     else:
         pass
 
