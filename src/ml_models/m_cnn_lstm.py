@@ -38,7 +38,9 @@ def preprocess_data(df, seq_length):
 if __name__=="__main__":
     seq_length = 48
 
-    data = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_0.csv", "MAC004431", )
+    data = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", )
+    data: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
+
     data[Y_VALUE_NAME+"_diff"] = data[Y_VALUE_NAME].diff().fillna(0)
     data[Y_VALUE_NAME+"_diff2"] = data[Y_VALUE_NAME+"_diff"].diff().fillna(0)
 
@@ -47,7 +49,7 @@ if __name__=="__main__":
 
     X, y, scaler = preprocess_data(data, seq_length)
 
-    split = int(0.80 * len(X))
+    split = int(0.7 * len(X))
     X_train, y_train = X[:split], y[:split]
     X_test, y_test = X[split:], y[split:]
 
@@ -103,7 +105,12 @@ if __name__=="__main__":
     F = test_predict[:,0]
     F = F[0:48]
     evaluate_model(A,F)
+    print("=======")
 
+    A2 = y_test[0:48*7]
+    F2 = test_predict[:,0]
+    F2 = F2[0:48*7]
+    evaluate_model(A2,F2)
 
 
 

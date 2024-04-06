@@ -157,16 +157,14 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \end{abbrList}
 
 \chapter{Úvod}
+PŘEPSAT KURVA
 
-
-Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největ-
-šími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak
+Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak
 
 se tyto vzorce mění, jsme schopni zajistit udržitelnou budoucnost.
 Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která
 
-nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatic-
-ké). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem
+nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem
 
 relevantnější informace pro konkrétní region či oblast.
 V tomto projektu si kladu za cíl vyvinout model lokální spotřeby založený na
@@ -699,7 +697,7 @@ Při analýze je kladen důraz na snížení dimenze dat či na odhalování atr
 Je též důležité věnovat pozornost identifikaci odlehlých hodnot (outlierů) v datech. Odlehlé hodnoty mohou výrazně ovlivnit výsledky analýzy či modelování, a tím měnit celkový obraz datové sady. Proto bude provedena analýza odlehlých hodnot.
 
 
-\subsection{Předzpracování dat}
+\subsection{Předzpracování dat}\label{preprocess}
 Pro další analýzu či zpracování je nutné mít data očištěna o možné anomálie a výpadky v měření. Pro datovou sadu z Londýna je potřeba vybrat reprezentativní vzorek pro analýzu, jelikož ne všechny domácnosti se zapojily ve stejný čas a proto je vhodné vybrat společný časový úsek pro všechny domácnosti, to pomůže také při analýze jednotlivých komponent časové řady. Datová sada od Albistechu bude použitá v celém jejím objemu. 
 
 Pro následující graf tedy byly zvoleny denní průběhy s platnými daty o měření. Data byla seskupena podle dnů v roce a jednotlivé unikátní identifikátory sečteny pro získání počtu domácností v čase. To umožnilo najít nejvhodnější časový úsek společný pro všechny domácnosti.
@@ -971,7 +969,41 @@ Finální natrénovaný model na validační množině dosahuje hodnot průměrn
 
 
 \subsection{ARIMA}
-Ukázat jak byla udělána autokorelace a výběr jednotlivých parametrů....
+
+Pro zjednodušení modelu ARIMA byla provedena agregace dat spotřebované energie jednotlivých domácností. Tato agregace dat byla provedena na očištěných datech z kapitoly \ref{preprocess}, kde došlo k eliminaci 38 elektroměrů a k ohraničení datové sady, která nyní začíná v lednu 2013. Transformace dat proběhla na základě tohoto výpočtu:
+
+\begin{equation}
+	y_t' = \frac{1}{n}\sum_{i=1}^{n}(y_t)_n
+\end{equation}
+kde $n$ je počet elektroměrů a $t$ je časové zpoždění.
+
+Pro identifikaci parametrů modelu pomocí box-jenkinsovy metodologie je nutné nejdříve zajistit, že jsou data stacionární. (TODO: Ocitovat). Pro ověření stacionarity datové sady byl konstruován rozšířený Dickeyův-Fullerův (ADF) test. Hypotézy pro ADF test jsou následující:
+\begin{itemize}
+\item Nulová hypotéza $H_0$ - časová řada není stacionární
+\item Alternativní hypotéza $H_A$ - časová řada je stacionární
+\end{itemize}
+Dále byla zvolena hladina významnosti 5 \% ($\alpha=0.05$).
+
+Po provedení ADF testu byla vypočtena \textit{p-value}, která dosáhla \textbf{0.454}. Na základě výsledku \textit{p-value}, lze prohlásit, že na hladině významnosti 5 \% nebyla zamítnuta hypotéza $H_0$, že časová řada není stacionární.
+
+Jelikož datová sada na základě ADF testu vykazuje nestacionární chování, byla pro další analýzu provedena diference. Výsledky \textit{p-value} po diferenci jsou nulové, a tudíž je řada nyní stacionární.
+
+Tento test také odhalil první parametr $d$, který bude nastaven na hodnotu 1. Určuje stupeň nutné diference pro převod časové řady na stacionární.
+
+Dalším krokem box-jenkinsovy metodologie je odhad ostatních parametrů ARIMA pomocí autokorelační (ACF) a parciální autokorelační funkce (PACF).
+
+\begin{figure}[htbp]
+ 	\centering
+ 	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{arima_pacf_acf.eps}}%
+ 	\caption{Zobrazení ACF/PACF po 1. diferenci pro odhad parametrů ARIMA modelu}
+ 	\label{fig:arima_acf_pacf}
+ \end{figure}
+Odhad počátečních parametrů proběhl na základě výše zobrazeného grafu \ref{fig:arima_acf_pacf}. Z grafu autokorelační funkce lze vyčíst díky zpoždění 0 a 48, že zde dochází k sezónní korelaci. Proto parametr sezónnosti $P$ byl nastaven na hodnotu 1.
+
+Z grafu \ref{fig:arima_acf_pacf} PACF lze nalézt parametr $p$ pro autoregresivní složku modelu. Byla zvolena hodnota 2, jelikož na grafu je vidět strmý propad v koeficientu po dvou zpožděních. 
+
+ 
+ 
 
 
 \newpage
@@ -1093,6 +1125,50 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných modelů. Pro porovnání výsledků byla zvolená krátkodobá predikci (max. 30 dnů). Veškeré modely dostavují na vstupu stejné časové úseky. Pro londýnskou datovou sadu to znamená úsek od 28.1. 2014 do 28.2. 2014. A pro datovou sadu zprostředkovanou Albistechem to je úsek od 28. 1. 2023 do 28. 2. 2023.
 
 
+(336 hodnot) pro london a 672 hodnot pro albis najednou
+\begin{table}[!ht]
+	\centering
+	\caption{Souhrnné výsledky predikce 7 dní }
+	\def\arraystretch{1.2}
+	\begin{tabular}{lllllll}
+		\hline
+		\textbf{Metoda} & \textbf{Rezidence} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} \\      \hline
+		LSTM            & MAC000291          &  0.094          & 0.311           & 0.183           & 26.217              \\ 
+		~               & MAC003597          & 0.044            & 0.209             & 0.120            & 15.798             \\  
+		~               & MAC004385          & 0.290            & 0.170             & 0.105           & 21.390            \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.001            & 0.030             & 0.022           & 48.032 \\         
+		
+		\hline
+		
+		CNN-LSTM        & MAC000291          & 0.007               & 0.081              & 0.048           & 6.596              \\ 
+		~               & MAC003597          & 0.005            & 0.062             & 0.043            & 9.051             \\  
+		~               & MAC004385          & 0.010            & 0.065             & 0.071           & 11.352            \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.004            & 0.059             & 0.044           &	5.512\\         
+		
+		\hline
+		
+		
+		XGBoost         & MAC000291          & 0.013	       & 0.130             &  0.0393        &  5.017            \\ 
+		~               & MAC003597          & 0.018            & 0.109             & 0.048            & 6.134             \\  
+		~               & MAC004385          & 00435            & 0.0666             &  0.0304            &  4.868             \\ 
+		~               & Poštovská 3 - byt 5.02  & 0.001          & 0.015             & 0.001            & 16.838\\   
+		
+				\hline
+		
+		ARIMA           & MAC000291          & TBA            & TBA             & TBA        &  TBA            \\ 
+		~               & MAC003597          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004385          & TBA            & TBA             & TBA           & TBA             \\ 
+		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
+		
+
+	\end{tabular}
+\end{table}
+
+
+
+No to mrdej
+
+
 \begin{table}[!ht]
 	\centering
 	\caption{Souhrnné výsledky predikce jednoho dne}
@@ -1100,37 +1176,36 @@ V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných mod
 	\begin{tabular}{lllllll}
 		\hline
 		\textbf{Metoda} & \textbf{Rezidence} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} \\      \hline
-		LSTM            & MAC004431          & TBA               & TBA               & TBA           & TBA              \\ 
-		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004387          & TBA            & TBA             & TBA           & TBA            \\ 
-		~               & Poštovská 3 - byt 5.02              & TBA            & TBA             & TBA           & TBA \\         
+		LSTM            & MAC000291          & 0.003          & 0.059          & 0.040           & 15.097              \\ 
+		~               & MAC003597          & 0.041            & 0.202             & 0.139            & 19.042             \\  
+		~               & MAC004385          & 0.029            & 0.171             &  0.096           & 18.348            \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.002            & 0.043             & 0.034           & 51.219 \\         
 		
 		\hline
 		
-		CNN-LSTM        & MAC004431          & TBA               & TBA               & TBA           & TBA              \\ 
-		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004387          & TBA            & TBA             & TBA           & TBA            \\ 
-		~               & Poštovská 3 - byt 5.02              & TBA            & TBA             & TBA           & TBA \\         
+		CNN-LSTM        & MAC000291          & 0.018               & 0.133               & 0.073           & 13.635              \\ 
+		~               & MAC003597          & 0.014            & 0.119             & 0.086            & 14.667             \\  
+		~               & MAC004385          & 0.010            & 0.065             & 0.071           & 11.352            \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.004            & 0.060             & 0.046           & 5.331 \\         
 		
 		\hline
 		
 		
-		XGBoost         & MAC004431          & TBA            & TBA             & TBA        &  TBA            \\ 
-		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004387          & TBA            & TBA             & TBA           & TBA             \\ 
+		XGBoost         & MAC000291          & 0.025	       & 0.157             &  0.060        &  7.174            \\ 
+		~               & MAC003597          & 0.005            & 0.069             & 0.034            & 4.964             \\  
+		~               & MAC004385          & 0.021            & 0.146             &  0.077            &  8.697             \\ 
+		~               & Poštovská 3 - byt 5.02  & 0.001           & 0.016             & 0.015            & 13.781\\   
+		
+		\hline
+		
+		ARIMA           & MAC000291          & TBA            & TBA             & TBA        &  TBA            \\ 
+		~               & MAC003597          & TBA            & TBA             & TBA            & TBA             \\  
+		~               & MAC004385          & TBA            & TBA             & TBA           & TBA             \\ 
 		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
 		
-				\hline
 		
-		ARIMA           & MAC004431          & TBA            & TBA             & TBA        &  TBA            \\ 
-		~               & MAC000246          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004387          & TBA            & TBA             & TBA           & TBA             \\ 
-		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
-		
-
 	\end{tabular}
 \end{table}
-
 
 
 \chapter{Závěr}

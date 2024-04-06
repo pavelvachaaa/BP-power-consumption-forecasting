@@ -73,7 +73,40 @@ def parse_iris_data_frame(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
+def load_agg_dataseet(file_path: str, weather_file_path="", weather_columns: list[str] = []):
+    df = pd.read_csv(file_path)
+    
+    df['DateTime'] = pd.to_datetime(df['tstp'])
+    df = df[df[Y_VALUE_NAME]!="Null"]
+    df[Y_VALUE_NAME] = pd.to_numeric(df[Y_VALUE_NAME])
 
+    df.drop(['tstp'],axis=1,inplace=True)
+
+    df.set_index('DateTime', inplace=True)
+
+    if weather_file_path != "":
+        df_weather = pd.read_csv(weather_file_path)
+        if len(weather_columns) > 0:
+            if ("precipType" in weather_columns):
+                label_encoder = LabelEncoder()
+                df_weather['precipType'] = label_encoder.fit_transform(df_weather['precipType'])
+            df_weather = df_weather[weather_columns]
+        else:
+            df_weather = df_weather[WEATHER_DEFAULT_COLUMNS]
+
+        df_weather["time"] = pd.to_datetime(df_weather["time"])
+        df_weather = df_weather.set_index("time")
+        df_weather = df_weather.resample('30T').interpolate().ffill()
+        df_weather.reset_index(inplace=True)
+
+        df = pd.merge(df, df_weather, left_on = "DateTime", right_on = "time", how ='left')
+        df_weather.reset_index(inplace=True)
+
+        df.set_index('time', inplace=True)
+
+    df = extract_time_features(df)
+
+    return df
 def load_london_dataset_household(file_path: str, household_id: str, weather_file_path="", weather_columns: list[str] = []) -> pd.DataFrame:
     """
     Funkce dle názvu datové sady načte soubor a vrátí pandas dataframe
@@ -106,7 +139,9 @@ def load_london_dataset_household(file_path: str, household_id: str, weather_fil
         df_weather.reset_index(inplace=True)
 
         df = pd.merge(df, df_weather, left_on = "DateTime", right_on = "time", how ='left')
-        df.set_index('DateTime', inplace=True)
+        df_weather.reset_index(inplace=True)
+
+        df.set_index('time', inplace=True)
 
     df = extract_time_features(df)
     return df

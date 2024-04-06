@@ -16,7 +16,9 @@ sns.set_style('white')
 if __name__ == "__main__":
     wrapper = NNModels(scaler=MinMaxScaler(feature_range=(0, 1)))
 
-    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_0.csv", "MAC004387", )
+    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", )
+    df: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
+
     df = wrapper.add_lags(df, Y_VALUE_NAME)
     df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
  
@@ -24,11 +26,11 @@ if __name__ == "__main__":
     df = df[Y_VALUE_NAME].values.astype('float64')
 
     nn_dataset = wrapper.transform_for_lstm(df)
-    train, test = wrapper.split_dataset(nn_dataset, train_size=0.75)
+    train, test = wrapper.split_dataset(nn_dataset, train_size=0.7)
 
     # Rozdělíme si data na x a y
-    X_train, Y_train = wrapper.to_sequence_for_lstm(train,48)
-    X_test, Y_test = wrapper.to_sequence_for_lstm(test, 48)
+    X_train, Y_train = wrapper.to_sequence_for_lstm(train,2)
+    X_test, Y_test = wrapper.to_sequence_for_lstm(test, 2)
 
     print("Shape (x-train): ",X_train.shape)
         # Shape (x-train):  (23942, 24)
@@ -59,8 +61,8 @@ if __name__ == "__main__":
     Y_test = wrapper.scaler.inverse_transform([Y_test])
 
 
-    A = Y_test[0]
-    F = test_predict[:,0]
+    A = Y_test[0][:96]
+    F = test_predict[:,0][:96]
 
     evaluate_model(A,F)
 

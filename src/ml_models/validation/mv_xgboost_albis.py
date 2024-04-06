@@ -17,8 +17,7 @@ from sklearn.metrics import roc_curve, auc,recall_score,precision_score
 
 # Ještě zkusit překopat na oříznutí DF a pak použít predict_future a porovnat to s tím (mělo by to vyjít stejně)
 if __name__ == "__main__":
-    # Zde je použit kompletně jiná část londýna a náhodný barák pro validaci modelu, který byl natrénován také na úplně jiné části londýna a jiném baráku
-    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
+    df: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
     df = df[:48*7]
     # Features, které to potřebuje*
     df = add_lags(df)
