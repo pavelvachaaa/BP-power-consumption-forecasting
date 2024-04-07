@@ -163,25 +163,16 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \end{abbrList}
 
 \chapter{Úvod}
-PŘEPSAT KURVA
+Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak se tyto vzorce mění, je možné zajistit udržitelnou budoucnost.
 
-Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak
+Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem relevantnější informace pro konkrétní region, oblast či domácnost.
 
-se tyto vzorce mění, jsme schopni zajistit udržitelnou budoucnost.
-Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která
+V této práci si autor práce klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou
+oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci udržitelných opatření v oblasti energetiky a ochrany životního prostředí. 
 
-nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem
+Získání přesnějšího a místně relevantního pohledu na spotřebu energie umožní přijímat informovaná rozhodnutí a přizpůsobit strategie energetického plánování tak, aby byly co nejefektivnější a nejohleduplnější k životnímu prostředí.
 
-relevantnější informace pro konkrétní region či oblast.
-V tomto projektu si kladu za cíl vyvinout model lokální spotřeby založený na
-historických datech spolu s environmentálními parametry, pokud jsou pro danou
-oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci
-udržitelných opatření v oblasti energetiky a ochrany životního prostředí. Získání
-přesnějšího a místně relevantního pohledu na spotřebu energie nám umožní přijímat
-informovaná rozhodnutí a přizpůsobit naše strategie tak, aby byly co nejefektivnější
-a nejohleduplnější k životnímu prostředí.
-Pro vytvoření spolehlivého a vhodného modelu lokální spotřeby se část tohoto
-projektu bude zabývat rešerší různých technik strojového učení spolu s metodami
+Pro vytvoření robustního a spolehlivého modelu lokální spotřeby se část této práce bude zabývat rešerší různých technik strojového učení spolu s metodami
 ze statistické analýzy.
 
 
@@ -1015,7 +1006,7 @@ V tabulce níže, jsou tři modely, které dosáhly v průběhu testování nejl
 \begin{table}[!ht]
 	\centering
 	\caption{Nejlepší parametry pro sezónní ARIMA model}
-	
+	\label{Tab:arimamodels}
 	\begin{tabularx}{\linewidth}{lXXX}
 		\hline
 		\textbf{Řád modelu} & \textbf{Řád sezónnosti} & \textbf{Absolutní AIC} & \textbf{SSE} \\ \hline
@@ -1115,12 +1106,12 @@ Z grafu \ref{fig:cnn_lstm_learning_curve} výše lze vidět, že validační ztr
 \begin{figure}[htbp]
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{lstm_vyrez.eps}}%
-	\caption{Ukázka předpovědi pro 7 dní (672 hodnot)}
+	\caption{Ukázka předpovědi pro 7 dní (336 hodnot)}
 	\label{fig:lstm_vyrez}
 \end{figure}
 
 
-Na grafu výše lze vidět krátkodobou predikci na dalších 7 dní po půl hodinách (672 hodnot). Model vykazuje schopnost reagovat na prudké změny v chování rezidentů v průběhu týdne.
+Na grafu výše lze vidět krátkodobou predikci na dalších 7 dní po půl hodinách (336 hodnot). Model vykazuje schopnost reagovat na prudké změny v chování rezidentů v průběhu týdne.
 
 
 \newpage
@@ -1153,21 +1144,65 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 
 
 \chapter{Výsledky}\label{Výsledky}
-V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných modelů. Pro porovnání výsledků byla zvolená krátkodobá predikci (max. 30 dnů). Veškeré modely dostavují na vstupu stejné časové úseky. Pro londýnskou datovou sadu to znamená úsek od 28.1. 2014 do 28.2. 2014. A pro datovou sadu zprostředkovanou Albistechem to je úsek od 28. 1. 2023 do 28. 2. 2023.
+V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných modelů. Kvůli povaze úlohy, kde je potřeba s maximální přesností predikovat co nejlépe následující den, byla zvolena krátkodobá predikce pro porovnání jednotlivých modelů. Modely byly vytrénovány na agregované datově sadě a poté použity ke všem porovnáním v tabulkách níže.
 
-%Model je schopný reagovat na prudké změny v chování rezidentů v průběhu týdne.
+Pro objektivní porovnání výsledků byly modely natrénovány na stejných datech a následně na vstup dostávají stejné časové úseky pro predikci. Takto natrénované modely by měly ukázat svoji schopnost generalizovat na předem neznámých datech z minulosti. 
 
-(336 hodnot) pro london a 672 hodnot pro albis najednou
 \begin{table}[!ht]
 	\centering
-	\caption{Souhrnné výsledky predikce 7 dní }
+	\caption{Souhrnné výsledky predikce na agregované datové sadě}
+	\label{Tab:results-agg}
+	\def\arraystretch{1.2}
+
+	\begin{tabular}{lllllll}
+		\hline
+		\textbf{Metoda} & \textbf{Délka predikce} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} 	\\      \hline
+		ARIMA           & 24 hodin       & 0.001           & 0.024              & 0.018            & 7.882             \\ 
+		~               & 7 dní          &0.001          &  0.017           & 0.013              & 6.148            \\  
+    
+		\hline
+		
+		CNN-LSTM          & 24 hodin      &0.001          &  0.016           & 0.013            & 2.608              \\ 
+		~               & 7 dní          & 0.001             & 0.024           & 0.017            & 3.928            \\  
+		
+		\hline
+		
+		LSTM         & 24 hodin      & 0.001     & 0.008          & 0.007           & 4.346              \\ 
+		~               & 7 dní          &  0.001          & 0.008              & 0.006            & 4.145             \\  
+		
+		\hline
+		
+		\textbf{XGBoost}          & 24 hodin      & 0.001          & 0.008           & 0.004           & 1.857             \\ 
+		~               & \textbf{7 dní}          & \textbf{0.001}           & \textbf{0.007}             & \textbf{0.003}            & \textbf{1.645}             \\  
+		
+		\hline
+		
+	\end{tabular}
+
+\end{table}
+
+V první tabulce \ref{Tab:results-agg} jsou prezentovány výsledky predikce na agregované datové sadě.  Ukazatele jsou uvedeny pro každou testovanou metodu a délku predikce (48 a 336 hodnot).
+
+V tomto případě XGBoost dosáhl nejnižších hodnot chyb v obou délkách predikce, což by mohlo indikovat, že je schopen dobře modelovat nelineární vztahy v datech a přesněji předpovídat.
+
+Oproti tomu model ARIMA zde dosáhl nejvyšších hodnot chyb. Lze vyloučit nedostatečné předzpracování dat, jelikož agregovaná datová sada je očištěna o veškeré anomálie, které obsahovala. Výběr parametrů byl podroben analýze a byly vybrány nejlepší možné parametry uvedeny v tabulce \ref{Tab:arimamodels}. Vzhledem k relativně nízké chybě lze konstatovat, že se zde naráží na technické limity toho, jak moc se ARIMA dokáže přizpůsobit k datům, pokud obsahují nelinearitu nebo pokud jsou příliš dynamické.
+
+
+Pro další porovnání byly zvoleny náhodně 4 různé rezidence. Z toho tři byly z Londýna a jedna z Brna. Vstupní data pro rezidence z Londýna byla v časovém úseku od 0:00 1.1. 2014 až 0:00 8.1. 2014. Celkem se jednalo o predikci 336 hodnot. 
+
+Pro brněnskou rezidenci to byl časový úsek 0:00 28. 1. 2023 0:00 do 7. 2. 2023. V tomto případě to byla predikce 672 hodnot, jelikož data jsou uložena se čtvrthodinovým rozlišením.
+
+\begin{table}[!ht]
+	\centering
+	\caption{Souhrnné výsledky predikce 7 dní}
+	\label{Tab:7dayresults}
 	\def\arraystretch{1.2}
 	\begin{tabular}{lllllll}
 		\hline
 		\textbf{Metoda} & \textbf{Rezidence} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} \\      \hline
 		LSTM            & MAC000291          &  0.094          & 0.311           & 0.183           & 26.217              \\ 
 		~               & MAC003597          & 0.044            & 0.209             & 0.120            & 15.798             \\  
-		~               & MAC004385          & 0.290            & 0.170             & 0.105           & 21.390            \\ 
+		~               & MAC004385          & 0.027           & 0.163           & 0.112           & 15.215          \\ 
 		~               & Poštovská 3 - byt 5.02              & 0.001            & 0.030             & 0.022           & 48.032 \\         
 		
 		\hline
@@ -1185,33 +1220,47 @@ V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných mod
 		~               & MAC004385          & 00435            & 0.0666             &  0.0304            &  4.868             \\ 
 		~               & Poštovská 3 - byt 5.02  & 0.001          & 0.015             & 0.001            & 16.838\\   
 		
-				\hline
+		\hline
 		
-		ARIMA           & MAC000291          & TBA            & TBA             & TBA        &  TBA            \\ 
-		~               & MAC003597          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004385          & TBA            & TBA             & TBA           & TBA             \\ 
-		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
+		ARIMA           & MAC000291          & 0.048            & 0.220             & 0.136        &  34.588            \\ 
+		~               & MAC003597          & 0.069            & 0.259             & 0.132            & 26.723             \\  
+		~               & MAC004385          & 0.142            & 0.377             & 0.300           & 34.143             \\ 
+		~               & Poštovská 3 - byt 5.02  & 0.002           & 0.039             & 0.029           & 48.479 \\   
 		
-
+		
 	\end{tabular}
 \end{table}
 
 
 
-No to mrdej
 
+Na základě výsledků uvedených v tabulce \ref{Tab:7dayresults} lze pozorovat významné rozdíly v úspěšnosti jednotlivých metod při predikci spotřeby energie pro různé rezidence. Výsledky naznačují výrazné rozdíly v úspěšnosti jednotlivých metod při predikci spotřeby energie. Metoda XGBoost dosahuje nejnižších hodnot chyb ve 3 ze 4 testovaných rezidencích, což potvrzuje její schopnost dobře modelovat rychle se měnící chování domácností.
 
+Změna architektury metody z LSTM na CNN-LSTM vykazuje zlepšení v každé rezidenci o několik procentuálních bodů. Tato architektura navíc konzistentně dosahuje nejlepších výsledků na brněnské rezidenci. Přidaná konvoluční vrstva této architektuře umožňuje vhodně předzpracovat vstupní parametry, což vede k lepším výsledkům.
+
+Při zpětném průzkumu důvodů, proč ARIMA model nedosahuje dobrých výsledků na poslední rezidenci, bylo zjištěno, že model není schopen efektivně reagovat na rychlé výkyvy ve spotřebě. 
+
+Toto zjištění vychází z grafické inspekce dat, kde bylo zjištěno, že ARIMA model má potíže reagovat na rychlé výkyvy ve spotřebě, jak je znázorněno na grafu \label{spike_analysis} níže.
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{spike.eps}}%
+	\caption{Analýza výkyvu}
+	\label{fig:spike_analysis}
+\end{figure}
+Pro poslední porovnání byla provedena predikce v rámci jednoho dne. Celkem se jednalo o predikci 48 hodnot a 96 hodnot v případě brněnské rezidence.  
 \begin{table}[!ht]
 	\centering
 	\caption{Souhrnné výsledky predikce jednoho dne}
+	\label{Tab:1dayresults}
 	\def\arraystretch{1.2}
 	\begin{tabular}{lllllll}
 		\hline
 		\textbf{Metoda} & \textbf{Rezidence} & \textbf{MSE} & \textbf{RMSE} & \textbf{MAE} & \textbf{MAPE [\%]} \\      \hline
 		LSTM            & MAC000291          & 0.003          & 0.059          & 0.040           & 15.097              \\ 
-		~               & MAC003597          & 0.041            & 0.202             & 0.139            & 19.042             \\  
-		~               & MAC004385          & 0.029            & 0.171             &  0.096           & 18.348            \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.002            & 0.043             & 0.034           & 51.219 \\         
+		~               & MAC003597          & 0.041            & 0.202             & 0.139            &  17.633             \\  
+		~               & MAC004385          & 0.029            & 0.151             &  0.011           & 15.412            \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.060            & 0.024             & 0.019           & 36.892 \\         
 		
 		\hline
 		
@@ -1230,19 +1279,40 @@ No to mrdej
 		
 		\hline
 		
-		ARIMA           & MAC000291          & TBA            & TBA             & TBA        &  TBA            \\ 
-		~               & MAC003597          & TBA            & TBA             & TBA            & TBA             \\  
-		~               & MAC004385          & TBA            & TBA             & TBA           & TBA             \\ 
-		~               & Poštovská 3 - byt 5.02              & TBA           & TBA             & TBA           & TBA \\   
+		ARIMA           & MAC000291          & 0.025           &  0.157             & 0.133        &  69.778            \\ 
+		~               & MAC003597          & 0.009            & 0.092             & 0.071            & 23.672             \\  
+		~               & MAC004385          & 0.077            & 0.277             & 0.205           & 24.941             \\ 
+		~               & Poštovská 3 - byt 5.02              & 0.001           & 0.037             & 0.026           & 37.800 \\   
 		
 		
 	\end{tabular}
 \end{table}
 
+Z výsledků tabulky \ref{Tab:1dayresults} lze vyčíst, že XGBoost opět dominoval v úspěšnosti svých predikcí i v horizontu jednoho dne. ARIMA narazila na stejný problém jako v minulém měření, kde nedokázala zachytit náhlé výkyvy v energii. Metoda LSTM zde vykazuje lepší výsledky při predikci v horizontu jednoho dne. Při zpracování výsledků z modelu CNN-LSTM zde došlo k mírnému zhoršení oproti 7 dennímu horizontu, avšak i nadále si zachoval 5\% přesnost na rezidenci, se kterou měly ostatní modely problém.
+
+Výsledky predikce se liší podle konkrétní rezidence, což naznačuje, že úspěšnost metod může být ovlivněna specifickými charakteristikami jednotlivých domácností nebo lokací, ve kterých bude hrát roli variance a rozptyl datové sady.
+
+Ze všech těchto měření lze vyvodit několik poznatků. Metoda XGBoost vítězí v přesnosti predikce bez ohledu na délku predikce a umístění rezidence. Přechod z architektury LSTM na CNN-LSTM vedl k celkovému zlepšení výsledků, zejména u brněnské rezidence. Tato architektura je schopná lépe zpracovávat vstupní parametry a lépe se adaptovat na různé vlastnosti  (rozptyl, variance) dat. 
+
+ARIMA model dosáhl nejhorších výsledků v porovnání s ostatními metodami, což naznačuje jeho omezenou schopnost přizpůsobení se dynamice dat a rychlým změnám ve spotřebě energie a nebude tedy zvažován pro produkční nasazení.
+
+Celkově lze tedy považovat modely \textbf{XGBoost} a \textbf{CNN-LSTM} za vhodné kandidáty do produkčního nasazení ve společnosti Albistech s.r.o. 
 
 \chapter{Závěr}
-Tato práce si kladla za cíl ... 
+Cílem této práce bylo predikování spotřeby elektrické energie v domácnosti. Důvodem, proč mít představu o spotřebě energie dopředu, bylo dát zákazníkům společnosti Albistech s.r.o. možnost řízení své spotřeby, což souvisí s ekonomičtějším provozem a s větším šetřením životního prostředí, díky efektivnějšímu plánování zdrojů elektrické energie.
 
+Jako první stěžejní krok bylo nalezení spolehlivých metod, které se v dnešní době používají k predikování spotřeby, pro smysluplné uplatnění v praxi. Kvůli povaze úlohy, kde byla potřeba v reálném čase vidět budoucí hodnoty, bylo nutné vybrat metody časově nenáročné ale zároveň dostatečně flexibilní a přesné. K porovnání byly vybrány čtyři metody, a to rozhodovací stromy, ARIMA, LSTM a CNN-LSTM sítě. Významné se díky své přesnosti staly CNN-LSTM sítě a rozhodovací stromy.
+
+Metody byly aplikovány na dvě datové sady, a to na sadu s rezidencemi z Londýna s 30 minutovým rozlišením a na poskytnutou sadu s 15 minutovým rozlišením. Samotné aplikaci metod předcházela detailní explorační datová analýza pro výběr co nejvhodnějších parametrů.
+
+Rozhodovací stromy dosáhly nejlepších výsledků přesnosti ze všech testovaných metod. Pomocí knihovny XGBoost model dosáhl na výsledky s průměrnou absolutní odchylkou často okolo 5 \%. V několika případech však model byl méně konzistentní a dosahoval chyby až 16 \%. Díky své přesnosti a nízké výpočetní náročnosti byl tento model vybrán společností pro produkční nasazení.
+
+U CNN-LSTM sítí byla objevena vyšší přesnost na datech s vyšší variancí a rozptylem. Model dosahoval výsledků s průměrnou absolutní odchylkou od skutečnosti často do 10 \% při predikci v 7 denním horizontu. Výsledky byly poměrně konzistentní a vhodné pro produkční nasazení.
+
+
+Posledním zkoumaným modelem byla ARIMA, která nedosáhla uspokojivých výsledků. Analýza ukázala, že tento model není schopen zachytit komplexitu a dynamiku dat, jenž byla modelu předložena.
+
+Problematika modelování spotřeby koncového uživatele je velmi rozsáhlá, práce by se dala rozšířit spousta způsoby. Zvýšení přesnosti jednotlivých modelů a předpovědí spotřeby by bylo možné dosáhnout s využitím dalších parametrů, za předpokladu, že by bylo možné je někde vytěžit nebo by existovaly v archívu. V případě vyššího výpočetního výkonu by bylo možné modely zpřesnit zahrnutím většího počtu záznamů s vyšší frekvencí nebo tvorbou komplexnějšího modelu.
 
 
 \printbibliography[title={Použitá literatura}] % sazba seznamu citací 

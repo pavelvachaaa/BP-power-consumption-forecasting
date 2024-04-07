@@ -40,6 +40,7 @@ if __name__=="__main__":
 
     data = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", "MAC000291", )
     data: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
+    data: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")#  
 
     data[Y_VALUE_NAME+"_diff"] = data[Y_VALUE_NAME].diff().fillna(0)
     data[Y_VALUE_NAME+"_diff2"] = data[Y_VALUE_NAME+"_diff"].diff().fillna(0)

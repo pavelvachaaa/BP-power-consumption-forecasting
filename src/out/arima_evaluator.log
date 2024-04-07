@@ -1,0 +1,358 @@
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.15671
+INFO:arima_evaluator:MAPE: 84.17112%
+INFO:arima_evaluator:MSE: 0.03388
+INFO:arima_evaluator:RMSE: 0.18406
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13847
+INFO:arima_evaluator:MAPE: 39.25829%
+INFO:arima_evaluator:MSE: 0.04543
+INFO:arima_evaluator:RMSE: 0.21314
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 0, LCLid: MAC003597
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.08643
+INFO:arima_evaluator:MAPE: 31.77333%
+INFO:arima_evaluator:MSE: 0.01221
+INFO:arima_evaluator:RMSE: 0.11051
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.15653
+INFO:arima_evaluator:MAPE: 38.28759%
+INFO:arima_evaluator:MSE: 0.06843
+INFO:arima_evaluator:RMSE: 0.26160
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 7, LCLid: MAC004385
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.20518
+INFO:arima_evaluator:MAPE: 24.94205%
+INFO:arima_evaluator:MSE: 0.07665
+INFO:arima_evaluator:RMSE: 0.27685
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.30034
+INFO:arima_evaluator:MAPE: 34.14341%
+INFO:arima_evaluator:MSE: 0.14249
+INFO:arima_evaluator:RMSE: 0.37748
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.13461
+INFO:arima_evaluator:MAPE: 70.55866%
+INFO:arima_evaluator:MSE: 0.02577
+INFO:arima_evaluator:RMSE: 0.16053
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13617
+INFO:arima_evaluator:MAPE: 34.58783%
+INFO:arima_evaluator:MSE: 0.04825
+INFO:arima_evaluator:RMSE: 0.21967
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 0, LCLid: MAC003597
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.07198
+INFO:arima_evaluator:MAPE: 24.07504%
+INFO:arima_evaluator:MSE: 0.00863
+INFO:arima_evaluator:RMSE: 0.09292
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13151
+INFO:arima_evaluator:MAPE: 26.72277%
+INFO:arima_evaluator:MSE: 0.06686
+INFO:arima_evaluator:RMSE: 0.25857
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 7, LCLid: MAC004385
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.17913
+INFO:arima_evaluator:MAPE: 30.38207%
+INFO:arima_evaluator:MSE: 0.05147
+INFO:arima_evaluator:RMSE: 0.22688
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.25716
+INFO:arima_evaluator:MAPE: 36.49193%
+INFO:arima_evaluator:MSE: 0.09761
+INFO:arima_evaluator:RMSE: 0.31243
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.14288
+INFO:arima_evaluator:MAPE: 75.63247%
+INFO:arima_evaluator:MSE: 0.02882
+INFO:arima_evaluator:RMSE: 0.16978
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13521
+INFO:arima_evaluator:MAPE: 36.04514%
+INFO:arima_evaluator:MSE: 0.04608
+INFO:arima_evaluator:RMSE: 0.21466
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 0, LCLid: MAC003597
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.09488
+INFO:arima_evaluator:MAPE: 31.61677%
+INFO:arima_evaluator:MSE: 0.01180
+INFO:arima_evaluator:RMSE: 0.10863
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.17480
+INFO:arima_evaluator:MAPE: 38.79872%
+INFO:arima_evaluator:MSE: 0.08974
+INFO:arima_evaluator:RMSE: 0.29956
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 7, LCLid: MAC004385
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.16434
+INFO:arima_evaluator:MAPE: 31.36146%
+INFO:arima_evaluator:MSE: 0.04370
+INFO:arima_evaluator:RMSE: 0.20905
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.21995
+INFO:arima_evaluator:MAPE: 43.73032%
+INFO:arima_evaluator:MSE: 0.07139
+INFO:arima_evaluator:RMSE: 0.26718
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.13519
+INFO:arima_evaluator:MAPE: 72.81101%
+INFO:arima_evaluator:MSE: 0.02262
+INFO:arima_evaluator:RMSE: 0.15041
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.16969
+INFO:arima_evaluator:MAPE: 50.92901%
+INFO:arima_evaluator:MSE: 0.05548
+INFO:arima_evaluator:RMSE: 0.23554
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 0, LCLid: MAC003597
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.07087
+INFO:arima_evaluator:MAPE: 23.67240%
+INFO:arima_evaluator:MSE: 0.00854
+INFO:arima_evaluator:RMSE: 0.09241
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13226
+INFO:arima_evaluator:MAPE: 27.13613%
+INFO:arima_evaluator:MSE: 0.06673
+INFO:arima_evaluator:RMSE: 0.25832
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 7, LCLid: MAC004385
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.18347
+INFO:arima_evaluator:MAPE: 30.85987%
+INFO:arima_evaluator:MSE: 0.05364
+INFO:arima_evaluator:RMSE: 0.23161
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.26398
+INFO:arima_evaluator:MAPE: 36.54770%
+INFO:arima_evaluator:MSE: 0.10367
+INFO:arima_evaluator:RMSE: 0.32198
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.13571
+INFO:arima_evaluator:MAPE: 71.48037%
+INFO:arima_evaluator:MSE: 0.02583
+INFO:arima_evaluator:RMSE: 0.16073
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13553
+INFO:arima_evaluator:MAPE: 36.08802%
+INFO:arima_evaluator:MSE: 0.04587
+INFO:arima_evaluator:RMSE: 0.21418
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:New iter
+INFO:arima_evaluator:Block: 12, LCLid: MAC000291
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.13312
+INFO:arima_evaluator:MAPE: 69.77816%
+INFO:arima_evaluator:MSE: 0.02473
+INFO:arima_evaluator:RMSE: 0.15726
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13497
+INFO:arima_evaluator:MAPE: 35.53213%
+INFO:arima_evaluator:MSE: 0.04591
+INFO:arima_evaluator:RMSE: 0.21427
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 0, LCLid: MAC003597
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.07139
+INFO:arima_evaluator:MAPE: 23.87768%
+INFO:arima_evaluator:MSE: 0.00867
+INFO:arima_evaluator:RMSE: 0.09310
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.13321
+INFO:arima_evaluator:MAPE: 27.67751%
+INFO:arima_evaluator:MSE: 0.06648
+INFO:arima_evaluator:RMSE: 0.25784
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:Block: 7, LCLid: MAC004385
+INFO:arima_evaluator:=================================
+INFO:arima_evaluator:24h
+INFO:arima_evaluator:=======
+INFO:arima_evaluator:MAE: 0.17980
+INFO:arima_evaluator:MAPE: 31.50600%
+INFO:arima_evaluator:MSE: 0.05176
+INFO:arima_evaluator:RMSE: 0.22751
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:7d
+INFO:arima_evaluator:========
+INFO:arima_evaluator:MAE: 0.26157
+INFO:arima_evaluator:MAPE: 37.20684%
+INFO:arima_evaluator:MSE: 0.10075
+INFO:arima_evaluator:RMSE: 0.31742
+INFO:arima_evaluator:
+
+INFO:arima_evaluator:
+

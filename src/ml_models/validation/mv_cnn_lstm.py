@@ -40,6 +40,7 @@ if __name__=="__main__":
     seq_length = 48
 
     df = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", "MAC000291", )
+    df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")
     df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
     df[Y_VALUE_NAME+"_diff2"] = df[Y_VALUE_NAME+"_diff"].diff().fillna(0)
 

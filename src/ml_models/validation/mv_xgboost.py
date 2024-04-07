@@ -19,6 +19,7 @@ from sklearn.metrics import roc_curve, auc,recall_score,precision_score
 if __name__ == "__main__":
     # Zde je použit kompletně jiná část londýna a náhodný barák pro validaci modelu, který byl natrénován také na úplně jiné části londýna a jiném baráku
     df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
+    
     df = df[:48*7]
     # Features, které to potřebuje*
     df = add_lags(df)
@@ -28,7 +29,7 @@ if __name__ == "__main__":
     FEATURES = ["hour", "energyMax6h", "energyMean1h", "energyMean6h", "energyMean12h", "energyMean7d", Y_VALUE_NAME+"_diff", Y_VALUE_NAME+"_diff2"]
     df = df.sort_index()
 
-    xgb_model_loaded = deserialize_model("xgboost","beast_0_MAC004431_ULTRA")
+    xgb_model_loaded = deserialize_model("xgboost", "MAC000291")
 
     X_vals, Y_vals = df[FEATURES], df[Y_VALUE_NAME]
  

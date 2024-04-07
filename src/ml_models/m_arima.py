@@ -20,26 +20,18 @@ is_albistech = False
 def fit_sarima(data, order, seasonal_order,id: str):
     model = sm.tsa.arima.ARIMA(data[Y_VALUE_NAME], order=order, seasonal_order=seasonal_order, enforce_stationarity=False, enforce_invertibility=False)
     results = model.fit()
-    results.save(f'./out/models/arima_arma_{order}_ses_{seasonal_order}_{id}.pkl')
+    # results.save(f'./out/models/arima_arma_{order}_ses_{seasonal_order}_{id}.pkl')
 
     return results
 
 if __name__ == "__main__":
     household = "MAC000291"
-    # df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")
     df = load_london_dataset_household(f"./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", household, )
+    # df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")
     # df: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
-    blocks = [12, 0, 7]
-    lclids = ["MAC000291", "MAC003597", "MAC004385"]
-
-    for index, lclid in enumerate(lclids):
-        pass
-
-
-
 
     df = df.resample('1h').mean().astype('float32')
-    order = (1,0,1)
+    order = (0,0,1)
     seasonal_order = (1,0, 1, 24)
 
     train_size = int(len(df) * 0.8)
@@ -54,20 +46,24 @@ if __name__ == "__main__":
 
     print("24h")
     print("=======")
-    evaluate_model(test[Y_VALUE_NAME][:96], predictions[:96])
+    evaluate_model(test[Y_VALUE_NAME][:24], predictions[:24])
     print("\n")
     print("\n")
     print("7d")
     print("========")
-    evaluate_model(test[Y_VALUE_NAME][:96*7], predictions[:96*7])
+    evaluate_model(test[Y_VALUE_NAME][:24*7], predictions[:24*7])
     print("\n")
     print("\n")
 
     plt.figure(figsize=(12, 6))
-
+    plt.xlabel("Čas")
+    plt.ylabel("Spotřeba energie [kW/h]")
+    plt.title("")
     # plt.plot(train.index[:96*5], train[Y_VALUE_NAME][:96*5], label='Training')
-    plt.plot(test.index[:96*5], test[Y_VALUE_NAME][:96*5], label='Test')
-    plt.plot(test.index[:96*5], predictions[:96*5], label='Predictions')
-    plt.title('SARIMA Forecast')
+    plt.plot(test.index[:24*5], test[Y_VALUE_NAME][:24*5], label='Naměřená', linewidth=2,)
+    plt.plot(test.index[:24*5], predictions[:24*5], label='Predikce', linewidth=2,)
+   
     plt.legend()
+    plt.savefig('./out/spike.eps', format='eps', bbox_inches='tight', transparent=True)
+
     plt.show()

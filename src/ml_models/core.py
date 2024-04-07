@@ -201,7 +201,8 @@ def add_lags(df: pd.DataFrame) -> pd.DataFrame:
 
     return df
 
-def evaluate_model(A: list[float], F: list[float]) -> None:
+from logging import Logger
+def evaluate_model(A: list[float], F: list[float], logger: Logger = None) -> None:
     """
     Výpis statistik
     A = actual
@@ -211,3 +212,11 @@ def evaluate_model(A: list[float], F: list[float]) -> None:
     print('MAPE: {:.5f}%'.format(mean_absolute_percentage_error(A, F)*100))
     print('MSE: {:.5f}'.format(mean_squared_error(A, F)))
     print('RMSE: {:.5f}'.format(np.sqrt(mean_squared_error(A, F))))
+
+    if logger is not None:
+        logger.info('MAE: {:.5f}'.format(mean_absolute_error(A, F)))
+        logger.info('MAPE: {:.5f}%'.format(mean_absolute_percentage_error(A, F)*100))
+        logger.info('MSE: {:.5f}'.format(mean_squared_error(A, F)))
+        logger.info('RMSE: {:.5f}'.format(np.sqrt(mean_squared_error(A, F))))
+
+        

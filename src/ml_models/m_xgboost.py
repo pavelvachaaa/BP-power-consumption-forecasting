@@ -18,7 +18,7 @@ FEATURES = [*WEATHER_DEFAULT_COLUMNS,  *get_time_features_name(), "energyMean1d"
 
 if __name__ == "__main__":
     df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_0.csv", "MAC004431", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
-#     df: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
+    df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")#  
     df = add_lags(df)
 
     df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
@@ -72,10 +72,10 @@ if __name__ == "__main__":
     df_unseen['pred'] = reg.predict(df_unseen_X)
 
 
-    ax = df_unseen[[Y_VALUE_NAME, 'pred']][:15*4].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
+    ax = df_unseen[[Y_VALUE_NAME, 'pred']][:48*7].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
     plt.savefig('./out/xgboost_predictions.eps', format='eps', bbox_inches='tight', transparent=True, )
 
-    evaluate_model(df_unseen[Y_VALUE_NAME][:48*7],df_unseen["pred"][:48*7])
+    evaluate_model(df_unseen[Y_VALUE_NAME][:48],df_unseen["pred"][:48])
     serialize_model(reg, "xgboost", "MAC000291")
 
 

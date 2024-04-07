@@ -21,7 +21,7 @@ is_albistech = False
 
 wrapper = NNModels(scaler=MinMaxScaler(feature_range=(0, 1)))
 df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", "MAC000291" )
-
+df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")
 ONE_DAY = 96 if is_albistech else 48
 DAYS_OF_PREDICTION =  ONE_DAY*7
 

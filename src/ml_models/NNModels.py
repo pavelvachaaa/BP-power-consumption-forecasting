@@ -94,15 +94,12 @@ class NNModels:
         model = keras.Sequential(
             [
             # RepeatVector(50),
-            LSTM(10, activation="relu", return_sequences=True, input_shape=(train_input_shape[1], train_input_shape[2])),
-            BatchNormalization(),
-            Dropout(0.2),
-            LSTM(15, activation="tanh", return_sequences=True),
-            BatchNormalization(),
-            Dropout(0.2),
-            LSTM(10, activation="tanh", return_sequences=False),
-            BatchNormalization(),
-            Dropout(0.2),
+            LSTM(75, activation="tanh", return_sequences=True, input_shape=(train_input_shape[1], train_input_shape[2])),
+            Dropout(0.15),
+            LSTM(100, activation="tanh", return_sequences=True),
+            Dropout(0.15),
+            LSTM(75, activation="tanh", return_sequences=False),
+            Dropout(0.15),
             Dense(1),
             ]
         )
