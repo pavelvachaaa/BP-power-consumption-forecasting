@@ -167,7 +167,7 @@ Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně 
 
 Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem relevantnější informace pro konkrétní region, oblast či domácnost.
 
-V této práci si autor práce klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou
+V této práci si autor klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou
 oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci udržitelných opatření v oblasti energetiky a ochrany životního prostředí. 
 
 Získání přesnějšího a místně relevantního pohledu na spotřebu energie umožní přijímat informovaná rozhodnutí a přizpůsobit strategie energetického plánování tak, aby byly co nejefektivnější a nejohleduplnější k životnímu prostředí.
@@ -177,7 +177,7 @@ ze statistické analýzy.
 
 
 \chapter{Časové řady}
-Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam je v určitém časovému okamžiku. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řád, které se budou v následujících kapitolách vyskytovat.
+Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam má v určitém časovému okamžiku hodnotu v patřičných jednotkách. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řád, které se budou v následujících kapitolách vyskytovat.
 
 Časová řada je definována jako množina pozorování $x_t$, kde každé pozorování má záznam v čase $t$. \cite{Brockwell2016-qt} Příkladem typické časové řady může být vývoj ceny akcií na burze v čase nebo výše zmíněna spotřeba energie. Každá časová řada se dá rozložit (dekomponovat) na několik jednotlivých složek (komponent). 
 
@@ -356,7 +356,7 @@ Pokud se spojí tedy AR model po diferenci s modelem klouzavého průměru obdr�
  x_t =    \sum_{i=1}^{n}(\alpha_i \Delta x_{t-i}) + \sum_{i=1}^{n}(\alpha_i\epsilon_{t-i}) + \alpha_0 + \epsilon_t
 \end{equation}
 
-kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \cite{doi:10.1177/003754979105700508} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
+kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \cite{zayiong} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
 
 
 \section{Rozhodovací stromy}
@@ -1032,11 +1032,11 @@ Optimální velikost dávky (batch size) byla nastavena na hodnotu 128.
 		\hline
 		\textbf{Vrstva} & \textbf{Neurony} & \textbf{Výstupní rozměr} & \textbf{Počet parametrů} & \textbf{Ostatní nastavení} \\ \hline
 		LSTM & 50 & (None, 1, 50) & 19 800 & returnSequences=True \\
-		Dropout & - & (None, 1, 50) & 0 & - \\
+		Dropout & - & (None, 1, 50) & 0 & 0.15 \\
 		LSTM  & 75 & (None, 1, 75) & 37 800 & returnSequences=True \\
-		Dropout & - & (None, 1, 75) & 0 & - \\
+		Dropout & - & (None, 1, 75) & 0 & 0.15 \\
 		LSTM   & 50 & (None, 50) & 25 200 & returnSequences=False \\
-		Dropout & - & (None, 50) & 0 & - \\
+		Dropout & - & (None, 50) & 0 & 0.15 \\
 		Dense & - & (None, 1) & 51 & units=1 \\
 		
 		
@@ -1075,11 +1075,11 @@ Pro samotné LSTM vrstvy byla navýšena kapacita sítě z 50 na 75 a ze 75 na 1
 			Conv1D & 75 &  (None, 46, 64)   & 2 176 & filters=64, kernel\_size=3 \\
 			MaxPooling1D & - &  (None, 23, 64)   & 0 & pool\_size=2 \\
 			LSTM & 75 & (None, 23, 75) &  42 000 & returnSequences=True \\
-			Dropout & - & (None, 23, 75) & 0 & - \\
+			Dropout & - & (None, 23, 75) & 0 & 0.15 \\
 			LSTM  & 100 & (None, 23, 100) & 70 400 & returnSequences=True \\
-			Dropout & - & (None, 23, 100) & 0 & - \\
+			Dropout & - & (None, 23, 100) & 0 & 0.15 \\
 			LSTM   & 75 & (None, 75) & 52 800 & returnSequences=False \\
-			Dropout & - & (None, 75) & 0 & - \\
+			Dropout & - & (None, 75) & 0 & 0.15 \\
 			Dense & - & (None, 1) & 76 & units = 1 \\
 	\end{tabularx}
 \end{table}
