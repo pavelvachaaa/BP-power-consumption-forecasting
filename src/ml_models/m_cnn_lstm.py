@@ -38,7 +38,7 @@ def preprocess_data(df, seq_length):
 if __name__=="__main__":
     seq_length = 48
 
-    data = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", )
+    data = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_12.csv", "MAC000291", )
     data: pd.DataFrame = load_iris_dataset("./data/albistech_dataset/db3.json")
 
     data[Y_VALUE_NAME+"_diff"] = data[Y_VALUE_NAME].diff().fillna(0)

@@ -146,13 +146,19 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \begin{abbrList}
 \textbf{LSTM} & Long-short term memory, architektura rekurentní neuronové sítě \\
 \textbf{CNN} & Convolutional Neural Network, konvoluční neuronová síť \\
-\textbf{MSE} & Mean squared error, střední kvadratický chyba \\
+\textbf{MSE} & Mean squared error, střední kvadratická chyba \\
 \textbf{MAE} & Mean average error, průměrná absolutní odchylka \\
 \textbf{MAPE} & Mean average error, průměrná procentuální absolutní odchylka \\
-\textbf{RMSE} & Root mean squared error, směrodatný odchylka \\
+\textbf{RMSE} & Root mean squared error, směrodatá odchylka \\
 \textbf{ReLU} & Rectifed Linear Unit, aktivační funkce \\
 \textbf{GBT} & Gradient boosted trees, gradientní boostované stromy \\
-\textbf{EDA} & Exploratory data analysis, explorační datová analýza
+\textbf{EDA} & Exploratory data analysis, explorační datová analýza \\
+\textbf{PACF} & Partial autocorrelation function, parciální autokorelační funkce \\
+\textbf{ACF} & Autocorrelation function, autokorelační funkce \\
+\textbf{ADF} & Augmented Dickey–Fuller test, rozšířený Dickeyův-Fullerův test \\
+\textbf{AIC} & Akaike information criterion, Akaikovo informační kritérum\\
+\textbf{SSE} & Sum of squared errors, součet střední kvadratické chyby \\
+\textbf{ARIMA} & Autoregressive integrated moving average, autoregresní integrovaný klouzavý průměr
 
 \end{abbrList}
 
@@ -182,7 +188,7 @@ ze statistické analýzy.
 \chapter{Časové řady}
 Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam je v určitém časovému okamžiku. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řád, které se budou v následujících kapitolách vyskytovat.
 
-Časová řada je definována jako množina pozorování $x_t$, kde každé pozorování má záznam v čase $t$. \ref{neoc}. Příkladem typické časové řady může být vývoj ceny akcií na burze v čase nebo výše zmíněna spotřeba energie. Každá časová řada se dá rozložit (dekomponovat) na několik jednotlivých složek (komponent). 
+Časová řada je definována jako množina pozorování $x_t$, kde každé pozorování má záznam v čase $t$. \cite{Brockwell2016-qt} Příkladem typické časové řady může být vývoj ceny akcií na burze v čase nebo výše zmíněna spotřeba energie. Každá časová řada se dá rozložit (dekomponovat) na několik jednotlivých složek (komponent). 
 
 
 \section{Komponenty časové řady}
@@ -192,10 +198,10 @@ Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odha
 Tato komponenta zachycuje celkový dlouhodobý směr zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označuje se jako $T_t$.
 
 \subsection{Sezónní komponenta}
-Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \ref{aha} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními změnami, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
+Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \cite{efjcu-cz} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními změnami, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
 
 \subsection{Cyklická komponenta}
-Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání vlivu širších socioekonomických faktorů na dlouhodobou spotřebu energie v domácnostech. Tato složka totiž představuje dlouhodobější vzory, jejichž frekvence přesahuje minimálně jeden rok. \ref{a} Zpravidla vyjadřuje kolísání okolo trendové komponenty.
+Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání vlivu širších socioekonomických faktorů na dlouhodobou spotřebu energie v domácnostech. Tato složka totiž představuje dlouhodobější vzory, jejichž frekvence přesahuje minimálně jeden rok. \cite{Brockwell2016-qt} Zpravidla vyjadřuje kolísání okolo trendové komponenty.
 
 
 \subsection{Náhodná komponenta}
@@ -203,7 +209,7 @@ Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání
  
 
 \section {Stacionariata}
-Pro analýzu časové řady je vhodné (pro většinu analýz podmínkou), aby řada byla takzvaně stacionární. Za stacionární časové řady se považují takové řady, které nemají trend, mají s měnícím se časem stejný rozptyl a stejný průběh autokorelační funkce. Tyto vlastnosti usnadňují predikci budoucích hodnot a proto je snaha převést řadu na stacionární. 
+Pro analýzu časové řady je vhodné (pro většinu analýz podmínkou), aby řada byla takzvaně stacionární. Za stacionární časové řady se považují takové řady, které nemají trend, mají s měnícím se časem stejný rozptyl a stejný průběh autokorelační funkce. \cite{efjcu-cz} Tyto vlastnosti usnadňují predikci budoucích hodnot a proto je snaha převést řadu na stacionární. 
 
 Nejjednodušší transformace řady na stacionární je pomocí diferencování. Tato transformace přispívá ke snížení trendové složky. Například diferenci prvního řádu se zapisuje jako:  
 \begin{equation}
@@ -233,7 +239,7 @@ Pro otestování zdali je řada stacionární existuje několik testů ze statis
 \section{Dekompozice časové řady}
 Jak bylo zmíněno výše, dekompozice umožňuje rozložit časovou řadu na jednotlivé komponenty. Z těch poté lze lépe pochopit, jakým způsobem se v časové řadě projevuje trend a sezónní variabilita. To je užitečné pro interpretaci dat a odhalení skrytých trendů nebo sezónních vzorů, což může být klíčové pro predikci a optimalizaci energetické efektivity v domácnosti.
 
-Někdy se samotné komponenty po dekompozice využívají k predikci, obzvlášť pokud je trend jednoduchý. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \ref{}
+Někdy se samotné komponenty po dekompozice využívají k predikci, obzvlášť pokud je trend jednoduchý. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \cite{Hyndman2013-wm}
 
 Pro dekompozici se zpravidla používají dva základní modely, a to aditivní a multiplikativní. Volba modelu závisí na charakteru sezónnosti a trendu v časové řadě.
 
@@ -274,9 +280,9 @@ kde $k$ se používá k určení, kolik hodnot před a po aktuálním čase $t$ 
 Na grafu výše lze vidět, že klouzavý průměr (červená čára) s řádem $m=30$ vyhladil průběh časové řady od výkyvů a zvýraznil trend-cyklickou komponentu.
 
 \subsection{Klasická dekompozice}
-O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.).
+O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.). 
 
-V implementační části pak jde o čtyři základní kroky. Výpočet trend-cyklické komponenty, o detrendizaci časové řády, aproximace sezónní složky a výpočet náhodné složky. Jednotlivé kroky se liší pro aditivní a multiplikativní model. 
+V implementační části pak jde o čtyři základní kroky. Výpočet trend-cyklické komponenty, o detrendizaci časové řády, aproximace sezónní složky a výpočet náhodné složky. \cite{Hyndman2013-wm} Jednotlivé kroky se liší pro aditivní a multiplikativní model. 
  
 \begin{figure}[htbp]
 	\centering
@@ -285,7 +291,7 @@ V implementační části pak jde o čtyři základní kroky. Výpočet trend-cy
 	\label{fig:my_graph}
 \end{figure}
 
-V náhodné komponentě nám zbyla časová řada po odstranění trend-cyklické a sezónní komponenty. Někdy se jí místo náhodná říká detrendizovaná komponenta. V tomto případě model byl aditivní, tedy odstranění proběhlo jako $\epsilon_t = x_t - T_t - S_t$, pro multiplikativní model by vztah vypadal jako $\epsilon_t = \frac{x_t}{T_tS_t}$
+V náhodné komponentě zbyla časová řada po odstranění trend-cyklické a sezónní komponenty. Někdy se jí místo náhodná říká detrendizovaná komponenta. V tomto případě model byl aditivní, tedy odstranění proběhlo jako $\epsilon_t = x_t - T_t - S_t$, pro multiplikativní model by vztah vypadal jako $\epsilon_t = \frac{x_t}{T_tS_t}$
 
 Z pohledu na graf výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
 
@@ -310,7 +316,7 @@ Regresní model s více než jednou proměnnou se zapisuje jako
 
 kde $y$ je výstupní proměnná, $\epsilon$ chybový člen a $\beta_i$, i=0, 1, 2 ... p jsou regresní parametry.
 
-Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se dají odhadovat pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší.  \cite{hanousek1992moderni}
+Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se dají odhadovat pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší. \cite{hanousek1992moderni}
 
 Regresní analýza neříká nic o tom, jaký je mechanismus, kterým jsou tyto vztahy vysvětleny. To znamená, že regresní analýza může být velmi užitečným nástrojem pro předpovídání budoucích hodnot, ale nemůže sloužit jako nástroj pro vysvětlování příčin.
 
@@ -321,11 +327,11 @@ Existuje několik druhů regresních modelů, jenž se používají v různých 
 Často se stává, že datové sady mají mnoho různých parametrů. Například v práci bude využita datová sada, která obsahuje informace o počasí v určitých časových intervalech. Ukáže se, že některé parametry mezi sebou vysoce korelují a to může mít vliv na stabilitu regresního modelu. V praxi proto lze pro predikci spotřeby najít ještě jeden užitečný regresní model s názvem ridge (hřebenový). Tento model přistupuje k problému vysoké korelace tím, že zahrnuje další regularizační parametr do regresního modelu, který penalizuje vysoké koeficienty (ty co spolu korelují).
 
 \section{ARIMA}
-ARIMA model je pravděpodobně mezi nejznámějšími a nejpoužívanějšími modely pro predikci časových řad. \ref{tohlenekdedohledat} Klíčové prvky modelu spojují;	 autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \ref{neco}. Samotná rovnice ARIMA modelu je tedy kombinací stacionarizovaného autoregresního modelu a k tomu přidaný model s klouzavým průměrem.
+ARIMA model je pravděpodobně mezi nejznámějšími a nejpoužívanějšími modely pro predikci časových řad \cite{RUPEL}. Klíčové prvky modelu spojují autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \cite{Brockwell2016-qt}. Samotná rovnice ARIMA modelu je tedy kombinací stacionarizovaného autoregresního modelu a k tomu přidaný model s klouzavým průměrem.
 \subsection{Autoregresivní model}
 Autoregresní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-p}$. Těmto hodnotám se říká zpožděné (lag) proměnné a slouží ke zvýšení přesnosti autoregresního modelu. 
 
-Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \ref{amazon} Obecně bychom mohli model zapsat jako funkci: 
+Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \cite{amazon} Obecně lze model zapsat jako funkci: 
 
 \begin{equation}
 	x_t = f(x_{t-1}, x_{t-2}, ..., x_{t-p}, \epsilon_t)
@@ -359,7 +365,7 @@ Pokud se spojí tedy AR model po diferenci s modelem klouzavého průměru obdr�
  x_t =    \sum_{i=1}^{n}(\alpha_i \Delta x_{t-i}) + \sum_{i=1}^{n}(\alpha_i\epsilon_{t-i}) + \alpha_0 + \epsilon_t
 \end{equation}
 
-kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \ref{nejaky-ref-na-box-jenkina} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
+kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \cite{doi:10.1177/003754979105700508} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
 
 
 \section{Rozhodovací stromy}
@@ -523,7 +529,7 @@ Kromě LSTM sítě existuje ještě její zjednodušená verze, které chybí ou
 \section{Konvoluční neuronové sítě}
 Již z názvu vyplývá, že konvoluční neuronové sítě (CNN) jsou podmnožinou neuronových sítí. Zpravidla se vyznačují využitím konvolučních a poolingových vrstev. Tyto vrstvy umožňují efektivnější zpracování velkých vstupů s menším počtem potřebných parametrů nežli klasická neuronová síť. 
 
-Toto je jeden z důvodu, proč je tento typ sítí široce využíván v oblasti počítačového vidění. \ref{springer}
+Toto je jeden z důvodu, proč je tento typ sítí široce využíván v oblasti počítačového vidění. \cite{Yamashita2018}
 
 V porovnání s klasickými metodami, jako jsou autoregresivní modely nebo regresní metody, mohou konvoluční neuronové sítě poskytovat lepší výsledky při zachycování nelineárních a lokálních vzorů v datech. Tyto vlastnosti mohou být klíčovými faktory pro úspěšnou predikci profilů spotřeby energie.
 
@@ -542,7 +548,7 @@ kde $f_{i,j}$ jsou prvky konvolučního jádra, $x_{i,j}$ prvky vstupní matice 
 \end{equation}
 kde $F$ je konvoluční jádro, $X$ vstupní matice a $Y$ výstupní matice.
 
-Tato vrstva dokáže extrahovat lokální charakteristiky vstupní matice (obrazu) při schopnosti zachovat informaci o jejich pozici. Mezi tyto extrahované charakteristiky můžou patřit rohy či barvy obrazu.\ref{cvut}
+Tato vrstva dokáže extrahovat lokální charakteristiky vstupní matice (obrazu) při schopnosti zachovat informaci o jejich pozici. Mezi tyto extrahované charakteristiky můžou patřit rohy či barvy obrazu.\cite{vojtechJaros}
 
 
 \begin{figure}[htbp]
@@ -576,9 +582,9 @@ Přidáním LSTM sítě lze zachytit na druhou stranu dlouhodobé vzorce chován
 
 V předchozích kapitolách bylo uvedeno, že CNN se většinou používá pro 2D obrazová data. Časové řady jsou  jednodimenzionální, takže klasická 2D konvoluční vrstva nemůže být využita.
 
-Tomuto problému se dá vyhnout pomocí 1D konvoluční vrstvy, kde se dělá konvoluce pro jednu dimenzi. \ref{neco}
+Tomuto problému se dá vyhnout pomocí 1D konvoluční vrstvy, kde se dělá konvoluce pro jednu dimenzi. \cite{article}
 
-Druhý způsob je provést časově frekvenční transformaci signálu. \ref{ieee} Výsledkem této transformace je rozmístění frekvencí signálu v čase. Zpravidla se jedná o spektogram pomocí Fourierovy transformace a nebo se může jednat o vlnkovou transformaci, kterou zobrazuje scalogram.
+Druhý způsob je provést časově frekvenční transformaci signálu. \cite{10201713} Výsledkem této transformace je rozmístění frekvencí signálu v čase. Zpravidla se jedná o spektogram pomocí Fourierovy transformace a nebo se může jednat o vlnkovou transformaci, kterou zobrazuje scalogram.
 
 
 \chapter{Aplikace vybraných metod}
@@ -851,7 +857,7 @@ Z matice vyplývá, že \textit{vlhkost} a \textit{rychlost větru} nemají tém
 
 Na základě této analýzy byly zvoleny parametry \textit{temperature}, \textit{pressure}, \textit{windBearing}, \textit{precipType} a \textit{visibility}.
 
-Dále byl proveden výpočet korelační matice i pro proměnné, které byly zkoumány v předchozích fázích analýzy (TODO: velká matice do přílohy). Ná základě hodnot koeficientu $r$ vyšlo, že parametr \textit{quarter} je nadbytečný, jelikož silně koreluje s parametrem \textit{month} ($r=0.98$) a silně také koreluje s parametrem \textit{day} ($r=0.97$). Proto byl tento parametr ze vstupních dat pro predikční modely odstraněn. Další analýza dat, jako je například autokorelace, bude provedena v následujících kapitolách zabývajících se samotnou implementací modelů.
+Dále byl proveden výpočet korelační matice i pro proměnné, které byly zkoumány v předchozích fázích analýzy. Ná základě hodnot koeficientu $r$ vyšlo, že parametr \textit{quarter} je nadbytečný, jelikož silně koreluje s parametrem \textit{month} ($r=0.98$) a silně také koreluje s parametrem \textit{day} ($r=0.97$). Proto byl tento parametr ze vstupních dat pro predikční modely odstraněn. Další analýza dat, jako je například autokorelace, bude provedena v následujících kapitolách zabývajících se samotnou implementací modelů.
 
 
 \newpage
@@ -977,7 +983,7 @@ Pro zjednodušení modelu ARIMA byla provedena agregace dat spotřebované energ
 \end{equation}
 kde $n$ je počet elektroměrů a $t$ je časové zpoždění.
 
-Pro identifikaci parametrů modelu pomocí box-jenkinsovy metodologie je nutné nejdříve zajistit, že jsou data stacionární. (TODO: Ocitovat). Pro ověření stacionarity datové sady byl konstruován rozšířený Dickeyův-Fullerův (ADF) test. Hypotézy pro ADF test jsou následující:
+Pro identifikaci parametrů modelu pomocí box-jenkinsovy metodologie je nutné nejdříve zajistit, že jsou data stacionární. \cite{zayiong} Pro ověření stacionarity datové sady byl konstruován rozšířený Dickeyův-Fullerův (ADF) test. Hypotézy pro ADF test jsou následující:
 \begin{itemize}
 \item Nulová hypotéza $H_0$ - časová řada není stacionární
 \item Alternativní hypotéza $H_A$ - časová řada je stacionární
@@ -1002,11 +1008,27 @@ Odhad počátečních parametrů proběhl na základě výše zobrazeného grafu
 
 Z grafu \ref{fig:arima_acf_pacf} PACF lze nalézt parametr $p$ pro autoregresivní složku modelu. Byla zvolena hodnota 2, jelikož na grafu je vidět strmý propad v koeficientu po dvou zpožděních. 
 
- 
- 
+Na základě těchto počátečních parametrů byla provedena analýza nejlepšího možného modelu pro ARMA ($p$,$q$) s hodnotami od 0 do 3 a pro sezónní parametry ($P$,$Q$) od 0 do 2. Počet možných kombinací pro sestavení modelu s vybranými rozsahy bylo 144.
+
+V tabulce níže, jsou tři modely, které dosáhly v průběhu testování nejlepšího skóre Akaikovo informačního kritéria (AIC).
+
+\begin{table}[!ht]
+	\centering
+	\caption{Nejlepší parametry pro sezónní ARIMA model}
+	
+	\begin{tabularx}{\linewidth}{lXXX}
+		\hline
+		\textbf{Řád modelu} & \textbf{Řád sezónnosti} & \textbf{Absolutní AIC} & \textbf{SSE} \\ \hline
+		(2,1,3) & (2,1,2,24) & 117652.44 & 1.73 \\
+		(2,1,3) & (1,1,1,24) & 114408.62 & 1.96 \\
+		(0,0,2) & (1,1,1,24) & 112526.96 & 2.14 \\
+	\end{tabularx}
+\end{table}
+Veškeré kombinace parametrů byly odhadovány pomocí agregovaných dat z roku 2013, přičemž data byla rozdělena z 80 \% jako trénovací a z 20 \% jako testovací. 
+
+Jako finální model využitý k porovnání výsledků v závěrečné kapitole této práce byl zvolen sezónní ARIMA model s parametry (2,1,3)(2,1,2,24). 
 
 
-\newpage
 \subsection{LSTM}
 Pro finální verzi LSTM modelu byly zvoleny následující parametry. Pro rychlejší a stabilnější konvergenci modelu během trénování byl zvolen optimalizační algoritmus jménem Adam. Jako chybová funkce (loss function) $L(x,y|w)$ byla použita MSE. 
 Optimální velikost dávky (batch size) byla nastavena na hodnotu 128. 
@@ -1090,7 +1112,16 @@ Po zavedení těchto opatření proti přeučení modelu křivka učení pro CNN
 
 Z grafu \ref{fig:cnn_lstm_learning_curve} výše lze vidět, že validační ztráta se ustálila na nízké hodnotě a má tendenci dále klesat k nule. Zároveň je splněna podmínka, že  trénovací a validační ztráty jsou blízko sebe. Tato kombinace naznačuje, že v modelu nedošlo k přeučení a zároveň se model dobře přizpůsobil trénovacím datům.
 
-TODO: Ukázat výřez hodnot
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.9\textwidth]{lstm_vyrez.eps}}%
+	\caption{Ukázka předpovědi pro 7 dní (672 hodnot)}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+
+Na grafu výše lze vidět krátkodobou predikci na dalších 7 dní po půl hodinách (672 hodnot). Model vykazuje schopnost reagovat na prudké změny v chování rezidentů v průběhu týdne.
+
 
 \newpage
 \section{Metodika vyhodnocení}\label{section:error-matrix}
@@ -1124,6 +1155,7 @@ Použití těchto veličin umožňuje poskytnout užitečnou zpětnou vazbu vzhl
 \chapter{Výsledky}\label{Výsledky}
 V této sekci jsou shrnuty a porovnány dosažené výsledky vytrénovaných modelů. Pro porovnání výsledků byla zvolená krátkodobá predikci (max. 30 dnů). Veškeré modely dostavují na vstupu stejné časové úseky. Pro londýnskou datovou sadu to znamená úsek od 28.1. 2014 do 28.2. 2014. A pro datovou sadu zprostředkovanou Albistechem to je úsek od 28. 1. 2023 do 28. 2. 2023.
 
+%Model je schopný reagovat na prudké změny v chování rezidentů v průběhu týdne.
 
 (336 hodnot) pro london a 672 hodnot pro albis najednou
 \begin{table}[!ht]
