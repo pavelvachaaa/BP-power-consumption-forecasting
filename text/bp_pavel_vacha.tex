@@ -148,14 +148,14 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \textbf{CNN} & Convolutional Neural Network, konvoluční neuronová síť \\
 \textbf{MSE} & Mean squared error, střední kvadratická chyba \\
 \textbf{MAE} & Mean average error, průměrná absolutní odchylka \\
-\textbf{MAPE} & Mean average error, průměrná procentuální absolutní odchylka \\
+\textbf{MAPE} & Mean  average percentage error, průměrná procentuální absolutní odchylka \\
 \textbf{RMSE} & Root mean squared error, směrodatá odchylka \\
 \textbf{ReLU} & Rectifed Linear Unit, aktivační funkce \\
 \textbf{GBT} & Gradient boosted trees, gradientní boostované stromy \\
 \textbf{EDA} & Exploratory data analysis, explorační datová analýza \\
 \textbf{PACF} & Partial autocorrelation function, parciální autokorelační funkce \\
 \textbf{ACF} & Autocorrelation function, autokorelační funkce \\
-\textbf{ADF} & Augmented Dickey–Fuller test, rozšířený Dickeyův-Fullerův test \\
+\textbf{ADF} & Augmented Dickey–Fuller test, rozšířený Dickey-Fullerův test \\
 \textbf{AIC} & Akaike information criterion, Akaikovo informační kritérum\\
 \textbf{SSE} & Sum of squared errors, součet střední kvadratické chyby \\
 \textbf{ARIMA} & Autoregressive integrated moving average, autoregresní integrovaný klouzavý průměr
@@ -163,9 +163,9 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \end{abbrList}
 
 \chapter{Úvod}
-Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak se tyto vzorce mění, je možné zajistit udržitelnou budoucnost.
+Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak se tyto vzorce chování mění, je možné zajistit udržitelnou budoucnost.
 
-Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem relevantnější informace pro konkrétní region, oblast či domácnost.
+Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem relevantnější informace pro konkrétní region, město či domácnost.
 
 V této práci si autor klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou
 oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci udržitelných opatření v oblasti energetiky a ochrany životního prostředí. 
@@ -177,22 +177,22 @@ ze statistické analýzy.
 
 
 \chapter{Časové řady}
-Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam má v určitém časovému okamžiku hodnotu v patřičných jednotkách. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řád, které se budou v následujících kapitolách vyskytovat.
+Spotřeba energie v domácnostech může být chápána jako posloupnost měření, kde každý jednotlivý záznam má v určitém časovému okamžiku hodnotu v patřičných jednotkách. Před samotným průzkumem prediktivních metod je nutné si definovat několik pojmů z oblasti analýzy časových řad, které se budou v následujících kapitolách vyskytovat.
 
 Časová řada je definována jako množina pozorování $x_t$, kde každé pozorování má záznam v čase $t$. \cite{Brockwell2016-qt} Příkladem typické časové řady může být vývoj ceny akcií na burze v čase nebo výše zmíněna spotřeba energie. Každá časová řada se dá rozložit (dekomponovat) na několik jednotlivých složek (komponent). 
 
 
 \section{Komponenty časové řady}
-Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odhalují určité vlastnosti časové řady. Tyto komponenty a informace co nesou, jsou poté užitečné při samotné analýze a následné predikci časové řady.
+Dekompozice časové řady umožňuje získat jednotlivé komponenty, jenž odhalují určité vlastnosti časové řady. Tyto komponenty a informace, co nesou, jsou poté užitečné při samotné analýze a následné predikci nových hodnot časové řady.
 
 \subsection{Trendová komponenta}
-Tato komponenta zachycuje celkový dlouhodobý směr zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označuje se jako $T_t$.
+Tato komponenta zachycuje celkový dlouhodobý trend zkoumaného jevu časové řady. Trend může být rostoucí, klesající a nebo řada může být kompletně bez trendu. V kontextu této práce může být tato složka ovlivněna různými faktory, jako jsou změny v ekonomice, demografii nebo technologický pokrok. Označuje se jako $T_t$.
 
 \subsection{Sezónní komponenta}
-Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \cite{efjcu-cz} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními změnami, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
+Sezónní komponenta $S_t$ určuje krátkodobý vzor, který se opakuje v pravidelných intervalech, avšak s frekvencí rok a méně. \cite{efjcu-cz} V kontextu spotřeby energie v domácnostech může tato složka zahrnovat sezónní vzory spojené s ročními obdobími, jako je zvýšená spotřeba v zimním období kvůli vytápění nebo v letním období kvůli klimatizaci. Tato složka bude klíčová pro identifikaci střednědobých cyklů spotřeby energie.
 
 \subsection{Cyklická komponenta}
-Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání vlivu širších socioekonomických faktorů na dlouhodobou spotřebu energie v domácnostech. Tato složka totiž představuje dlouhodobější vzory, jejichž frekvence přesahuje minimálně jeden rok. \cite{Brockwell2016-qt} Zpravidla vyjadřuje kolísání okolo trendové komponenty.
+Analýza této cyklické komponenty $C_t$ může být klíčová při zkoumání vlivů širších socioekonomických faktorů na dlouhodobou spotřebu energie v domácnostech. Tato složka totiž představuje dlouhodobější vzory, jejichž frekvence přesahuje minimálně jeden rok. \cite{Brockwell2016-qt} Zpravidla vyjadřuje kolísání okolo trendové komponenty.
 
 
 \subsection{Náhodná komponenta}
@@ -224,18 +224,18 @@ Po aplikaci diference prvního řádu lze vidět, že řada již nemá zjevný r
 	\label{fig:nezamestnanost_diff}
 \end{figure}
 
-Pro otestování zdali je řada stacionární existuje několik testů ze statistické analýzy. V implementační části této práci bude využito Dickey-Fullerova testu pro ověření stacionarity dat, nad kterými bude autor práce tvořit jednotlivé modely. 
+Pro otestování zdali je řada stacionární existuje několik testů ze statistické analýzy. V implementační části této práci bude využito Dickey-Fullerova testu pro ověření stacionarity dat, nad kterými se budou tvořit jednotlivé modely. 
 
 
 \section{Dekompozice časové řady}
 Jak bylo zmíněno výše, dekompozice umožňuje rozložit časovou řadu na jednotlivé komponenty. Z těch poté lze lépe pochopit, jakým způsobem se v časové řadě projevuje trend a sezónní variabilita. To je užitečné pro interpretaci dat a odhalení skrytých trendů nebo sezónních vzorů, což může být klíčové pro predikci a optimalizaci energetické efektivity v domácnosti.
 
-Někdy se samotné komponenty po dekompozice využívají k predikci, obzvlášť pokud je trend jednoduchý. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \cite{Hyndman2013-wm}
+Někdy se samotné komponenty po dekompozici využívají k predikci, obzvlášť pokud je trend lineární. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \cite{Hyndman2013-wm}
 
 Pro dekompozici se zpravidla používají dva základní modely, a to aditivní a multiplikativní. Volba modelu závisí na charakteru sezónnosti a trendu v časové řadě.
 
 \subsection{Aditivní model}
-Pro tento model se předpokládá, že řadu lze rozložit jako součet jednotlivých komponent.
+Pro tento model se předpokládá, že řadu lze rozložit na součet jednotlivých komponent.
 
 \begin{equation}
 	x_t = T_t + S_t + C_t + \epsilon_t
@@ -244,7 +244,7 @@ kde $x_t$ je samotná hodnota časová řady v čase $t$.
 
 
 \subsection{Multiplikativní model}
-Analogicky tento model naopak předpokládá, že řadu lze rozložit jako součin jednotlivých komponent.
+Analogicky tento model naopak předpokládá, že řadu lze rozložit na součin jednotlivých komponent.
 \begin{equation}
 	x_t = T_t * S_t * C_t * \epsilon_t
 \end{equation}
@@ -271,7 +271,7 @@ kde $k$ se používá k určení, kolik hodnot před a po aktuálním čase $t$ 
 Na grafu výše lze vidět, že klouzavý průměr (červená čára) s řádem $m=30$ vyhladil průběh časové řady od výkyvů a zvýraznil trend-cyklickou komponentu.
 
 \subsection{Klasická dekompozice}
-O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.). 
+O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom, jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.). 
 
 V implementační části pak jde o čtyři základní kroky. Výpočet trend-cyklické komponenty, o detrendizaci časové řády, aproximace sezónní složky a výpočet náhodné složky. \cite{Hyndman2013-wm} Jednotlivé kroky se liší pro aditivní a multiplikativní model. 
  
@@ -284,9 +284,9 @@ V implementační části pak jde o čtyři základní kroky. Výpočet trend-cy
 
 V náhodné komponentě zbyla časová řada po odstranění trend-cyklické a sezónní komponenty. Někdy se jí místo náhodná říká detrendizovaná komponenta. V tomto případě model byl aditivní, tedy odstranění proběhlo jako $\epsilon_t = x_t - T_t - S_t$, pro multiplikativní model by vztah vypadal jako $\epsilon_t = \frac{x_t}{T_tS_t}$
 
-Z pohledu na graf výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
+Z pohledu na průběh grafu výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
 
- Další je vidět v roce 2019, kde Česká Republika měla silnou rostoucí ekonomiku. Hned po roce 2019 je vidět další výkyv, tentokrát negativní, způsobený pandemií.
+ Další je vidět v roce 2019, kdy Česká Republika měla silnou rostoucí ekonomiku. Hned po roce 2019 je vidět další výkyv, tentokrát negativní, způsobený pandemií.
 
 %No to asi ne%
 \chapter{Průzkum současných trendů v oblasti prediktivních metod}
@@ -295,7 +295,7 @@ V současné době s rostoucím objemem sbíraných dat se stále více organiza
 Tato kapitola si klade za cíl provést rešerši aktuálně používaných metod pro predikce. Výstupem by měl být výběr několika metod a jejich následná aplikace na datech o spotřebě.
 
 \section{Regresní analýza}
-V oblasti předpovědí spotřeby energie lze často najít modely, které byly vytvořeny pomocí modelování spotřeby energie touto technikou (nebo její podmnožinou). Jeden z důvodu, proč se používají je jednoduchost použití a interpretace.
+V oblasti předpovědí spotřeby energie lze často najít modely, které byly vytvořeny pomocí modelování spotřeby energie touto technikou (nebo její podmnožinou). Jedna z předností regresní analýzy, proč se používají, je jednoduchost implementace a interpretace výsledků.
 
 Regresní model popisuje vztah mezi jednou nebo více nezávislými proměnnými a jednou závislou proměnnou. Cílem regresní analýzy je najít funkční vztah mezi závislými a nezávislými proměnnými, který je potom použít k predikci hodnoty závislé proměnné na základě hodnot nezávislých proměnných.
 
@@ -313,14 +313,14 @@ Regresní analýza neříká nic o tom, jaký je mechanismus, kterým jsou tyto 
 
 % Tohle asi hodím dopíči
 \subsection{Regresní modely}
-Existuje několik druhů regresních modelů, jenž se používají v různých případech v závislosti na povaze dat a cíle analýzy. Jedním z nejprimitivnějších modelů je lineární regrese, zpravidla se používá jako validační model při práci s velkými a komplexními datovými sadami, jelikož nedosáhne stejných výsledků jako pokročilejší metody. Její princip spočívá v prokládání dat přímkou a hledáním parametrů dané přímky, aby co nejlépe modelovaly vztah mezi proměnnými.
+Existuje několik druhů regresních modelů, jenž se používají v různých případech v závislosti na povaze dat a cílech analýzy. Jedním z modelů je lineární regrese, zpravidla se používá jako validační model při práci s velkými a komplexními datovými sadami, jelikož nedosáhne stejných výsledků jako pokročilejší metody. Její princip spočívá v prokládání dat přímkou a hledáním parametrů dané přímky, aby co nejlépe modelovaly vztah mezi proměnnými.
 
-Často se stává, že datové sady mají mnoho různých parametrů. Například v práci bude využita datová sada, která obsahuje informace o počasí v určitých časových intervalech. Ukáže se, že některé parametry mezi sebou vysoce korelují a to může mít vliv na stabilitu regresního modelu. V praxi proto lze pro predikci spotřeby najít ještě jeden užitečný regresní model s názvem ridge (hřebenový). Tento model přistupuje k problému vysoké korelace tím, že zahrnuje další regularizační parametr do regresního modelu, který penalizuje vysoké koeficienty (ty co spolu korelují).
+Často se stává, že datové sady mají mnoho různých parametrů. Například v této práci bude využita datová sada, která obsahuje informace o počasí v určitých časových intervalech. Ukáže se, že některé parametry mezi sebou vysoce korelují a to může mít vliv na stabilitu regresního modelu. V praxi proto lze použít pro predikci spotřeby najít ještě jeden užitečný regresní model s názvem ridge (hřebenový). Tento model přistupuje k problému vysoké korelace tím, že zahrnuje další regularizační parametr do regresního modelu, který penalizuje vysoké koeficienty, které spolu korelují.
 
 \section{ARIMA}
 ARIMA model je pravděpodobně mezi nejznámějšími a nejpoužívanějšími modely pro predikci časových řad \cite{RUPEL}. Klíčové prvky modelu spojují autoregresi AR($p$), integraci I($d$) a klouzavý průměr MA($q$) \cite{Brockwell2016-qt}. Samotná rovnice ARIMA modelu je tedy kombinací stacionarizovaného autoregresního modelu a k tomu přidaný model s klouzavým průměrem.
 \subsection{Autoregresivní model}
-Autoregresní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-p}$. Těmto hodnotám se říká zpožděné (lag) proměnné a slouží ke zvýšení přesnosti autoregresního modelu. 
+Autoregresní model lze popsat jako funkci, jenž vrací predikovanou hodnotu $x_t$ na základě svých předchozích hodnot $x_{t-1}, ...,  x_{t-p}$. Těmto hodnotám se říká zpožděné proměnné (lag) a slouží ke zvýšení přesnosti autoregresního modelu. 
 
 Toho se dosahuje snižováním hodnoty $t$, která označuje počet kroků v časové řadě dat. Vyšší počet těchto kroků umožňuje modelu zachytit více předchozích předpovězených hodnot jako vstup. Například se dá rozšířit autoregresní model tak, aby zahrnoval předpovězenou teplotu za posledních 7 dní až po posledních 14 dní, což může přispět k přesnějším výsledkům. \cite{amazon} Obecně lze model zapsat jako funkci: 
 
@@ -350,7 +350,7 @@ V tomto případě se jedná o model, který používá pro předpovězení nov�
 \subsection{ARIMA model}
 Pro analýzu časových řad se zpravidla vyžaduje stacionarita řady, ARIMA není výjimkou. Tato podmínka vyžaduje tedy stacionarizovat výše zmíněný autoregresní model pomocí diference. 
 
-Pokud se spojí tedy AR model po diferenci s modelem klouzavého průměru obdržíme rovnici ARIMA modelu: 
+Pokud se spojí tedy autoregresivní model po diferenci s modelem klouzavého průměru lze zapsat rovnici ARIMA modelu: 
 
 \begin{equation}
  x_t =    \sum_{i=1}^{n}(\alpha_i \Delta x_{t-i}) + \sum_{i=1}^{n}(\alpha_i\epsilon_{t-i}) + \alpha_0 + \epsilon_t
@@ -364,7 +364,7 @@ Pro strom existuje mnoho analogií a jedna z analogií se dostala i do modelová
 
 Jak název napovídá, při tvorbě rozhodovacího stromu je snaha rozdělit data na menší a jednodušší skupiny pomocí pravidel (segmentace dat), která se postupně aplikují na různé atributy dat. Cílem je vytvořit sadu pravidel, která umožní co nejpřesněji predikovat hodnotu požadované proměnné pro nově příchozí data.
 
-Při tvorbě stromu se postupuje od shora dolů. V kořeni stromu je nutné zvolit jeden hlavní dělící parametr s nejvyšší schopností rozlišení dat, například "výška < 1.85.m" a dále se již větví na základě největšího poměrného \textit{informačního zisku} (založeno na výpočtu entropie).  \cite{Tomsik2016thesis}
+Při tvorbě stromu se postupuje od shora dolů. V kořeni stromu je nutné zvolit jeden hlavní dělící parametr s nejvyšší schopností rozlišení dat, například "výška < 1.85m" a dále se již větví na základě největšího poměrného \textit{informačního zisku} (založeno na výpočtu entropie).  \cite{Tomsik2016thesis}
 
 Pro tvorbu těchto stromů existuje mnoho metod. Zpravidla založených na statistických metodách. Nejčastějšími zástupci těchto metod jsou algoritmy \textbf{gradientní boostované stromy}, CHAID, C5.0 či náhodné lesy. \cite{Tomsik2016thesis}
 
@@ -375,7 +375,7 @@ Pro tvorbu těchto stromů existuje mnoho metod. Zpravidla založených na stati
 	\label{fig:my_graph}
 \end{figure}
 \subsection{Gradientní boostované stromy}\label{xgboost_research}
-Tato metoda je přesná a použitelná pro oba základní problémy, klasifikaci i regresi napříč různými odvětvími. Jelikož se tato práce zabývá predikcí spotřeby energie, což je spojitá veličina, budou prozkoumány možnosti regresního řešení problémů s pomocí GBT.
+Tato metoda je přesná a použitelná pro oba základní problémy, klasifikaci i regresi, napříč různými odvětvími. Jelikož se tato práce zabývá predikcí spotřeby energie, což je spojitá veličina, budou prozkoumány možnosti regresního řešení problémů s pomocí GBT.
 
 Hlavním úkolem boostování je sestavit z mnoha slabších modelů výrazně silnější model, takzvaně \textit{ensemble  model}. \cite{chen2016xgboost}
 
@@ -383,7 +383,7 @@ V každé iteraci se vytváří nový rozhodovací strom, který se zaměřuje n
 
 Mezi nejpopulárnější implementace GBT patří například XGBoost, LightGBM a CatBoost. Tyto implementace využívají různé optimalizace a techniky pro minimalizaci přeučení a maximalizaci přesnosti predikce.
 
-Pro tuto práci byla zvolena implementace XGBoost v Pythonu pro svou přehlednou dokumentaci a jednoduchosti použití
+Pro tuto práci byla zvolena implementace XGBoost v Pythonu pro svou přehlednou dokumentaci a jednoduchost použití.
 
 
 \section{Neuronové sítě}
@@ -414,7 +414,7 @@ Toto položilo první základy na rozvoj neuronových sítí v roce 1957 Frankem
 \subsection{Perceptron}
 Perceptron je nejjednodušší model dopředné neuronové sítě, který se skládá z jednoho jediného neuronu.
 
-Perceptron přijímá na vstupu vektory $x_i$, ke kterým je přiřazena váha $w_i$. $b$ je potom práh (bias), jenž ovlivňuje nakolik musí být suma vah větší než 0, aby se perceptron aktivoval. \cite{martinpilatNN}. Aktivace neuronu se pak spočítá následovně:
+Perceptron přijímá na vstupu vektory $x_i$, ke kterým je přiřazena váha $w_i$. $b$ je potom práh (bias), jenž ovlivňuje nakolik musí být suma vah větší než 0, aby se perceptron aktivoval. \cite{martinpilatNN}. Aktivace neuronu $z$ se pak spočítá následovně:
 \label{eq:activation_percep}
 \begin{equation}
 	z = \sum_{i=1}^{n} w_xx_i + b
@@ -446,7 +446,7 @@ Důležitým poznatkem je to, že tento perceptronový algoritmus je jednoduchý
 
 
 \subsection{Vícevrstvé perceptrony}
-Vícevrstvé perceptrony mají na rozdíl od perceptronu ještě skryté vrstvy, které se nachází mezi vstupní a výstupní vrstvou. Skrytých vrstev může být více nebo jenom jedna, to už záleží na volbě programátora a na typu problému. Neuronové sítě s jednou vrstvou se nazývají mělké. Sítě s více skrytými vrstvami se nazývají hluboké sítě. V souvislosti s vícevrstvými perceptrony se mluví také o dopředné síti (feedforward). Vstupní vektor dat $I = (x,y)$ jde do skrytých vrstev $H$ a poté na výstup $Y$. Vektor hodnot z výstupní vrstvy označíme jako $Y$. 
+Vícevrstvé perceptrony mají na rozdíl od perceptronu ještě skryté vrstvy, které se nachází mezi vstupní a výstupní vrstvou. Skrytých vrstev může být více nebo jenom jedna, to už záleží na volbě programátora a na typu problému. Neuronové sítě s jednou vrstvou se nazývají mělké. Sítě s více skrytými vrstvami se nazývají hluboké sítě. V souvislosti s vícevrstvými perceptrony se mluví také o dopředné síti (feedforward). Vstupní vektor dat $I = (x,y)$ jde do skrytých vrstev $H$ a poté na výstup $Y$. Vektor hodnot z výstupní vrstvy je označen jako $Y$. 
 
 \newpage
 Výstup $Y$ poté získáme pomocí rovnice níže 
@@ -478,19 +478,18 @@ Pro trénování pak již nelze použít klasický perceptronový algoritmus (vi
 
 Při použití algoritmu zpětného šíření se výstupní chyba sítě propaguje zpět k vstupní vrstvě, přičemž se upravují váhy všech spojů v síti tak, aby se minimalizovala tato chyba. Tento proces se opakuje v průběhu několika iterací (epoch).
 
-V kontextu práce by se dalo psát o optimalizačních metodách, chybových funkcích a o tom jak jednotlivé vrstvy fungují, ale to je nad rámec této rešerše. Pro tuto práci je důležité zmínit \textit{long short-term memory networks}, které vycházejí z rekurentních sítí, které budou popsány v další kapitole.
+V kontextu práce by se dalo psát o optimalizačních metodách, chybových funkcích a o tom, jak jednotlivé vrstvy fungují, ale to je nad rámec této rešerše. Pro tuto práci je důležité zmínit \textit{long short-term memory networks}, které vycházejí z rekurentních sítí, které budou popsány v další kapitole.
 
 
 \subsection{Rekurentní neuronové sítě}
 Zatím byly zmíněny pouze sítě, kde výstup závisí pouze na aktuálním vstupu. V této práci je vstupem časová řada popisující spotřebu energie, která nezávisí pouze na aktuálním stavu a ke správnému výstupu by bylo vhodné zahrnout data předchozí.
 
-Rekurentní sítě toto umožňují tím, že obsahují zpětná spojení, která fungují jako vnitřní stav (paměť). Nejjednodušší příklad rekurentní neuronové sítě může být síť, co má jeden vstup, výstup a jeden neuron ve skryté vrstvě. Když tento neuron bude mít spojení sám do sebe, tak při předložení vstupu neuron dostane kromě vstupu ještě aktivaci $h_{(t-1)}$ z minulého vstupu. Nejnázornější je ukázat jak se změní výpočet výstupu z neuronu, když se přidají zpětná spojení.
+Rekurentní sítě toto umožňují tím, že obsahují zpětná spojení, která fungují jako vnitřní stav (paměť). Nejjednodušší příklad rekurentní neuronové sítě může být síť, co má jeden vstup, výstup a jeden neuron ve skryté vrstvě. Když tento neuron bude mít spojení sám do sebe, tak při předložení vstupu neuron dostane kromě vstupu ještě aktivaci $h_{(t-1)}$ z minulého vstupu. Nejnázornější je ukázat, jak se změní výpočet výstupu z neuronu, když se přidají zpětná spojení.
 
 
 \begin{equation}
 	h_t = \sigma(w_{hh}h_{t-1} + w_{xh}x_t)
 \end{equation}
-
 kde $h_t$ je aktuální stav neuronu, $x_t$ je vstupní sekvence v čase $t$, $w_{hh}$ váha rekurentního neuronu a $w_{xh}$ váha vstupního neuronu. Zásadní změna oproti aktivaci v jednoduchém perceptronu (viz \ref{eq:activation_percep})  je, že aktivace $h_t$ závisí i na předchozí aktivaci neuronu $h_{t-1}$.
 
 Trénování sítě probíhá opět algoritmem zpětného šíření, avšak lehce modifikovaným. Jmenuje se algoritmus zpětného šíření v čase (backpropagation throguh time). S trénováním rekurentních sítí se můžou vyskytnout dva problémy, díky tomu jak se zpětné šíření počítá. \cite{martinpilatRNN} Gradient se vždy násobí váhou. Pokud je toto rekurentní váha, tak se opakovaně násobí stejnou hodnotou. V případě, že tato hodnota bude větší než 1, dojde k problému explodujících gradientů, kdy hodnoty nekontrolovatelně rostou. V opačném případě, kdy je hodnota menší než 0, tak dochází k problému s mizejícími gradienty.
@@ -513,7 +512,7 @@ Tyto buňky se skládají typicky z pěti prvků. Mezi tyto prvky patří input 
 
 LSTM mají řešit problém klasických RNN a to explodující a mizející gradienty. Problém je řešen tak, že přenos informací mezi časovým krokem probíhá pomocí stavu, s kterým není spojená žádná váha a díky tomu se při propagaci chyby dá vyhnout násobení, které by mohlo vyvolat tento problém. Díky této vlastnosti si LSTM sítě umí zapamatovat delší posloupnosti vstupů než základní rekurentní neuronové sítě.
 
-Při rešerši autor práce narazil také na kombinaci více sítí v jednu. Autoři jedné z prací zabývající se predikcí spotřeby energie v domácnosti \cite{cnn-bi-lstm}	 využívají například Bi-LSTM (obousměrná LSTM síť), CNN-LSTM (konvoluční neuronová síť s LSTM sítí) a kombinaci všeho - CNN-Bi-LSTM síť.
+Při rešerši autor práce narazil také na kombinaci více sítí v jednu. Autoři jedné z prací zabývající se predikcí spotřeby energie v domácnosti \cite{cnn-bi-lstm}	 využívají například Bi-LSTM (obousměrná LSTM síť), CNN-LSTM (konvoluční neuronová síť s LSTM sítí) a kombinací všeho - CNN-Bi-LSTM síť.
 
 Kromě LSTM sítě existuje ještě její zjednodušená verze, které chybí output gate. Nazývá se gated recurrent unit (GRU) a v některých případech dosahuje vyšších přesností než LSTM, hlavně na menších datových sadách a převážně v oblast zpracování přirozeného jazyka. \cite{kynych2018vyuziti}
 
@@ -581,7 +580,7 @@ Druhý způsob je provést časově frekvenční transformaci signálu. \cite{10
 \chapter{Aplikace vybraných metod}
 V této kapitole bude popsán způsob aplikace metod z rešeršní části této práce. Jednotlivé metody byly vybrány na základě dostupnosti knihoven a očekávaných výsledků.
 
-První zvolená metoda jsou rozhodovací stromy, pro konkrétní implementaci byly zvoleny gradientní boostované stromy, pro které je dostupná knihovna XGBoost. Jako druhou metodou byl zvolen klasický statistický přístup, konkrétně statistický model ARIMA, jež se standardně používá pro predikci časových řad. Další metody jsou postavené na rekurentních neuronových sítích, tedy výše popisovaná LSTM síť a kombinace konvoluční neuronově sítě s LSTM sítí. Zde bude využito bohaté knihovny Tensorflow od společnosti Google
+První zvolenou metodou jsou rozhodovací stromy, pro konkrétní implementaci byly zvoleny gradientní boostované stromy, pro které je dostupná knihovna XGBoost. Jako druhou metodou byl zvolen klasický statistický přístup, konkrétně statistický model ARIMA, jež se standardně používá pro predikci časových řad. Další metody jsou postavené na rekurentních neuronových sítích, tedy výše popisovaná LSTM síť a kombinace konvoluční neuronově sítě s LSTM sítí. Zde bude využito bohaté knihovny Tensorflow od společnosti Google
 
 Před samotnou aplikací těchto metod bude kladen důraz na základní datovou analýzu, která má klíčový význam při identifikaci optimálních parametrů pro finální modely. Tato analýza umožní lépe porozumět datům, identifikovat vzorce a trendy ve spotřebě elektrické energie a získat ucelenou představu o nejdůležitějších faktorech ovlivňujících spotřebu.
 
@@ -595,7 +594,7 @@ V rámci implementace byl využit programovací jazyk Python a základní statis
 \section{Zdroj dat}
 V práci byly využity dva klíčové zdroje dat. První ze zdrojů je veřejný a jedná se o kolekci 5567 domácností, které se zúčastnili projektu UK Power Networks vedené společností Low Carbon London mezi roky 2011 a 2014. 
 
-Cílem tohoto projektu byla inovace distribuční soustavy v Londýně a zvýšení využívání nízkouhlíkových technologií pro vytápění. V průběhu počáteční fáze projektu byly domácnosti vybaveny chytrými elektroměry, a následně byl spolu s příslušnou studií zveřejněn vzorek dat \cite{londondata}
+Cílem tohoto projektu byla inovace distribuční soustavy v Londýně a zvýšení využívání nízkouhlíkových technologií pro vytápění. V průběhu počáteční fáze projektu byly domácnosti vybaveny chytrými elektroměry, a následně byl spolu s příslušnou studií zveřejněn vzorek dat \cite{londondata}.
 
 Naměřená data jsou dostupná v půlhodinových intervalech a obsahují informace o spotřebě v kWh, unikátní identifikátor domácnosti (LCLid) a časové razítko. Celá datová sada má rozsah přes 10 GB a obsahuje více než 160 milionů záznamů.
 
@@ -614,7 +613,7 @@ Struktura datové sady s energetickou spotřebou v domácnostech v Londýně je 
 	\end{tabularx}
 \end{table}
 
-Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřejněn datový soubor s hodinovými rozlišením o počasí získaný z \textit{Dark Sky} API. Tato sada má následující strukturu:
+Pro tvorbu robustnějších modelů a podrobnějších analýz byl také zveřejněn datový soubor s hodinovým rozlišením o počasí získaný z \textit{Dark Sky} API. Tato sada má následující strukturu:
 
 
 \begin{table}[!ht]
@@ -721,7 +720,7 @@ Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto roz
 \end{figure}
 
 
-Z analýzy grafu výše vyplývá, že v rozsahu od 357 do 365 zaznamenaných dní dochází statisticky nejvýznamněji. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
+Z analýzy grafu výše vyplývá, že statisticky nejvýznamnější počet zaznamenaných dní je v rozsahu od 357 do 365i. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
 
 
 \newpage
@@ -757,7 +756,7 @@ Tento zjištěný rozdíl v hodinové spotřebě mezi pracovním týdnem a víke
 	\label{fig:hodina_vikend}
 \end{figure}
 
-Pro úplnost byla provedena analýza hodinového profilů pro celou 10GB datovou sadu. Z grafu \ref{fig:hodina_all} je patrné, ve kterých hodinách obyvatelé domácnosti tráví čas doma. Tato analýza potvrzuje výsledky z hodinových průměrů vybraných čtyř domácností, které se od průměru příliš neliší.
+Pro úplnost byla provedena analýza hodinových profilů pro celou 10GB datovou sadu. Z grafu \ref{fig:hodina_all} je patrné, ve kterých hodinách obyvatelé domácnosti tráví čas doma. Tato analýza potvrzuje výsledky z hodinových průměrů vybraných čtyř domácností, které se od průměru příliš neliší.
 
 \begin{figure}[htbp]
 	\centering
@@ -788,9 +787,9 @@ Další ze zkoumaných parametrů je závislost na dni v týdnu. Byl tedy vytvo�
 	\label{fig:tyden_avg_group}
 \end{figure}
 
-Z grafu \ref{fig:tyden_avg_group} je na první pohled vidět, že někteří obyvatelé rádi tráví čas o víkendech doma (obyvatelé domácnosti 246) a jiní raději tráví čas mimo domov (obyvatelé domácnosti 4431), což vysvětluje snížení či zvýšení spotřeby o víkendu. To znamená, že je to jeden z relevantních indikátoru pro odhadování spotřeby energie. Z tohoto důvodu bude i příznak \textit{week\_day} použit v následujících modelech pro predikci.
+Z grafu \ref{fig:tyden_avg_group} je na první pohled vidět, že někteří obyvatelé rádi tráví čas o víkendech doma (obyvatelé domácnosti 246) a jiní raději tráví čas mimo domov (obyvatelé domácnosti 4431), což vysvětluje snížení či zvýšení spotřeby o víkendu. To znamená, že je to jeden z relevantních indikátorů pro odhadování spotřeby energie. Z tohoto důvodu bude i příznak \textit{week\_day} použit v následujících modelech pro predikci.
 
-Poslední příznak z časově závislých parametrů, jenž byl zkoumán je závislost spotřeby na dni v roce. Zde se předpokládá sezonní trend, obdobný jako příznak \textit{quarter}, který vykazoval v zimních a letních měsících variaci oproti zbytku. 
+Poslední příznak z časově závislých parametrů, jenž byl zkoumán, je závislost spotřeby na dni v roce. Zde se předpokládá sezonní trend, obdobný jako příznak \textit{quarter}, který vykazoval v zimních a letních měsících variaci oproti zbytku. 
 
 Pro každou domácnost v analýze byl tedy proveden denní průměr spotřebované energie přes celý rok 2013. 
 
@@ -819,7 +818,7 @@ Analýza byla provedena na celé datové sadě. Byla spočítána průměrná de
 	\label{fig:year_avg_all}
 \end{figure}
 
-Z grafu lze na první pohled vidět, že zde je trend a to klesající, jinými slovy, se zvyšující se teplotou klesá spotřebovaná energie. To může být způsobeno tím, že objekty v datové sadě využívají elektrického tepelného vytápění. Jelikož z grafu je patrný trend, byl příznak teploty zařazen pro použití ve finálních modelech.
+Z grafu lze na první pohled vidět, že zde je, trend a to klesající. Jinými slovy, se zvyšující se teplotou klesá spotřebovaná energie. To může být způsobeno tím, že objekty v datové sadě využívají elektrického tepelného vytápění. Jelikož z grafu je patrný trend, byl příznak teploty zařazen pro použití ve finálních modelech.
 
 Datová sada s počasím má ovšem mnohem více parametrů, které by mohly být důležité pro predikci. Pro identifikování parametrů, které by měly být zařazeny do finálního modelu, bylo využito výpočtu pro změření velikosti lineární závislosti mezi jednotlivými parametry. Bylo využito Pearsonova korelačního koeficientu. Korelační koeficient se počítá dle následujícího vzorce: 
 
@@ -887,9 +886,7 @@ V kapitole \ref{xgboost_research} v rešeršní části práce bylo zmíněno, �
 
 Proto bylo nejdříve nezbytné najít řešení pro včlenění časového uspořádání do modelu XGBoost, který standardně nezohledňuje informace o času. Jednou z metod, jak toho dosáhnout, je vytvoření umělých zpožděných proměnných (lag features). Tyto proměnné obsahují informaci o minulých hodnotách cílové proměnné nebo jiných relevantních faktorech v daných časových oknech.
 
-Pro tento účel byl proveden experiment, ve kterém byly postupně vybírány vhodné zpožděné proměnné. Tyto proměnné byly vytvořeny na základě explorační analýzy datové sady. Do modelu byly zahrnuty proměnné, které obsahují informaci o minulých hodnotách vybraných proměnných v různých časových oknech, což umožňuje modelu lépe zachytit trendy časové řady a vzory v datech. 
-
-Výsledná tabulka se zpožděnými proměnnými vypadá následovně: 
+Pro tento účel byl proveden experiment, ve kterém byly postupně vybírány vhodné zpožděné proměnné. Tyto proměnné byly vytvořeny na základě explorační analýzy datové sady. Do modelu byly zahrnuty proměnné, které obsahují informaci o minulých hodnotách vybraných proměnných v různých časových oknech, což umožňuje modelu lépe zachytit trendy časové řady a vzory v datech. Výsledná tabulka se zpožděnými proměnnými vypadá následovně: 
 
 \begin{table}[!ht]
 	\centering
@@ -941,7 +938,7 @@ Gradientní boostované rozhodovací stromy lze snadno analyzovat a interpretova
  	\label{fig:xgboost_f_score}
  \end{figure}
  
-Graf \ref{fig:xgboost_f_score} zobrazuje 10 příznaků s nejvyšším dosaženým skóre. Touto analýzo bylo zjištěno, že proměnné obsahující diferenci, teplotu a hodinu (či její průměry) jsou nejdůležitějšími příznaky při rozhodování modelu. Na základě tohoto grafu byly vyřazeny příznaky jako \textit{is\_weeeknd} či \textit{pressure}.
+Graf \ref{fig:xgboost_f_score} zobrazuje 10 příznaků s nejvyšším dosaženým skóre. Touto analýzou bylo zjištěno, že proměnné obsahující diferenci, teplotu a hodinu (či její průměry) jsou nejdůležitějšími příznaky při rozhodování modelu. Na základě tohoto grafu byly vyřazeny příznaky jako \textit{is\_weeeknd} či \textit{pressure}.
 
 Pro objektivní zhodnocení, jak moc dobře se model přizpůsobuje validačním datům a zdali nedochází k přeučení a tím k nedostatečné generelizaci modelu, byl použit ukazatel ztráty. Tento ukazatel měří, jak úspěšně model minimalizuje rozdíl mezi předpovídanými a skutečnými hodnotami na trénovacích a validačních datech.
 
@@ -1001,7 +998,7 @@ Z grafu \ref{fig:arima_acf_pacf} PACF lze nalézt parametr $p$ pro autoregresivn
 
 Na základě těchto počátečních parametrů byla provedena analýza nejlepšího možného modelu pro ARMA ($p$,$q$) s hodnotami od 0 do 3 a pro sezónní parametry ($P$,$Q$) od 0 do 2. Počet možných kombinací pro sestavení modelu s vybranými rozsahy bylo 144.
 
-V tabulce níže, jsou tři modely, které dosáhly v průběhu testování nejlepšího skóre Akaikovo informačního kritéria (AIC).
+V tabulce níže jsou tři modely, které dosáhly v průběhu testování nejlepšího skóre Akaikovo informačního kritéria (AIC).
 
 \begin{table}[!ht]
 	\centering
@@ -1090,7 +1087,7 @@ První parametr byl \textit{patience=3}, který určuje kolik po sobě jdoucích
 
 Druhý parametr \textit{factor=0.5} určuje jakým koeficientem se bude dělit learning rate při překročení parametru \textit{patience}. 
 
-Posledním parametrem byl \textit{min\_lr}, jenž udává jaké minimální hodnoty může learning rate nabývat. Eliminuje to možnost nekonečného zmenšování learning ratu.
+Posledním parametrem byl \textit{min\_lr}, jenž udává jaké minimální hodnoty může learning rate nabývat. Eliminuje to možnost nekonečného zmenšování hodnoty learning rate.
 
 Po zavedení těchto opatření proti přeučení modelu křivka učení pro CNN-LSTM síť vypadá následovně:
 
@@ -1301,7 +1298,7 @@ Celkově lze tedy považovat modely \textbf{XGBoost} a \textbf{CNN-LSTM} za vhod
 \chapter{Závěr}
 Cílem této práce bylo predikování spotřeby elektrické energie v domácnosti. Důvodem, proč mít představu o spotřebě energie dopředu, bylo dát zákazníkům společnosti Albistech s.r.o. možnost řízení své spotřeby, což souvisí s ekonomičtějším provozem a s větším šetřením životního prostředí, díky efektivnějšímu plánování zdrojů elektrické energie.
 
-Jako první stěžejní krok bylo nalezení spolehlivých metod, které se v dnešní době používají k predikování spotřeby, pro smysluplné uplatnění v praxi. Kvůli povaze úlohy, kde byla potřeba v reálném čase vidět budoucí hodnoty, bylo nutné vybrat metody časově nenáročné ale zároveň dostatečně flexibilní a přesné. K porovnání byly vybrány čtyři metody, a to rozhodovací stromy, ARIMA, LSTM a CNN-LSTM sítě. Významné se díky své přesnosti staly CNN-LSTM sítě a rozhodovací stromy.
+Jako první stěžejní krok bylo nalezení spolehlivých metod, které se v dnešní době používají k predikování spotřeby, pro smysluplné uplatnění v praxi. Kvůli povaze úlohy, kde byla potřeba v reálném čase vidět budoucí hodnoty, bylo nutné vybrat metody časově nenáročné, ale zároveň dostatečně flexibilní a přesné. K porovnání byly vybrány čtyři metody, a to rozhodovací stromy, ARIMA, LSTM a CNN-LSTM sítě. Významné se díky své přesnosti staly CNN-LSTM sítě a rozhodovací stromy.
 
 Metody byly aplikovány na dvě datové sady, a to na sadu s rezidencemi z Londýna s 30 minutovým rozlišením a na poskytnutou sadu s 15 minutovým rozlišením. Samotné aplikaci metod předcházela detailní explorační datová analýza pro výběr co nejvhodnějších parametrů.
 
@@ -1312,7 +1309,7 @@ U CNN-LSTM sítí byla objevena vyšší přesnost na datech s vyšší varianc�
 
 Posledním zkoumaným modelem byla ARIMA, která nedosáhla uspokojivých výsledků. Analýza ukázala, že tento model není schopen zachytit komplexitu a dynamiku dat, jenž byla modelu předložena.
 
-Problematika modelování spotřeby koncového uživatele je velmi rozsáhlá, práce by se dala rozšířit spousta způsoby. Zvýšení přesnosti jednotlivých modelů a předpovědí spotřeby by bylo možné dosáhnout s využitím dalších parametrů, za předpokladu, že by bylo možné je někde vytěžit nebo by existovaly v archívu. V případě vyššího výpočetního výkonu by bylo možné modely zpřesnit zahrnutím většího počtu záznamů s vyšší frekvencí nebo tvorbou komplexnějšího modelu.
+Problematika modelování spotřeby koncového uživatele je velmi rozsáhlá, práce by se dala rozšířit mnoha způsoby. Zvýšení přesnosti jednotlivých modelů a předpovědí spotřeby by bylo možné dosáhnout s využitím dalších parametrů, za předpokladu, že by bylo možné je někde vytěžit nebo by existovaly v archívu. V případě vyššího výpočetního výkonu by bylo možné modely zpřesnit zahrnutím většího počtu záznamů s vyšší frekvencí nebo tvorbou komplexnějšího modelu.
 
 
 \printbibliography[title={Použitá literatura}] % sazba seznamu citací 
