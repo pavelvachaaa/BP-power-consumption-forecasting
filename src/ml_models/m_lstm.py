@@ -62,36 +62,43 @@ if __name__ == "__main__":
     Y_test = wrapper.scaler.inverse_transform([Y_test])
 
 
-    A = Y_test[0]
-    F = test_predict[:,0]
-
-    evaluate_model(A[:96],F[:96])
-    evaluate_model(A[:96*7],F[:96*7])
-
 
  # Plot training & validation loss values
-    plt.plot(history.history['loss'])
-    plt.plot(history.history['val_loss']) 
-    plt.title('Model loss')
-    plt.ylabel('Loss')
-    plt.xlabel('Epoch')
-    plt.legend(['Train', 'Validation'], loc='upper right')
-    plt.show()      
+#     plt.plot(history.history['loss'])
+#     plt.plot(history.history['val_loss']) 
+#     plt.title('Model loss')
+#     plt.ylabel('Loss')
+#     plt.xlabel('Epoch')
+#     plt.legend(['Train', 'Validation'], loc='upper right')
+#     plt.show()      
 
 
     size_of_samples = 48*7
-    aa = [x for x in range(size_of_samples)]
+    days_offset=10
+    one_day=48
 
+    start = one_day*days_offset
+    end = start+size_of_samples
+
+
+    A = Y_test[0]
+    F = test_predict[:,0]
+
+    evaluate_model(A[start:end],F[start:end])
+
+
+    aa = [x for x in range(size_of_samples)]
     plt.figure(figsize=(20, 6))
 
-    plt.plot(df_back.index[0:size_of_samples],A
-            [-size_of_samples:], marker='.', label="Naměřená", color='purple', linewidth=2)
-    plt.plot(df_back.index[0:size_of_samples],
-            F[-size_of_samples:], '-', label="Predikce", color='red', linewidth=2)
+    plt.plot(df_back.index[start:end],A
+            [start:end], marker='.', label="Naměřená", color='purple', linewidth=2)
+    plt.plot(df_back.index[start:end],
+            F[start:end], '-', label="Predikce", color='red', linewidth=2)
     sns.despine(top=True)
     plt.subplots_adjust(left=0.2)
     plt.ylabel('Spotřeba [kW/h]', size=14)
     plt.xlabel('Čas', size=14)
     plt.legend(fontsize=16)
-    plt.savefig('./out/lstm_vyrez.eps', format='eps', bbox_inches='tight', transparent=True)
+    import random
+    plt.savefig(f'./out/apendix/lstm/lstm_vyrez_{random.random()}.eps', format='eps', bbox_inches='tight', transparent=True)
     plt.show()

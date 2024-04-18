@@ -18,9 +18,9 @@ from sklearn.metrics import roc_curve, auc,recall_score,precision_score
 # Ještě zkusit překopat na oříznutí DF a pak použít predict_future a porovnat to s tím (mělo by to vyjít stejně)
 if __name__ == "__main__":
     # Zde je použit kompletně jiná část londýna a náhodný barák pro validaci modelu, který byl natrénován také na úplně jiné části londýna a jiném baráku
-    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_7.csv", "MAC004385", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
+    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_5.csv", "MAC000005", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
     
-    df = df[:48*7]
+    df = df[:48*1]
     # Features, které to potřebuje*
     df = add_lags(df)
     df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
@@ -29,13 +29,16 @@ if __name__ == "__main__":
     FEATURES = ["hour", "energyMax6h", "energyMean1h", "energyMean6h", "energyMean12h", "energyMean7d", Y_VALUE_NAME+"_diff", Y_VALUE_NAME+"_diff2"]
     df = df.sort_index()
 
-    xgb_model_loaded = deserialize_model("xgboost", "MAC000291")
+    xgb_model_loaded = deserialize_model("xgboost", "beast_0_MAC004431_ULTRA")
 
     X_vals, Y_vals = df[FEATURES], df[Y_VALUE_NAME]
  
     df['pred'] = xgb_model_loaded.predict(X_vals)
 
-    _ = df[[Y_VALUE_NAME, 'pred']].plot(figsize=(20, 6))
+    import random
+    time_window = 48 *7
+    ax = df[[Y_VALUE_NAME, 'pred']][:time_window].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
+    plt.savefig(f'./out/apendix/xgboost/prediction_{random.randint(0,99999)}.eps', format='eps', bbox_inches='tight', transparent=True, )
     
     actual_values = Y_vals
     forecast_values = df["pred"]

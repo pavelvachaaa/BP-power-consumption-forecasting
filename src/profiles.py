@@ -98,6 +98,12 @@ ax.plot(hb["hour"], hb["energy(kWh/hh)"], label=hb["house"][0])
 ax.plot(hc["hour"], hc["energy(kWh/hh)"], label=hc["house"][0])
 ax.plot(hd["hour"], hd["energy(kWh/hh)"], label=hd["house"][0])
 
+# Calculate standard deviation
+std_dev = all.groupby('hour')['energy(kWh/hh)'].std()
+
+# Plot error bars representing +/- 3 std
+plt.errorbar(std_dev.index, all.groupby('hour')['energy(kWh/hh)'].mean(), yerr=3*std_dev, fmt='o', alpha=0.5)
+
 
 plt.xlabel('Hodina')
 plt.ylabel('Spotřeba (kWh)')

@@ -60,8 +60,8 @@ if __name__ == "__main__":
     plt.ylabel("Spotřeba energie [kW/h]")
     plt.title("")
     # plt.plot(train.index[:96*5], train[Y_VALUE_NAME][:96*5], label='Training')
-    plt.plot(test.index[:24*5], test[Y_VALUE_NAME][:24*5], label='Naměřená', linewidth=2,)
-    plt.plot(test.index[:24*5], predictions[:24*5], label='Predikce', linewidth=2,)
+    plt.plot(test.index[:24*1], test[Y_VALUE_NAME][:24*1], label='Naměřená', linewidth=2,)
+    plt.plot(test.index[:24*1], predictions[:24*1], label='Predikce', linewidth=2,)
    
     plt.legend()
     plt.savefig('./out/spike.eps', format='eps', bbox_inches='tight', transparent=True)

@@ -33,7 +33,10 @@ if __name__ == "__main__":
  
     df['pred'] = xgb_model_loaded.predict(X_vals)
 
-    _ = df[[Y_VALUE_NAME, 'pred']].plot(figsize=(20, 6))
+    import random
+    time_window = -48 * 1
+    ax = df[[Y_VALUE_NAME, 'pred']][:time_window].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
+    plt.savefig(f'./out/apendix/xgboost/prediction_{random.randint(0,99999)}.eps', format='eps', bbox_inches='tight', transparent=True, )
     
     actual_values = Y_vals
     forecast_values = df["pred"]

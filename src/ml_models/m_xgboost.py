@@ -4,7 +4,7 @@ import pandas as pd
 from core import *
 
 import matplotlib.pyplot as plt
-
+from time import time
 import locale
 import datetime
 locale.setlocale(locale.LC_ALL,'cs_CZ')
@@ -17,8 +17,7 @@ sns.set_style('white')
 FEATURES = [*WEATHER_DEFAULT_COLUMNS,  *get_time_features_name(), "energyMean1d", "energyMean7d", "energyMean12h", "energyMax6h", "energyMean24h", "energyMean6h"]
 
 if __name__ == "__main__":
-    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_0.csv", "MAC004431", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
-    df: pd.DataFrame = load_agg_dataseet("./data/agg_halfhourly.csv")#  
+    df: pd.DataFrame = load_london_dataset_household("./data/halfhourly_dataset/halfhourly_dataset/block_108.csv", "MAC000102", "./data/weather_hourly_darksky.csv", [*WEATHER_DEFAULT_COLUMNS, "precipType"])
     df = add_lags(df)
 
     df[Y_VALUE_NAME+"_diff"] = df[Y_VALUE_NAME].diff().fillna(0)
@@ -71,11 +70,13 @@ if __name__ == "__main__":
 
     df_unseen['pred'] = reg.predict(df_unseen_X)
 
+  
+    import random
+    time_window = 48 *1
+    ax = df_unseen[[Y_VALUE_NAME, 'pred']][:time_window].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
+    plt.savefig(f'./out/apendix/xgboost/prediction_{random.randint(0,99999)}.eps', format='eps', bbox_inches='tight', transparent=True, )
 
-    ax = df_unseen[[Y_VALUE_NAME, 'pred']][:48*7].plot(figsize=(20, 6),xlabel="Čas", title="",linewidth=2, ylabel="Spotřeba energie [kW/h]")
-    plt.savefig('./out/xgboost_predictions.eps', format='eps', bbox_inches='tight', transparent=True, )
-
-    evaluate_model(df_unseen[Y_VALUE_NAME][:48],df_unseen["pred"][:48])
+    evaluate_model(df_unseen[Y_VALUE_NAME][:time_window],df_unseen["pred"][:time_window])
     serialize_model(reg, "xgboost", "MAC000291")
 
 

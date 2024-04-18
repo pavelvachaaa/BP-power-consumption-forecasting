@@ -114,7 +114,7 @@ spotřeba energie, analýza časových řad, predikce, parametrické modelován�
 
 \end{keywordsCZ}
 
-\vspace{2cm}
+\vspace{1.2cm}
 
 \begin{abstractEN}
 This thesis explores the issue of short and medium term forecasting of electricity consumption using deep neural networks and other machine learning methods.
@@ -163,17 +163,19 @@ Rád bych poděkoval všem, kteří přispěli ke vzniku tohoto díla. Zejména 
 \end{abbrList}
 
 \chapter{Úvod}
-Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak se tyto vzorce chování mění, je možné zajistit udržitelnou budoucnost.
+Vzorce spotřeby a jejich dopady na naše životní prostředí jsou aktuálně mezi největšími výzvami naší doby. Díky pochopení jak a kdy lidé spotřebovávají energii a jak se tyto vzorce chování mění, je možné zajistit udržitelnou budoucnost. Tento úkol se stává ještě naléhavějším v kontextu kolísajících cen energií na trhu, které mohou poskytnout příležitosti k ekonomickým úsporám a optimalizaci energetických systémů.
 
 Tradiční modely spotřeby se obvykle opírají o národní nebo globální data, která nemusí zcela odrážet lokální vzorce spotřeby nebo jejich podmínky (např. klimatické). Naproti tomu modely lokální spotřeby mohou poskytnout přesnější a mnohem relevantnější informace pro konkrétní region, město či domácnost.
 
-V této práci si autor klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou
-oblast dostupné. Tento model může být velmi cenný pro plánování a implementaci udržitelných opatření v oblasti energetiky a ochrany životního prostředí. 
-
 Získání přesnějšího a místně relevantního pohledu na spotřebu energie umožní přijímat informovaná rozhodnutí a přizpůsobit strategie energetického plánování tak, aby byly co nejefektivnější a nejohleduplnější k životnímu prostředí.
 
-Pro vytvoření robustního a spolehlivého modelu lokální spotřeby se část této práce bude zabývat rešerší různých technik strojového učení spolu s metodami
-ze statistické analýzy.
+V této práci si autor klade za cíl vyvinout model lokální spotřeby založený na historických datech spolu s environmentálními parametry, pokud jsou pro danou oblast dostupné. Tento cíl vychází z potřeb a požadavků zákazníků, společnosti Albistech s.r.o., kteří vyjádřili zájem o využití kolísajících cen energií na trhu ve svůj prospěch.
+
+
+Využití kolísání cen energií na trhu může přinést zákazníkům významné ekonomické úspory. Tato práce se proto snaží přispět k pochopení problematiky predikce spotřeby energie a k vytvoření přesných modelů, které budou základem pro řízení energetických systémů v této dynamické a neustále se měnící oblasti.
+
+Provedená rešerše existujících metod prediktivního modelování poskytne základní přehled o možných přístupech k vytvoření robustního a spolehlivého modelu lokální spotřeby. Klasické statistické metody, jako je ARIMA, budou porovnány s moderními technikami strojového učení, jako jsou rozhodovací stromy nebo rekurentní neuronové sítě.
+
 
 
 \chapter{Časové řady}
@@ -206,7 +208,7 @@ Nejjednodušší transformace řady na stacionární je pomocí diferencování.
 \begin{equation}
  \Delta x_t = x_t - x_{t-1}
 \end{equation}
-kde $x_t$ je hodnota v čase $t$ a $x_{t-1}$ je vzorek předcházející. Při analýze následující řady níže, kde je vidět lineární rostoucí trend, je třeba provést diferenci, aby tento trend zmizel.
+kde $x_t$ je hodnota v čase $t$ a $x_{t-1}$ je vzorek předcházející. Při analýze následující řady (Obrázek \ref{fig:nezamestnanost}) níže, kde je vidět lineární rostoucí trend, je třeba provést diferenci, aby tento trend zmizel.
  
 \begin{figure}[htbp]
 	\centering
@@ -232,10 +234,10 @@ Jak bylo zmíněno výše, dekompozice umožňuje rozložit časovou řadu na je
 
 Někdy se samotné komponenty po dekompozici využívají k predikci, obzvlášť pokud je trend lineární. Lze ho totiž lépe predikovat, a stejně tak i sezónní vzory. \cite{Hyndman2013-wm}
 
-Pro dekompozici se zpravidla používají dva základní modely, a to aditivní a multiplikativní. Volba modelu závisí na charakteru sezónnosti a trendu v časové řadě.
+Pro dekompozici se zpravidla používají dva základní modely reprezentující typ časové řady, a to aditivní a multiplikativní. Volba modelu závisí na charakteru sezónnosti a trendu v časové řadě.
 
 \subsection{Aditivní model}
-Pro tento model se předpokládá, že řadu lze rozložit na součet jednotlivých komponent.
+Pro tento model se předpokládá, že řadu lze rozložit pomocí dalších metod na součet jednotlivých komponent.
 
 \begin{equation}
 	x_t = T_t + S_t + C_t + \epsilon_t
@@ -244,7 +246,7 @@ kde $x_t$ je samotná hodnota časová řady v čase $t$.
 
 
 \subsection{Multiplikativní model}
-Analogicky tento model naopak předpokládá, že řadu lze rozložit na součin jednotlivých komponent.
+Analogicky tento model naopak předpokládá, že řadu lze rozložit pomocí dalších metod na součin jednotlivých komponent.
 \begin{equation}
 	x_t = T_t * S_t * C_t * \epsilon_t
 \end{equation}
@@ -265,10 +267,10 @@ kde $k$ se používá k určení, kolik hodnot před a po aktuálním čase $t$ 
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=1.0\textwidth]{pv_eg_01_moving_average.eps}}%
 	\caption{Klouzavý průměr řádu m=30 popisující míru nezaměstnanosti v ČR od roku 1993. }
-	\label{fig:my_graph}
+	\label{fig:my_graph_klouzej}
 \end{figure}
 
-Na grafu výše lze vidět, že klouzavý průměr (červená čára) s řádem $m=30$ vyhladil průběh časové řady od výkyvů a zvýraznil trend-cyklickou komponentu.
+Na průběhu grafu \ref{fig:my_graph_klouzej} výše lze vidět, že klouzavý průměr (červená čára) s řádem $m=30$ vyhladil průběh časové řady od výkyvů a zvýraznil trend-cyklickou komponentu.
 
 \subsection{Klasická dekompozice}
 O něco sofistikovanější metodou je klasická dekompozice. Pro provedení samotné dekompozice je nutné dodat tři vstupy. Analyzovanou časovou řadu, informaci o tom, jestli časová řada má model aditivního nebo multiplikativního charakteru a jak velkou má časová řada sezónní periodu $m$ (např. týdenní - $m=7$, měsíční - $m=12$, atd.). 
@@ -279,17 +281,17 @@ V implementační části pak jde o čtyři základní kroky. Výpočet trend-cy
 	\centering
 	\makebox[\textwidth][c]{\includegraphics[width=0.8\textwidth]{pv_eg_03_classical_decomposition.eps}}%
 	\caption{Klasická dekompozice s aditivním modelem pro data s měsíčními záznamy o míře nezaměstnanosti v ČR od roku 1993 }
-	\label{fig:my_graph}
+	\label{fig:stl_decoomp}
 \end{figure}
 
 V náhodné komponentě zbyla časová řada po odstranění trend-cyklické a sezónní komponenty. Někdy se jí místo náhodná říká detrendizovaná komponenta. V tomto případě model byl aditivní, tedy odstranění proběhlo jako $\epsilon_t = x_t - T_t - S_t$, pro multiplikativní model by vztah vypadal jako $\epsilon_t = \frac{x_t}{T_tS_t}$
 
-Z pohledu na průběh grafu výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
+Z pohledu na průběh grafu \ref{fig:stl_decoomp} výše je vidět, že řada má nějaký trend i sezónnost. Na grafu náhodné komponenty lze zaznamenat několik vysokých výkyvů. V roce 2008 náhodná komponenta ukázala výrazný nárůst nezaměstnanosti, který nelze vysvětlit trendem, ani cyklickou složkou. (V tomto roce začala tzv. Velká recese).
 
  Další je vidět v roce 2019, kdy Česká Republika měla silnou rostoucí ekonomiku. Hned po roce 2019 je vidět další výkyv, tentokrát negativní, způsobený pandemií.
 
 %No to asi ne%
-\chapter{Průzkum současných trendů v oblasti prediktivních metod}
+\chapter{Průzkum současných prediktivních metod}
 V současné době s rostoucím objemem sbíraných dat se stále více organizací zaměřuje na prediktivní modelování. Díky dnešním výkonným výpočetním technologiím je možné zužitkovat nasbíraná data a využít metody strojového učení pro přesné predikce a odhad budoucích trendů.
 
 Tato kapitola si klade za cíl provést rešerši aktuálně používaných metod pro predikce. Výstupem by měl být výběr několika metod a jejich následná aplikace na datech o spotřebě.
@@ -304,7 +306,6 @@ Regresní model s více než jednou proměnnou se zapisuje jako
 \begin{equation}
 	y = \beta_0 + \beta_1x_1 + \beta_2x_2 + ... + \beta_px_p +  \epsilon
 \end{equation}
-
 kde $y$ je výstupní proměnná, $\epsilon$ chybový člen a $\beta_i$, i=0, 1, 2 ... p jsou regresní parametry.
 
 Po získání regresních koeficientů je možné použít rovnici výše k predikci spojité hodnoty. Regresní koeficienty se dají odhadovat pomocí metody nejmenších čtverců. Tento postup spočívá v nalezení hodnot parametrů $\beta$ takových, aby součet čtverců rozdílů mezi predikovanými hodnotami výstupní proměnné y a skutečnými hodnotami byl co nejmenší. \cite{hanousek1992moderni}
@@ -334,7 +335,6 @@ Někdy se nehodí, aby veškeré zpožděné proměnné měly stejnou váhu. Mod
 \begin{equation}
 	x_t =    \sum_{i=1}^{p}\alpha_ix_{t-i} + \alpha_0 + \epsilon_t
 \end{equation}
-
 kde $\alpha_0$  je výchozí konstantní bod pro predikce (může být nulový a tedy být zanedbán). 
 
 \subsection{Model klouzavého průměru}
@@ -355,10 +355,9 @@ Pokud se spojí tedy autoregresivní model po diferenci s modelem klouzavého pr
 \begin{equation}
  x_t =    \sum_{i=1}^{n}(\alpha_i \Delta x_{t-i}) + \sum_{i=1}^{n}(\alpha_i\epsilon_{t-i}) + \alpha_0 + \epsilon_t
 \end{equation}
-
 kde $x_t$ je nová hodnota. Odhad jednotlivých parametrů $p$ a $q$ je jedním z kroků používané Box-Jenkinsovy metody. \cite{zayiong} Tato metoda využívá dvě funkce. Autokorelační funkci využívá pro odhad zpožděných parametrů modelu klouzavého průměru a parciální autokorelační funkci pro odhad parametrů autoregresního modelu. Použití této metody bude ukázáno v praktické části této práce.
 
-
+\newpage
 \section{Rozhodovací stromy}
 Pro strom existuje mnoho analogií a jedna z analogií se dostala i do modelování. Rozhodovací stromy můžou pomoci jak s klasifikačními, tak i s regresními problémy. 
 
@@ -406,7 +405,6 @@ Autoři práce také ukázali, jak se dají sestrojit pomocí neuronu jednoduch�
 	\caption{Logický součet pomocí biologických neuronů}
 	\label{fig:logic_or}
 \end{figure}
-
 Neuron označují jako $N$ s indexem $i$, který je uvnitř neuronu. V tom případě na obrázku výše lze vidět $N_3(t) = N_1(t-1) \vee N_2(t-1)$, což znamená, že se jedná o logický součet. \cite{mcculloch1943logical} Autoři v práci dále naznačili, jak se dají skládat tyto neurony do sítě. 
 
 Toto položilo první základy na rozvoj neuronových sítí v roce 1957 Frankem Rosenblattem, který začal práci na perceptronu.
@@ -459,7 +457,6 @@ Výstup $Y$ poté získáme pomocí rovnice níže
 \begin{equation}
 	Y = \sigma(w_{ij} \cdot H + b_{out})
 \end{equation}
-
 kde $\sigma$ označuje přenosovou funkci a $w_{ni}$ váhu spojení mezi n-tým vstupním a í-tým výstupním neuronem.
 
 Ve více vrstvých sítích se používají jiné přenosové funkce než v samostatném perceptronu. V současnosti vyčnívá jedna velmi používaná funkce ReLU (rectified linear unit), která se definuje jako:
@@ -467,7 +464,6 @@ Ve více vrstvých sítích se používají jiné přenosové funkce než v samo
 \begin{equation}
 	Relu(z) = max(0, z)
 \end{equation}
-
 a používá se především ve skrytých vrstvách. \cite{brownlee2019gentle} Na výstupní vrstvě je zpravidla funkce softmax, definovaná jako:
 
 \begin{equation}
@@ -531,7 +527,6 @@ V této vrstvě se děje matematická operace zvaná konvoluce. Základem je tak
 \begin{equation}
     y_{i,j} = \sum_{a = 1}^{m} \sum_{b = 1}^{n} f_{a,b}x_{i+a,j+b}
 \end{equation}
-
 kde $f_{i,j}$ jsou prvky konvolučního jádra, $x_{i,j}$ prvky vstupní matice a $y_{i,j}$ prvky výstupní matice. zjednodušeně se konvoluce zapisuje jako:
 \begin{equation}
     Y = X \otimes F
@@ -586,7 +581,7 @@ Před samotnou aplikací těchto metod bude kladen důraz na základní datovou 
 
 Výsledkem této kapitoly budou natrénované modely, jež budou využívány k predikci budoucích hodnot spotřeby elektrické energie pomocí vybraných metod. Jako jedno z rozšíření této práce v budoucnu je integrace těchto modelů do informačního systému NEO.  
 
-Nakonec budou tyto modely podrobeny důkladnému hodnocení založenému na metrikách přesnosti, které jsou uvedeny v kapitole \ref{section:error-matrix}. Vyhodnocení na základě těchto metrik bude klíčovým krokem při posuzování celkové úspěšnosti modelů a pomůže identifikovat případné oblasti, které vyžadují zdokonalení. Vyhodnocení povede také k informovanému rozhodování o jejich budoucí integraci v informačním systému NEO.
+Nakonec budou tyto modely podrobeny důkladnému hodnocení založenému na metrikách přesnosti, které jsou uvedeny v kapitole \ref{section:error-matrix}. Vyhodnocení na základě těchto metrik bude klíčovým krokem při posuzování celkové úspěšnosti modelů a pomůže identifikovat případné oblasti, které vyžadují zdokonalení. Vyhodnocení povede také k informovanému rozhodování o jejich budoucí integraci v informačním systému NEO. Modely budou natrénovány na agregované datové sadě a porovnány na stejných časových úsecích náhodně vybraných domácností pro objektivní zhodnocení. Predikované časové úseky budou v krátkodobém horizontu jednoho dne a týdne.
 
 V rámci implementace byl využit programovací jazyk Python a základní statistické knihovny, jako jsou numpy, pandas a statsmodels, spolu s knihovnami specializovanými pro strojové učení, jako jsou Keras, Scikit-learn a další. Tato kombinace nástrojů poskytla robustní prostředí pro vývoj a testování predikčních modelů.
 
@@ -720,7 +715,7 @@ Po seskupení dnů v roce s identifikátorem domácnosti a zobrazení tohoto roz
 \end{figure}
 
 
-Z analýzy grafu výše vyplývá, že statisticky nejvýznamnější počet zaznamenaných dní je v rozsahu od 357 do 365i. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
+Z analýzy grafu výše vyplývá, že statisticky nejvýznamnější počet zaznamenaných dní je v rozsahu od 357 do 365. S cílem zachovat kvalitu dat bylo rozhodnuto v datové sadě omezit výběr na domácnosti s alespoň 357 záznamy. Toto kritérium eliminuje 38 záznamů, což představuje pouze 0,68 \% z celkového objemu datové sady. Tímto opatřením lze zajistit relevantnější analýzu v rámci sledovaného rozsahu zaznamenaných dní.
 
 
 \newpage
@@ -728,7 +723,7 @@ Z analýzy grafu výše vyplývá, že statisticky nejvýznamnější počet zaz
 \subsection{Průměrné profily}
 Jako první byly analyzovány hodinové průměry čtyř domácností. Byly vybrány tři domácnosti z datové sady z Londýna a jedna domácnost z Brna. Výsledky ukázaly, že průměrná spotřeba energie během dne výrazně kolísá mezi jednotlivými domácnostmi. To je způsobeno rozdílným chováním a užíváním spotřebičů obyvateli domácností.
 
-Z grafu \ref{fig:hodina_pracovni} níže lze vidět, že u rezidence s identifikátorem 246 členové domácnosti začínají vstávat mezi 5-6. hodinou do práce. Tato aktivita se odráží v nárůstu spotřeby energie v těchto časných hodinách. Domu se vracejí kolem šesté, kde se pravděpodobně zapíná více spotřebičů (televize, mikrovlnná trouba, atd.). Podobný vzor lze nalézt i u rezidence 4431.
+Z grafu \ref{fig:hodina_pracovni} níže lze vidět, že u rezidence s identifikátorem 246 členové domácnosti začínají vstávat mezi 5-6. hodinou do práce. Tato aktivita se odráží v nárůstu spotřeby energie v těchto časných hodinách. Domu se vracejí kolem šesté, kde se pravděpodobně zapíná více spotřebičů (televize, mikrovlnná trouba, atd.). Podobný vzor lze nalézt i u rezidence 4431. Tečkovaná line na grafu \ref{fig:hodina_pracovni} slouží jako grafické znázornění $\pm$ 3 standardní odchylky.
 
 U zbytků rezidencí lze dle křivky předpokládat, že obyvatelé se vracejí domu kolem 15. hodiny a vstávají mezi 7-9. hodinou.
  
@@ -776,7 +771,7 @@ Naopak během letních měsíců je zaznamenáván větší nárůst denní spot
 	\label{fig:hodina_quarters}
 \end{figure}
 
-Na základě této provedené analýzy lze zařadit parametr \textit{quarter} jakožto indikátor ročního období mezi další příznaky, jenž bude model pro predikce využívat.
+Na základě této provedené analýzy \ref{fig:hodina_quarters} lze zařadit parametr \textit{quarter} jakožto indikátor ročního období mezi další příznaky, jenž bude model pro predikce využívat.
 
 Další ze zkoumaných parametrů je závislost na dni v týdnu. Byl tedy vytvořen průměrný týdenní profil vybraných domácností. Tento profil by mohl obsahovat důležité informace pro lepší pochopení dynamiky spotřeby energie v průběhu týdne. 
 
@@ -1200,14 +1195,14 @@ Pro brněnskou rezidenci to byl časový úsek 0:00 28. 1. 2023 0:00 do 7. 2. 20
 		LSTM            & MAC000291          &  0.094          & 0.311           & 0.183           & 26.217              \\ 
 		~               & MAC003597          & 0.044            & 0.209             & 0.120            & 15.798             \\  
 		~               & MAC004385          & 0.027           & 0.163           & 0.112           & 15.215          \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.001            & 0.030             & 0.022           & 48.032 \\         
+		~               & Brno, byt 5.02              & 0.001            & 0.030             & 0.022           & 48.032 \\         
 		
 		\hline
 		
 		CNN-LSTM        & MAC000291          & 0.007               & 0.081              & 0.048           & 6.596              \\ 
 		~               & MAC003597          & 0.005            & 0.062             & 0.043            & 9.051             \\  
 		~               & MAC004385          & 0.010            & 0.065             & 0.071           & 11.352            \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.004            & 0.059             & 0.044           &	5.512\\         
+		~               & Brno, byt 5.02              & 0.004            & 0.059             & 0.044           &	5.512\\         
 		
 		\hline
 		
@@ -1215,14 +1210,14 @@ Pro brněnskou rezidenci to byl časový úsek 0:00 28. 1. 2023 0:00 do 7. 2. 20
 		XGBoost         & MAC000291          & 0.013	       & 0.130             &  0.0393        &  5.017            \\ 
 		~               & MAC003597          & 0.018            & 0.109             & 0.048            & 6.134             \\  
 		~               & MAC004385          & 00435            & 0.0666             &  0.0304            &  4.868             \\ 
-		~               & Poštovská 3 - byt 5.02  & 0.001          & 0.015             & 0.001            & 16.838\\   
+		~               & Brno, byt 5.02  & 0.001          & 0.015             & 0.001            & 16.838\\   
 		
 		\hline
 		
 		ARIMA           & MAC000291          & 0.048            & 0.220             & 0.136        &  34.588            \\ 
 		~               & MAC003597          & 0.069            & 0.259             & 0.132            & 26.723             \\  
 		~               & MAC004385          & 0.142            & 0.377             & 0.300           & 34.143             \\ 
-		~               & Poštovská 3 - byt 5.02  & 0.002           & 0.039             & 0.029           & 48.479 \\   
+		~               & Brno, byt 5.02  & 0.002           & 0.039             & 0.029           & 48.479 \\   
 		
 		
 	\end{tabular}
@@ -1237,7 +1232,7 @@ Změna architektury metody z LSTM na CNN-LSTM vykazuje zlepšení v každé rezi
 
 Při zpětném průzkumu důvodů, proč ARIMA model nedosahuje dobrých výsledků na poslední rezidenci, bylo zjištěno, že model není schopen efektivně reagovat na rychlé výkyvy ve spotřebě. 
 
-Toto zjištění vychází z grafické inspekce dat, kde bylo zjištěno, že ARIMA model má potíže reagovat na rychlé výkyvy ve spotřebě, jak je znázorněno na grafu \label{spike_analysis} níže.
+Toto zjištění vychází z grafické inspekce dat, kde bylo zjištěno, že ARIMA model má potíže reagovat na rychlé výkyvy ve spotřebě, jak je znázorněno na grafu z obrázku \ref{fig:spike_analysis} níže.
 
 \begin{figure}[htbp]
 	\centering
@@ -1257,14 +1252,14 @@ Pro poslední porovnání byla provedena predikce v rámci jednoho dne. Celkem s
 		LSTM            & MAC000291          & 0.003          & 0.059          & 0.040           & 15.097              \\ 
 		~               & MAC003597          & 0.041            & 0.202             & 0.139            &  17.633             \\  
 		~               & MAC004385          & 0.029            & 0.151             &  0.011           & 15.412            \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.060            & 0.024             & 0.019           & 36.892 \\         
+		~               & Brno, byt 5.02              & 0.060            & 0.024             & 0.019           & 36.892 \\         
 		
 		\hline
 		
 		CNN-LSTM        & MAC000291          & 0.018               & 0.133               & 0.073           & 13.635              \\ 
 		~               & MAC003597          & 0.014            & 0.119             & 0.086            & 14.667             \\  
 		~               & MAC004385          & 0.010            & 0.065             & 0.071           & 11.352            \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.004            & 0.060             & 0.046           & 5.331 \\         
+		~               & Brno, byt 5.02              & 0.004            & 0.060             & 0.046           & 5.331 \\         
 		
 		\hline
 		
@@ -1272,14 +1267,14 @@ Pro poslední porovnání byla provedena predikce v rámci jednoho dne. Celkem s
 		XGBoost         & MAC000291          & 0.025	       & 0.157             &  0.060        &  7.174            \\ 
 		~               & MAC003597          & 0.005            & 0.069             & 0.034            & 4.964             \\  
 		~               & MAC004385          & 0.021            & 0.146             &  0.077            &  8.697             \\ 
-		~               & Poštovská 3 - byt 5.02  & 0.001           & 0.016             & 0.015            & 13.781\\   
+		~               & Brno, byt 5.02  & 0.001           & 0.016             & 0.015            & 13.781\\   
 		
 		\hline
 		
 		ARIMA           & MAC000291          & 0.025           &  0.157             & 0.133        &  69.778            \\ 
 		~               & MAC003597          & 0.009            & 0.092             & 0.071            & 23.672             \\  
 		~               & MAC004385          & 0.077            & 0.277             & 0.205           & 24.941             \\ 
-		~               & Poštovská 3 - byt 5.02              & 0.001           & 0.037             & 0.026           & 37.800 \\   
+		~               & Brno, byt 5.02              & 0.001           & 0.037             & 0.026           & 37.800 \\   
 		
 		
 	\end{tabular}
@@ -1316,5 +1311,79 @@ Problematika modelování spotřeby koncového uživatele je velmi rozsáhlá, p
 
 \addcontentsline{toc}{chapter}{Použitá literatura} % vložení nadpisu do 
 
+
+\appendix % začátek příloh / beginning of appendiecies
+\chapter{Přílohy}
+
+\section{Průběhy XGBoost}
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{apendix/xgboost/prediction_82293.eps}}%
+	\caption{Předpověď 336 hodnot - 16.84 \% MAPE}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.1\textwidth]{apendix/xgboost/prediction_1_86.eps}}%
+	\caption{Předpověď 48 hodnot - 1.86 \% MAPE}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+\newpage
+\section {Průběhy ARIMA}
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{apendix/arima/pred_1.eps}}%
+	\caption{Předpověď 24 hodnot - 79.36 \% MAPE}
+
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=0.95\textwidth]{apendix/arima/spike.eps}}%
+	\caption{Předpověď 168 hodnot - 39.15 \% MAPE}
+
+\end{figure}
+
+\newpage
+\section{Průběhy LSTM}
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{apendix/lstm/lstm_28_25.eps}}%
+	\caption{Předpověď 336 hodnot - 28.25 \% MAPE}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{apendix/lstm/lstm_26_24.eps}}%
+	\caption{Předpověď 48 hodnot - 26.24 \% MAPE}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+
+\newpage
+\section{Průběhy CNN-LSTM}
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{apendix/lstm/cnn_15_78.eps}}%
+	\caption{Předpověď 48 hodnot - 15.78 \% MAPE}
+	\label{fig:lstm_vyrez}
+\end{figure}
+
+
+
+\begin{figure}[htbp]
+	\centering
+	\makebox[\textwidth][c]{\includegraphics[width=1.2\textwidth]{apendix/lstm/cnn_24_60.eps}}%
+	\caption{Předpověď 336 hodnot - 24.60 \% MAPE)}
+	\label{fig:lstm_vyrez}
+\end{figure}
 
 \end{document}

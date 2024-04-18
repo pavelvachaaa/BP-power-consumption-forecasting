@@ -66,5 +66,6 @@ plt.subplots_adjust(left=0.2)
 plt.ylabel('Spotřeba [kW/h]', size=14)
 plt.xlabel('Čas', size=14)
 plt.legend(fontsize=16)
-plt.savefig('./out/lstm_vyrez.eps', format='eps', bbox_inches='tight', transparent=True)
+import random
+plt.savefig(f'./out/apendix/lstm/lstm_vyrez_{random.random()}.eps', format='eps', bbox_inches='tight', transparent=True)
 plt.show()
